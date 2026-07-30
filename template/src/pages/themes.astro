@@ -1,0 +1,258 @@
+---
+import BaseLayout from '@malihub/sites-core/layouts/BaseLayout.astro';
+import Header from '@malihub/sites-core/components/Header.astro';
+import Footer from '@malihub/sites-core/components/Footer.astro';
+import siteConfig from '../../site.config.json';
+
+const themes = [
+  {
+    id: 'emerald',
+    name: 'Vert Émeraude Officiel',
+    tagline: 'Standard Institutionnel & Sceau d\'État',
+    description: 'La teinte originelle de la République du Mali, sobre, solennelle et rassurante.',
+    primaryColor: '#0B7A2F',
+    heroBg: 'linear-gradient(135deg, #0B7A2F 0%, #063C18 100%)',
+    cardBg: '#EAF3EC',
+    textColor: '#0A3D1C',
+    accentColor: '#F5C518'
+  },
+  {
+    id: 'mandingue',
+    name: 'Orange Mandingue & Sahel',
+    tagline: 'Chaleur, Dynamisme & Entrepreneuriat',
+    description: 'Une palette énergique et chaleureuse inspirée de la terre cuite et du soleil mandingue.',
+    primaryColor: '#E65100',
+    heroBg: 'linear-gradient(135deg, #E65100 0%, #BF360C 100%)',
+    cardBg: '#FFF3E0',
+    textColor: '#8C2B00',
+    accentColor: '#FEF3C7'
+  },
+  {
+    id: 'river',
+    name: 'Bleu Fleuve Niger',
+    tagline: 'Sérénité, Eau & Connectivité',
+    description: 'Inspiré des eaux vives du Djoliba, apportant calme, fluidité et modernité.',
+    primaryColor: '#1B7A94',
+    heroBg: 'linear-gradient(135deg, #1B7A94 0%, #0A323D 100%)',
+    cardBg: '#F0F7F9',
+    textColor: '#0F4858',
+    accentColor: '#38BDF8'
+  },
+  {
+    id: 'indigo',
+    name: 'Indigo de Ségou & Djenné',
+    tagline: 'Culture, Savoir & Étoffes Traditionnelles',
+    description: 'Les nuances profondes et élégantes des teintures traditionnelles d\'indigo maliennes.',
+    primaryColor: '#3730A3',
+    heroBg: 'linear-gradient(135deg, #3730A3 0%, #120F36 100%)',
+    cardBg: '#EEF2FF',
+    textColor: '#1E1B4B',
+    accentColor: '#93C5FD'
+  },
+  {
+    id: 'gold',
+    name: 'Or Bambouk & Kéniéba',
+    tagline: 'Prestige, Richesse & Lumière',
+    description: 'Rappel de l\'histoire dorée du Mandé et du rayonnement culturel du Mali.',
+    primaryColor: '#B98900',
+    heroBg: 'linear-gradient(135deg, #B98900 0%, #3B2E00 100%)',
+    cardBg: '#FBF6E7',
+    textColor: '#5C4A0E',
+    accentColor: '#F5C518'
+  },
+  {
+    id: 'bazin',
+    name: 'Bazin Impérial',
+    tagline: 'Festivités, Élégance & Distinction',
+    description: 'Nuances riches de magenta et violet inspirées des grands boubous de fête.',
+    primaryColor: '#7E22CE',
+    heroBg: 'linear-gradient(135deg, #7E22CE 0%, #3B0764 100%)',
+    cardBg: '#F3E8FF',
+    textColor: '#581C87',
+    accentColor: '#FCE7F3'
+  },
+  {
+    id: 'bogolan',
+    name: 'Motifs Bogolan Traditionnels',
+    tagline: 'Artisanat, Argile & Terre cuite',
+    description: 'Palette authentique avec filigrane géométrique inspiré des motifs sacrés du tissu Bogolan bamanan.',
+    primaryColor: '#C25E25',
+    heroBg: 'linear-gradient(135deg, #78350F 0%, #C25E25 50%, #292524 100%)',
+    cardBg: '#FBF8F1',
+    textColor: '#1C1917',
+    accentColor: '#EFE4D1',
+    pattern: 'bogolan'
+  },
+  {
+    id: 'wax',
+    name: 'Motif Rosace Wax & Soleil',
+    tagline: 'Créativité, Rayonnement & Graphisme',
+    description: 'Filigrane en rosace solaire contemporaine inspiré des étoffes Wax et Bazin africains.',
+    primaryColor: '#DB2777',
+    heroBg: 'linear-gradient(135deg, #831843 0%, #DB2777 50%, #7E22CE 100%)',
+    cardBg: '#FCE7F3',
+    textColor: '#831843',
+    accentColor: '#FDE047',
+    pattern: 'wax'
+  },
+  {
+    id: 'soleil',
+    name: 'Soleil d\'Or & Clarté',
+    tagline: 'Transparence, Éclat & Données Publiques',
+    description: 'Un thème lumineux et solaire symbolisant l\'ouverture et la clarté de l\'administration.',
+    primaryColor: '#EAB308',
+    heroBg: 'linear-gradient(135deg, #EAB308 0%, #B98900 100%)',
+    cardBg: '#FEFCE8',
+    textColor: '#3B2E00',
+    accentColor: '#FEF9C3',
+    pattern: 'soleil'
+  }
+];
+---
+
+<BaseLayout title={`Sélecteur de Thèmes — ${siteConfig.title}`} description="Personnalisez dynamiquement l'apparence visuelle avec le sélecteur de thèmes du DSML.">
+  <Header
+    slot="header"
+    title={siteConfig.title}
+    institution={siteConfig.institution}
+    logoUrl={siteConfig.logoUrl}
+    currentPath="/themes"
+  />
+
+  <main id="main-content" class="py-12 bg-[var(--ml-color-bogolan-kaolin)]/50 min-h-screen">
+    <div class="ml-container max-w-6xl mx-auto px-4">
+      <nav class="text-xs text-[var(--ml-color-neutral-500)] mb-6 flex gap-2">
+        <a href="/" class="hover:underline text-[var(--ml-color-neutral-600)]">Accueil</a>
+        <span>/</span>
+        <span class="text-[var(--ml-color-neutral-800)] font-semibold">Sélecteur de Thèmes DSML</span>
+      </nav>
+
+      <div class="mb-10 text-center max-w-3xl mx-auto">
+        <span class="text-xs font-bold uppercase tracking-wider px-3.5 py-1 rounded-full bg-[var(--ml-color-mandingue-50)] text-[var(--ml-color-mandingue-700)] border border-[var(--ml-color-mandingue-200)] mb-3 inline-block">
+          Personnalisation Interactive
+        </span>
+        <h1 class="text-3xl md:text-4xl font-black text-[var(--ml-color-neutral-900)] font-title">Découvrez les Thèmes DSML</h1>
+        <p class="text-[var(--ml-color-neutral-600)] mt-2 text-sm">
+          Cliquez sur un thème ci-dessous pour prévisualiser instantanément l'ambiance visuelle et les motifs traditionnels en filigrane.
+        </p>
+      </div>
+
+      <!-- Preview Live Box Interactive avec Filigranes & Motifs SVG Subtils -->
+      <div id="theme-preview-box" class="rounded-3xl p-8 md:p-12 text-white shadow-xl transition-all duration-500 mb-12 relative overflow-hidden" style={`background: ${themes[0].heroBg}`}>
+        <!-- Superposition de motif filigrane Vectoriel Très Subtil (8% d'opacité max) -->
+        <div id="preview-pattern-overlay" class="absolute inset-0 opacity-0 pointer-events-none transition-all duration-500 bg-repeat"></div>
+
+        <div class="relative z-10 max-w-2xl">
+          <span id="preview-badge" class="inline-block px-3.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-4 border border-white/30 backdrop-blur-md shadow-sm" style={`background: rgba(0,0,0,0.3); color: ${themes[0].accentColor}`}>
+            Thème Actif: {themes[0].name}
+          </span>
+          <h2 id="preview-title" class="text-3xl md:text-4xl font-black font-title mb-3 drop-shadow-md">
+            {themes[0].name}
+          </h2>
+          <p id="preview-desc" class="text-sm md:text-base opacity-95 leading-relaxed mb-8 font-medium drop-shadow-sm">
+            {themes[0].description}
+          </p>
+
+          <div class="flex flex-wrap gap-4">
+            <button id="preview-btn-primary" class="px-6 py-3 rounded-xl font-bold text-sm shadow-md transition-transform hover:scale-105 border-none cursor-pointer" style={`background: ${themes[0].accentColor}; color: #1C1917`}>
+              Bouton d'Action Principal
+            </button>
+            <button class="px-6 py-3 rounded-xl font-bold text-sm bg-black/20 hover:bg-black/30 text-white border border-white/30 backdrop-blur-md cursor-pointer">
+              Option Secondaire
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Grille des Thèmes Sélecteurs -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {themes.map((theme) => (
+          <button
+            class="theme-card-btn text-left p-6 rounded-2xl bg-white border border-[var(--ml-color-neutral-200)] shadow-sm hover:shadow-lg transition-all duration-200 cursor-pointer group hover:-translate-y-1"
+            data-theme-id={theme.id}
+            data-theme-name={theme.name}
+            data-theme-desc={theme.description}
+            data-theme-herobg={theme.heroBg}
+            data-theme-accent={theme.accentColor}
+            data-theme-pattern={theme.pattern || ''}
+          >
+            <div class="flex items-center justify-between mb-4">
+              <div class="flex items-center gap-2">
+                <span class="w-5 h-5 rounded-full border border-black/10 shadow-inner inline-block" style={`background: ${theme.primaryColor}`}></span>
+                <span class="w-5 h-5 rounded-full border border-black/10 shadow-inner inline-block" style={`background: ${theme.accentColor}`}></span>
+              </div>
+              <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-[var(--ml-color-neutral-100)] text-[var(--ml-color-neutral-600)]">Activer</span>
+            </div>
+
+            <h3 class="text-base font-extrabold text-[var(--ml-color-neutral-900)] font-title mb-1 group-hover:text-[var(--ml-color-green-700)] transition-colors">
+              {theme.name}
+            </h3>
+            <p class="text-xs font-semibold text-[var(--ml-color-neutral-500)] mb-3">
+              {theme.tagline}
+            </p>
+            <p class="text-xs text-[var(--ml-color-neutral-600)] leading-relaxed">
+              {theme.description}
+            </p>
+          </button>
+        ))}
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // URL-encoded SVGs bien dosés (traits fins 1.5px et opacité 18%)
+    const svgPatterns: Record<string, string> = {
+      bogolan: `data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%3E%3Cpath%20d%3D%22M30%200L60%2030L30%2060L0%2030Z%22%20fill%3D%22none%22%20stroke%3D%22%23ffffff%22%20stroke-width%3D%221.5%22%20stroke-dasharray%3D%224%2C4%22%2F%3E%3Ccircle%20cx%3D%2230%22%20cy%3D%2230%22%20r%3D%226%22%20fill%3D%22none%22%20stroke%3D%22%23ffffff%22%20stroke-width%3D%221.5%22%2F%3E%3C%2Fsvg%3E`,
+      wax: `data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2280%22%20height%3D%2280%22%20viewBox%3D%220%200%2080%2080%22%3E%3Ccircle%20cx%3D%2240%22%20cy%3D%2240%22%20r%3D%2232%22%20fill%3D%22none%22%20stroke%3D%22%23ffffff%22%20stroke-width%3D%221.5%22%2F%3E%3Ccircle%20cx%3D%2240%22%20cy%3D%2240%22%20r%3D%2218%22%20fill%3D%22none%22%20stroke%3D%22%23ffffff%22%20stroke-width%3D%221.5%22%20stroke-dasharray%3D%224%2C4%22%2F%3E%3C%2Fsvg%3E`,
+      soleil: `data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%3E%3Cpath%20d%3D%22M30%200L30%2014M30%2046L30%2060M0%2030L14%2030M46%2030L60%2030%22%20stroke%3D%22%23ffffff%22%20stroke-width%3D%221.5%22%2F%3E%3C%2Fsvg%3E`
+    };
+
+    const themeCards = document.querySelectorAll('.theme-card-btn');
+    const previewBox = document.getElementById('theme-preview-box');
+    const previewPattern = document.getElementById('preview-pattern-overlay');
+    const previewTitle = document.getElementById('preview-title');
+    const previewDesc = document.getElementById('preview-desc');
+    const previewBadge = document.getElementById('preview-badge');
+    const previewBtnPrimary = document.getElementById('preview-btn-primary');
+
+    themeCards.forEach(card => {
+      card.addEventListener('click', () => {
+        const bg = card.getAttribute('data-theme-herobg');
+        const name = card.getAttribute('data-theme-name');
+        const desc = card.getAttribute('data-theme-desc');
+        const accent = card.getAttribute('data-theme-accent') || '#ffffff';
+        const patternKey = card.getAttribute('data-theme-pattern') || '';
+
+        if (previewBox && previewTitle && previewDesc && previewBadge && previewBtnPrimary && previewPattern) {
+          previewBox.style.background = bg || '';
+          previewTitle.textContent = name || '';
+          previewDesc.textContent = desc || '';
+          previewBadge.textContent = `Thème Actif: ${name}`;
+          
+          if (patternKey && svgPatterns[patternKey]) {
+            previewPattern.style.backgroundImage = `url("${svgPatterns[patternKey]}")`;
+            previewPattern.style.opacity = '0.18';
+          } else {
+            previewPattern.style.backgroundImage = 'none';
+            previewPattern.style.opacity = '0';
+          }
+
+          const isLightAccent = ['#F5C518', '#FEF3C7', '#93C5FD', '#FCE7F3', '#EFE4D1', '#FDE047', '#FEF9C3', '#38BDF8'].includes(accent);
+          previewBtnPrimary.style.background = accent;
+          previewBtnPrimary.style.color = isLightAccent ? '#1C1917' : '#FFFFFF';
+          previewBadge.style.color = '#FFFFFF';
+          previewBadge.style.background = 'rgba(0, 0, 0, 0.3)';
+        }
+      });
+    });
+  </script>
+
+  <Footer
+    slot="footer"
+    institution={siteConfig.institution}
+    email={siteConfig.contact.email}
+    phone={siteConfig.contact.phone}
+    address={siteConfig.contact.address}
+    hours={siteConfig.contact.hours}
+  />
+</BaseLayout>

@@ -1,0 +1,33 @@
+# Dokploy configuration for sites template
+{
+  "name": "sites-template",
+  "type": "docker-compose",
+  "source": {
+    "type": "git",
+    "repository": "https://github.com/malibub-digital/sites.git",
+    "branch": "main"
+  },
+  "build": {
+    "context": ".",
+    "dockerfile": "Dockerfile"
+  },
+  "environment": [
+    {
+      "key": "NODE_ENV",
+      "value": "production"
+    },
+    {
+      "key": "PORT",
+      "value": "3000"
+    }
+  ],
+  "ports": [
+    {
+      "containerPort": 3000,
+      "hostPort": 3000,
+      "protocol": "tcp"
+    }
+  ],
+  "volumes": [],
+  "restartPolicy": "unless-stopped"
+}

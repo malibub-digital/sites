@@ -1,0 +1,11 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+.astro/
+*.tgz
+
+# OS & Logs
+.DS_Store
+*.log

@@ -1,0 +1,44 @@
+---
+import BaseLayout from '@malihub/sites-core/layouts/BaseLayout.astro';
+import Header from '@malihub/sites-core/components/Header.astro';
+import Footer from '@malihub/sites-core/components/Footer.astro';
+import siteConfig from '../../site.config.json';
+---
+
+<BaseLayout title={`Déclaration d'Accessibilité — ${siteConfig.title}`} description="Accessibilité numérique et conformité RGAA / standards DSML.">
+  <Header
+    slot="header"
+    title={siteConfig.title}
+    institution={siteConfig.institution}
+    logoUrl={siteConfig.logoUrl}
+  />
+
+  <main id="main-content" class="py-12 bg-stone-50 min-h-screen">
+    <div class="ml-container max-w-3xl mx-auto px-4 bg-white p-8 border border-stone-200 rounded-lg shadow-sm">
+      <h1 class="text-3xl font-extrabold text-stone-900 font-title mb-6 border-b border-stone-200 pb-3">Déclaration d'Accessibilité</h1>
+      
+      <div class="prose prose-stone max-w-none space-y-6 text-sm text-stone-700 leading-relaxed">
+        <p>L'administration malienne s'engage à rendre ses services en ligne accessibles conformément aux standards d'accessibilité du Design System Mali (DSML) et aux recommandations WCAG 2.1.</p>
+
+        <section>
+          <h2 class="text-lg font-bold text-stone-900 font-title">État de conformité</h2>
+          <p>Le site <strong>{siteConfig.title}</strong> est <strong>partiellement conforme</strong> aux critères d'accessibilité numérique en raison des éléments en cours d'optimisation.</p>
+        </section>
+
+        <section>
+          <h2 class="text-lg font-bold text-stone-900 font-title">Retour d'information et contact</h2>
+          <p>Si vous n'arrivez pas à accéder à un contenu ou à un service, vous pouvez contacter le responsable de l'accessibilité à l'adresse <a href={`mailto:${siteConfig.contact.email}`} class="text-emerald-700 font-bold hover:underline">{siteConfig.contact.email}</a> pour obtenir une alternative accessible.</p>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <Footer
+    slot="footer"
+    institution={siteConfig.institution}
+    email={siteConfig.contact.email}
+    phone={siteConfig.contact.phone}
+    address={siteConfig.contact.address}
+    hours={siteConfig.contact.hours}
+  />
+</BaseLayout>

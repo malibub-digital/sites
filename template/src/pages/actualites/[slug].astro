@@ -1,0 +1,144 @@
+---
+import BaseLayout from '@malihub/sites-core/layouts/BaseLayout.astro';
+import Header from '@malihub/sites-core/components/Header.astro';
+import Footer from '@malihub/sites-core/components/Footer.astro';
+import siteConfig from '../../../site.config.json';
+
+export function getStaticPaths() {
+  return [
+    { params: { slug: 'permanence-ete' } },
+    { params: { slug: 'guichet-apej' } },
+    { params: { slug: 'retrait-cartes' } },
+    { params: { slug: 'digitalisation-formulaires' } },
+  ];
+}
+
+const newsData: Record<string, any> = {
+  'permanence-ete': {
+    title: 'Mise en place de la permanence consulaire du week-end',
+    date: '28 Juillet 2026',
+    category: 'Consulat',
+    author: 'Service Communication',
+    image: '/images/actualites/consulat.png',
+    content: `
+      <p class="text-lg font-medium text-[var(--ml-color-neutral-800)] leading-relaxed mb-6">
+        Afin de répondre à l'accroissement des demandes de cartes consulaires et de passeports biométriques pendant la période estivale, le Consulat Général annonce l'ouverture d'une permanence exceptionnelle tous les samedis matins.
+      </p>
+      <h3 class="text-xl font-bold text-[var(--ml-color-green-800)] font-title mb-3">Horaires & Modus Operandi</h3>
+      <p class="text-[var(--ml-color-neutral-600)] leading-relaxed mb-4">
+        Le guichet sera ouvert de <strong>09h00 à 12h00</strong> uniquement pour la remise des documents déjà établis et la délivrance des attestations d'urgence. Les usagers recevront une notification préalable SMS / email dès que leur passeport ou carte consulaire sera disponible pour le retrait.
+      </p>
+      <div class="my-6 p-6 rounded-2xl bg-[var(--ml-color-gold-50)] border-l-4 border-[var(--ml-color-gold-500)] text-xs text-[var(--ml-color-bogolan-nuit)]">
+        <strong>Important :</strong> Veuillez vous munir obligatoirement du récépissé de demande original et d'une pièce d'identité avec photo lors de votre venue.
+      </div>
+    `
+  },
+  'guichet-apej': {
+    title: 'Lancement du nouveau guichet d\'orientation professionnelle APEJ',
+    date: '15 Juillet 2026',
+    category: 'Emploi',
+    author: 'Direction APEJ',
+    image: '/images/actualites/apej.png',
+    content: `
+      <p class="text-lg font-medium text-[var(--ml-color-neutral-800)] leading-relaxed mb-6">
+        L'Agence Pour la Promotion de l'Emploi des Jeunes (APEJ) inaugure son tout nouveau guichet d'orientation et de coaching professionnel à destination des jeunes diplômés et entrepreneurs maliens.
+      </p>
+      <h3 class="text-xl font-bold text-[var(--ml-color-green-800)] font-title mb-3">Un accompagnement sur-mesure</h3>
+      <p class="text-[var(--ml-color-neutral-600)] leading-relaxed mb-4">
+        Les nouveaux ateliers hebdomadaires permettront aux bénéficiaires de structurer leur projet professionnel, de peaufiner leur CV et de se préparer activement aux entretiens de recrutement dans les secteurs porteurs tels que le numérique, l'agro-industrie et les énergies renouvelables.
+      </p>
+    `
+  },
+  'retrait-cartes': {
+    title: 'Campagne de distribution et de retrait des cartes consulaires',
+    date: '02 Juillet 2026',
+    category: 'Communiqué',
+    author: 'Consulat Général',
+    image: '/images/actualites/hero.png',
+    content: `
+      <p class="text-lg font-medium text-[var(--ml-color-neutral-800)] leading-relaxed mb-6">
+        Une grande campagne de remise des cartes consulaires et titres d'identité est lancée ce mois-ci. Plus de 3 500 cartes remises à jour sont prêtes à être délivrées aux usagers.
+      </p>
+      <p class="text-[var(--ml-color-neutral-600)] leading-relaxed mb-4">
+        Consultez l'état d'avancement de votre dossier directement sur votre espace usager en ligne muni de votre numéro de récépissé.
+      </p>
+    `
+  },
+  'digitalisation-formulaires': {
+    title: 'Digitalisation des formulaires de demande en ligne',
+    date: '18 Juin 2026',
+    category: 'Innovation',
+    author: 'Équipe Numérique Mali',
+    image: '/images/actualites/hero.png',
+    content: `
+      <p class="text-lg font-medium text-[var(--ml-color-neutral-800)] leading-relaxed mb-6">
+        Le déploiement des nouveaux formulaires interactifs conformes au Design System Mali (DSML) est désormais effectif sur l'ensemble de nos portails administratifs.
+      </p>
+      <p class="text-[var(--ml-color-neutral-600)] leading-relaxed mb-4">
+        Ce nouveau système réduit de plus de 50% le temps d'attente aux guichets grâce à la saisie préalable certifiée des données d'état civil.
+      </p>
+    `
+  }
+};
+
+const { slug } = Astro.params;
+const article = newsData[slug || 'permanence-ete'];
+---
+
+<BaseLayout title={`${article.title} — ${siteConfig.title}`} description={article.title}>
+  <Header
+    slot="header"
+    title={siteConfig.title}
+    institution={siteConfig.institution}
+    logoUrl={siteConfig.logoUrl}
+  />
+
+  <main id="main-content" class="py-12 bg-[var(--ml-color-bogolan-kaolin)]/40 min-h-screen">
+    <div class="ml-container max-w-4xl mx-auto px-4">
+      <nav class="text-xs text-[var(--ml-color-neutral-500)] mb-6 flex gap-2">
+        <a href="/" class="hover:underline text-[var(--ml-color-neutral-600)]">Accueil</a>
+        <span>/</span>
+        <a href="/actualites" class="hover:underline text-[var(--ml-color-neutral-600)]">Actualités</a>
+        <span>/</span>
+        <span class="text-[var(--ml-color-neutral-800)] font-semibold truncate max-w-xs">{article.title}</span>
+      </nav>
+
+      <article class="bg-white border border-[var(--ml-color-neutral-200)] rounded-3xl overflow-hidden shadow-sm p-6 md:p-10">
+        <div class="flex items-center gap-3 text-xs text-[var(--ml-color-neutral-500)] mb-4">
+          <span class="bg-[var(--ml-color-green-100)] text-[var(--ml-color-green-800)] font-bold px-3 py-1 rounded-full">{article.category}</span>
+          <time>{article.date}</time>
+          <span>•</span>
+          <span>Par {article.author}</span>
+        </div>
+
+        <h1 class="text-2xl md:text-4xl font-black text-[var(--ml-color-neutral-900)] font-title mb-6 leading-snug">
+          {article.title}
+        </h1>
+
+        {article.image && (
+          <div class="mb-8 rounded-2xl overflow-hidden max-h-[400px]">
+            <img src={article.image} alt={article.title} class="w-full h-full object-cover" />
+          </div>
+        )}
+
+        <div class="prose max-w-none" set:html={article.content} />
+
+        <div class="mt-10 pt-6 border-t border-[var(--ml-color-neutral-200)] flex justify-between items-center">
+          <a href="/actualites" class="text-xs font-bold text-[var(--ml-color-green-700)] hover:text-[var(--ml-color-green-800)] inline-flex items-center gap-2 no-underline">
+            <span>&larr;</span>
+            <span>Retour à toutes les actualités</span>
+          </a>
+        </div>
+      </article>
+    </div>
+  </main>
+
+  <Footer
+    slot="footer"
+    institution={siteConfig.institution}
+    email={siteConfig.contact.email}
+    phone={siteConfig.contact.phone}
+    address={siteConfig.contact.address}
+    hours={siteConfig.contact.hours}
+  />
+</BaseLayout>

@@ -1,0 +1,256 @@
+---
+import BaseLayout from '@malihub/sites-core/layouts/BaseLayout.astro';
+import Header from '@malihub/sites-core/components/Header.astro';
+import Footer from '@malihub/sites-core/components/Footer.astro';
+import Hero from '@malihub/sites-core/components/Hero.astro';
+import ServiceCard from '@malihub/sites-core/components/ServiceCard.astro';
+import siteConfig from '../../site.config.json';
+
+const services = [
+  {
+    title: 'Carte d\'Immatriculation Consulaire',
+    summary: 'Demande, établissement et renouvellement de la carte d\'immatriculation consulaire pour les citoyens maliens résidant à l\'étranger.',
+    category: 'Identité & Consulat',
+    cost: '15 € / 10 000 FCFA',
+    processingTime: '48 heures',
+    href: '/services/carte-consulaire',
+    badgeText: 'Populaire',
+    variant: 'featured' as const
+  },
+  {
+    title: 'Passeport Biométrique Malien',
+    summary: 'Procédure de prise d\'empreintes, dépôt de dossier et suivi de la délivrance du passeport biométrique officiel.',
+    category: 'Voyage & Identité',
+    cost: '85 000 FCFA',
+    processingTime: '2 à 3 semaines',
+    href: '/services/passeport',
+    badgeText: 'Essentiel',
+    variant: 'accent' as const
+  },
+  {
+    title: 'Accompagnement Emploi & Stage APEJ',
+    summary: 'Inscription au programme d\'insertion des jeunes diplômés, stages pratiques et financement de micro-projets d\'entrepreneuriat.',
+    category: 'Emploi & Jeunesse',
+    cost: 'Gratuit',
+    processingTime: 'Immédiat en ligne',
+    href: '/services/emploi-apej',
+    badgeText: 'Programme APEJ',
+    variant: 'indigo' as const
+  },
+  {
+    title: 'Actes d\'État Civil & Certificats',
+    summary: 'Transcription d\'actes de naissance, célébration de mariage, délivrance de certificat de nationalité et légalisation de documents.',
+    category: 'État Civil',
+    cost: 'Gratuit à 5 €',
+    processingTime: '24 à 48h',
+    href: '/services/etat-civil',
+    variant: 'standard' as const
+  },
+  {
+    title: 'Légalisation & Authentification de Documents',
+    summary: 'Certification conforme de documents administratifs, procurations et actes notariés.',
+    category: 'Administratif',
+    cost: '5 € / document',
+    processingTime: 'Sur place',
+    href: '/services/legalisation',
+    variant: 'standard' as const
+  },
+  {
+    title: 'Guichet Unique de Création d\'Entreprise',
+    summary: 'Accompagnement des jeunes entrepreneurs pour l\'immatriculation et les formalités de création de société au Mali.',
+    category: 'Entrepreneuriat',
+    cost: 'Variable',
+    processingTime: '72 heures',
+    href: '/services/creation-entreprise',
+    badgeText: 'Investir',
+    variant: 'accent' as const
+  }
+];
+
+const newsList = [
+  {
+    title: 'Mise en place de la permanence consulaire du week-end',
+    date: '28 Juillet 2026',
+    category: 'Consulat',
+    excerpt: 'Pour répondre au flux élevé de demandes pendant la période estivale, une permanence est ouverte chaque samedi matin.',
+    href: '/actualites/permanence-ete'
+  },
+  {
+    title: 'Lancement du nouveau guichet d\'orientation professionnelle APEJ',
+    date: '15 Juillet 2026',
+    category: 'Emploi',
+    excerpt: 'L\'APEJ renforce son dispositif d\'accueil et propose des ateliers hebdomadaires de rédaction de CV et préparation d\'entretiens.',
+    href: '/actualites/guichet-apej'
+  },
+  {
+    title: 'Campagne de distribution et de retrait des cartes consulaires',
+    date: '02 Juillet 2026',
+    category: 'Communiqué',
+    excerpt: 'Les usagers ayant effectué leur demande avant le 1er juin sont invités à retirer leurs documents munis du récépissé.',
+    href: '/actualites/retrait-cartes'
+  }
+];
+
+const faqPreview = [
+  {
+    question: 'Quelles sont les pièces à fournir pour la carte consulaire ?',
+    answer: 'Il faut fournir un extrait d\'acte de naissance, 2 photos d\'identité récentes, un justificatif de domicile et une pièce d\'identité.'
+  },
+  {
+    question: 'Comment prendre rendez-vous pour le passeport biométrique ?',
+    answer: 'La prise de rendez-vous s\'effectue directement en ligne sur la page dédiée ou en vous rendant sur le portail des démarches.'
+  },
+  {
+    question: 'Comment bénéficier des programmes de financement APEJ ?',
+    answer: 'Les candidats doivent s\'inscrire sur la plateforme de l\'APEJ et soumettre leur dossier de projet d\'entreprise lors des appels à candidatures.'
+  }
+];
+---
+
+<BaseLayout title={siteConfig.title} description={siteConfig.description}>
+  <Header
+    slot="header"
+    title={siteConfig.title}
+    institution={siteConfig.institution}
+    logoUrl={siteConfig.logoUrl}
+  />
+
+  <Hero
+    title="Sites Faciles Mali"
+    subtitle="Plateforme modèle et kit de démarrage pour le déploiement rapide de sites web institutionnels maliens conformes au DSML."
+    badge="République du Mali — Standard DSML"
+    primaryAction={{ label: 'Découvrir les Démarches Modèles', href: '/services' }}
+    secondaryAction={{ label: 'Consulter la FAQ', href: '/faq' }}
+  />
+
+  <!-- Section Démarches & Services Exemples avec cartes premium -->
+  <section id="services" class="py-16 bg-[var(--ml-color-river-50)]/50 border-b border-[var(--ml-color-neutral-200)]">
+    <div class="ml-container max-w-6xl mx-auto px-4">
+      <div class="text-center mb-12 max-w-2xl mx-auto">
+        <span class="text-xs font-bold uppercase tracking-wider text-[var(--ml-color-river-700)] bg-[var(--ml-color-river-100)] px-3.5 py-1 rounded-full mb-3 inline-block border border-[var(--ml-color-river-200)]">
+          Services publics maliens
+        </span>
+        <h2 class="text-3xl font-black text-[var(--ml-color-neutral-900)] font-title">Catalogue des Démarches Modèles</h2>
+        <p class="text-[var(--ml-color-neutral-600)] mt-2 text-sm">Exemples de fiches de services intégrant les cartes et visuels du DSML.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {services.map((service) => (
+          <ServiceCard {...service} />
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Showcase des Styles & Couleurs Prémium DSML (Version Épurée Orange & Bleu) -->
+  <section class="py-16 bg-white border-b border-[var(--ml-color-neutral-200)]">
+    <div class="ml-container max-w-6xl mx-auto px-4">
+      <div class="text-center mb-10">
+        <span class="text-xs font-bold uppercase tracking-wider text-[var(--ml-color-mandingue-700)] bg-[var(--ml-color-mandingue-50)] px-3.5 py-1 rounded-full mb-3 inline-block border border-[var(--ml-color-mandingue-100)]">
+          Nuancier & Variantes DSML
+        </span>
+        <h2 class="text-2xl md:text-3xl font-extrabold text-[var(--ml-color-neutral-900)] font-title">Styles de Cartes Prémium</h2>
+        <p class="text-[var(--ml-color-neutral-600)] mt-2 text-sm max-w-xl mx-auto">Aperçu des finitions et palettes Orange Mandingue & Bleu Fleuve du Design System Mali.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+        <!-- Orange Mandingue -->
+        <div class="p-6 rounded-2xl bg-[var(--ml-color-mandingue-50)]/60 border border-[var(--ml-color-mandingue-200)] shadow-sm">
+          <span class="text-[11px] font-bold uppercase px-2.5 py-0.5 rounded-full bg-[var(--ml-color-mandingue-orange)] text-white mb-3 inline-block">Orange Mandingue</span>
+          <h3 class="text-base font-bold text-[var(--ml-color-neutral-900)] mb-1.5 font-title">Emploi & Jeunesse</h3>
+          <p class="text-xs text-[var(--ml-color-neutral-600)] leading-relaxed">Orientation et accompagnement des jeunes diplômés.</p>
+        </div>
+
+        <!-- Bleu Fleuve Niger -->
+        <div class="p-6 rounded-2xl bg-[var(--ml-color-river-50)] border border-[var(--ml-color-river-200)] shadow-sm">
+          <span class="text-[11px] font-bold uppercase px-2.5 py-0.5 rounded-full bg-[var(--ml-color-river-600)] text-white mb-3 inline-block">Bleu Fleuve Niger</span>
+          <span class="text-xs font-bold uppercase px-2.5 py-0.5 rounded-full bg-[var(--ml-color-river-500)] text-white mb-3 inline-block">Fleuve Niger</span>
+          <h3 class="text-base font-bold text-[var(--ml-color-neutral-900)] mb-1.5 font-title">Eau & Infrastructures</h3>
+          <p class="text-xs text-[var(--ml-color-neutral-600)] leading-relaxed">Grands projets d'aménagement et accès à l'eau.</p>
+        </div>
+
+        <!-- Indigo Ségou -->
+        <div class="p-6 rounded-2xl bg-[var(--ml-color-indigo-50)]/60 border border-[var(--ml-color-indigo-200)] shadow-sm">
+          <span class="text-[11px] font-bold uppercase px-2.5 py-0.5 rounded-full bg-[var(--ml-color-indigo-600)] text-white mb-3 inline-block">Indigo Ségou</span>
+          <h3 class="text-base font-bold text-[var(--ml-color-neutral-900)] mb-1.5 font-title">Culture & Patrimoine</h3>
+          <p class="text-xs text-[var(--ml-color-neutral-600)] leading-relaxed">Promotion des arts, traditions et savoir-faire.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section Actualités & Communiqués (Fond Épuré Soft Bleu) -->
+  <section class="py-16 bg-[var(--ml-color-river-50)]/30 border-b border-[var(--ml-color-neutral-200)]">
+    <div class="ml-container max-w-6xl mx-auto px-4">
+      <div class="flex flex-wrap justify-between items-end mb-10 gap-4">
+        <div>
+          <h2 class="text-2xl md:text-3xl font-black text-[var(--ml-color-neutral-900)] font-title m-0">Actualités & Communiqués</h2>
+          <p class="text-[var(--ml-color-neutral-600)] mt-1.5 m-0 text-sm">Informations officielles et avis aux usagers.</p>
+        </div>
+        <a href="/actualites" class="text-sm font-bold text-[var(--ml-color-river-700)] hover:underline inline-flex items-center gap-1 no-underline">
+          <span>Toutes les actualités</span>
+          <span>&rarr;</span>
+        </a>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {newsList.map((item) => (
+          <article class="bg-white border border-[var(--ml-color-neutral-200)] rounded-2xl p-6 flex flex-col justify-between hover:shadow-md transition-shadow">
+            <div>
+              <div class="flex justify-between items-center text-xs text-[var(--ml-color-neutral-500)] mb-3">
+                <span class="bg-[var(--ml-color-mandingue-50)] text-[var(--ml-color-mandingue-900)] font-bold px-2.5 py-0.5 rounded-md border border-[var(--ml-color-mandingue-100)]">{item.category}</span>
+                <time>{item.date}</time>
+              </div>
+              <h3 class="text-base font-extrabold text-[var(--ml-color-neutral-900)] font-title mb-2 leading-snug">
+                <a href={item.href} class="hover:text-[var(--ml-color-river-700)] text-[var(--ml-color-neutral-900)] no-underline transition-colors">{item.title}</a>
+              </h3>
+              <p class="text-[var(--ml-color-neutral-600)] text-xs md:text-sm leading-relaxed mb-5">{item.excerpt}</p>
+            </div>
+            <a href={item.href} class="text-xs font-bold text-[var(--ml-color-mandingue-700)] hover:underline no-underline inline-flex items-center gap-1">
+              <span>Lire la suite</span>
+              <span>&rarr;</span>
+            </a>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Section FAQ Aperçu (Épuré) -->
+  <section class="py-16 bg-white border-b border-[var(--ml-color-neutral-200)]">
+    <div class="ml-container max-w-4xl mx-auto px-4">
+      <div class="text-center mb-10">
+        <h2 class="text-2xl md:text-3xl font-black text-[var(--ml-color-neutral-900)] font-title">Foire Aux Questions (FAQ)</h2>
+        <p class="text-[var(--ml-color-neutral-600)] mt-1.5 text-sm">Réponses rapides aux interrogations récurrentes des citoyens et usagers.</p>
+      </div>
+
+      <div class="space-y-4">
+        {faqPreview.map((item) => (
+          <div class="bg-[var(--ml-color-river-50)]/40 p-6 border border-[var(--ml-color-neutral-200)]/80 rounded-2xl hover:bg-white transition-colors">
+            <h3 class="text-base font-bold text-[var(--ml-color-neutral-900)] font-title m-0 mb-2">{item.question}</h3>
+            <p class="text-[var(--ml-color-neutral-600)] text-sm m-0 leading-relaxed">{item.answer}</p>
+          </div>
+        ))}
+      </div>
+
+      <div class="text-center mt-8">
+        <a href="/faq" class="inline-flex items-center gap-2 px-6 py-3 bg-[var(--ml-color-mandingue-orange)] hover:bg-[var(--ml-color-mandingue-700)] text-white font-bold rounded-xl transition-all shadow-sm no-underline text-sm">
+          <span>Consulter l'ensemble de la FAQ</span>
+          <span>&rarr;</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <Footer
+    slot="footer"
+    institution={siteConfig.institution}
+    email={siteConfig.contact.email}
+    phone={siteConfig.contact.phone}
+    address={siteConfig.contact.address}
+    hours={siteConfig.contact.hours}
+  />
+</BaseLayout>s={siteConfig.contact.address}
+    hours={siteConfig.contact.hours}
+  />
+</BaseLayout>

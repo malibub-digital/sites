@@ -1,0 +1,72 @@
+---
+export interface SideMenuItem {
+  title?: string;
+  label: string;
+  href: string;
+  isActive?: boolean;
+}
+
+interface Props {
+  title?: string;
+  items: SideMenuItem[];
+  currentPath?: string;
+}
+
+const { title = 'Navigation', items = [], currentPath = '' } = Astro.props;
+
+const processedItems = items.map((item) => ({
+  ...item,
+  active: item.isActive ?? (currentPath ? (currentPath === item.href || (item.href !== '/' && currentPath.startsWith(item.href))) : false)
+}));
+
+const activeItem = processedItems.find((i) => i.active) || processedItems[0];
+---
+
+<nav class="ml-sidemenu" aria-label={title}>
+  <button
+    type="button"
+    class="ml-sidemenu__btn"
+    aria-expanded="false"
+    aria-controls="sidemenu-content"
+    id="sidemenu-toggle-btn"
+  >
+    <span>{activeItem ? activeItem.label : title}</span>
+    <svg class="ml-sidemenu__btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"></path>
+    </svg>
+  </button>
+
+  <div class="ml-sidemenu__content" id="sidemenu-content">
+    {title && <div class="ml-sidemenu__title">{title}</div>}
+    <ul class="ml-sidemenu__list">
+      {processedItems.map((item) => (
+        <li class="ml-sidemenu__item">
+          <a
+            href={item.href}
+            class={`ml-sidemenu__link ${item.active ? 'active' : ''}`}
+            aria-current={item.active ? 'page' : undefined}
+          >
+            {item.label}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</nav>
+
+<script>
+  function setupSidemenu() {
+    const toggleBtn = document.getElementById('sidemenu-toggle-btn');
+    const content = document.getElementById('sidemenu-content');
+
+    if (toggleBtn && content) {
+      toggleBtn.addEventListener('click', () => {
+        const expanded = toggleBtn.getAttribute('aria-expanded') === 'true';
+        toggleBtn.setAttribute('aria-expanded', String(!expanded));
+      });
+    }
+  }
+
+  setupSidemenu();
+  document.addEventListener('astro:after-swap', setupSidemenu);
+</script>

@@ -1,0 +1,52 @@
+---
+import BaseLayout from '@malihub/sites-core/layouts/BaseLayout.astro';
+import Header from '@malihub/sites-core/components/Header.astro';
+import Footer from '@malihub/sites-core/components/Footer.astro';
+import siteConfig from '../../site.config.json';
+---
+
+<BaseLayout title={`Mentions Légales — ${siteConfig.title}`} description="Mentions légales, conditions d'utilisation et protection des données.">
+  <Header
+    slot="header"
+    title={siteConfig.title}
+    institution={siteConfig.institution}
+    logoUrl={siteConfig.logoUrl}
+  />
+
+  <main id="main-content" class="py-12 bg-stone-50 min-h-screen">
+    <div class="ml-container max-w-3xl mx-auto px-4 bg-white p-8 border border-stone-200 rounded-lg shadow-sm">
+      <h1 class="text-3xl font-extrabold text-stone-900 font-title mb-6 border-b border-stone-200 pb-3">Mentions Légales</h1>
+      
+      <div class="prose prose-stone max-w-none space-y-6 text-sm text-stone-700 leading-relaxed">
+        <section>
+          <h2 class="text-lg font-bold text-stone-900 font-title">1. Éditeur de la Plateforme</h2>
+          <p>Le site <strong>{siteConfig.title}</strong> est édité par la République du Mali sous la supervision des autorités administratives habilitées.</p>
+        </section>
+
+        <section>
+          <h2 class="text-lg font-bold text-stone-900 font-title">2. Directeur de la Publication</h2>
+          <p>Le Directeur de la publication est le responsable de la communication institutionnelle habilité.</p>
+        </section>
+
+        <section>
+          <h2 class="text-lg font-bold text-stone-900 font-title">3. Hébergement & Infrastructure</h2>
+          <p>Ce site est hébergé sur des infrastructures souveraines sécurisées sous supervision administrative.</p>
+        </section>
+
+        <section>
+          <h2 class="text-lg font-bold text-stone-900 font-title">4. Propriété Intellectuelle</h2>
+          <p>L'ensemble des contenus (textes, visuels, charte graphique DSML, visuels) est la propriété exclusive de l'État malien ou fait l'objet d'une autorisation d'utilisation.</p>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <Footer
+    slot="footer"
+    institution={siteConfig.institution}
+    email={siteConfig.contact.email}
+    phone={siteConfig.contact.phone}
+    address={siteConfig.contact.address}
+    hours={siteConfig.contact.hours}
+  />
+</BaseLayout>

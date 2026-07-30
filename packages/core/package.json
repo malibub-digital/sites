@@ -1,0 +1,21 @@
+{
+  "name": "@malihub/sites-core",
+  "version": "0.1.0",
+  "description": "Cœur partagé et layouts DSML pour la suite Sites Faciles Mali",
+  "type": "module",
+  "main": "src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./layouts/*": "./src/layouts/*",
+    "./components/*": "./src/components/*",
+    "./schemas/*": "./src/schemas/*",
+    "./cms/*": "./src/cms/*"
+  },
+  "dependencies": {
+    "@malihub/dsml-core": "file:../../../dsml/packages/core",
+    "zod": "^3.22.4"
+  },
+  "peerDependencies": {
+    "astro": ">=3.0.0"
+  }
+}

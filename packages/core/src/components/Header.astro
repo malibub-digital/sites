@@ -1,0 +1,147 @@
+---
+interface Props {
+  title: string;
+  institution?: string;
+  logoUrl?: string;
+  navItems?: Array<{ label: string; href: string }>;
+  currentPath?: string;
+}
+
+const {
+  title,
+  institution = "RÉPUBLIQUE DU MALI",
+  logoUrl = "/images/logo-mali.svg",
+  navItems = [
+    { label: "Accueil", href: "/" },
+    { label: "Démarches & Services", href: "/services" },
+    { label: "Formulaires", href: "/formulaires" },
+    { label: "Actualités", href: "/actualites" },
+    { label: "FAQ", href: "/faq" },
+    { label: "Thèmes & Couleurs", href: "/themes" },
+    { label: "Contact", href: "/contact" },
+  ],
+  currentPath = "/",
+} = Astro.props;
+---
+
+<header
+  class="ml-header ml-header-sticky"
+  id="site-header"
+  data-cms-bind="siteConfig.header"
+>
+  <div class="ml-container">
+    <div class="header-top">
+      <!-- Bloc de Marque conforme DSML -->
+      <a href="/" class="brand-block">
+        <img
+          src={logoUrl}
+          alt="Armoiries de la République du Mali"
+          class="ml-header-logo"
+          width="58"
+          height="58"
+        />
+        <div class="brand-text">
+          <div class="brand-title" data-cms-bind="siteConfig.institution">
+            {institution}
+          </div>
+          <div class="site-title" data-cms-bind="siteConfig.title">{title}</div>
+          <div class="ml-tricolor-bar" aria-hidden="true">
+            <div class="green"></div>
+            <div class="yellow"></div>
+            <div class="red"></div>
+          </div>
+        </div>
+      </a>
+
+      <!-- Actions & Navigation secondaire + Burger mobile -->
+      <div class="header-actions">
+        <a href="/faq" class="header-link hidden md:inline-block">Aide & FAQ</a>
+        <a
+          href="/contact"
+          class="header-link font-semibold hidden md:inline-block"
+          >Nous Contacter</a
+        >
+
+        <!-- Bouton Burger visible sur écran mobile (<860px) -->
+        <button
+          type="button"
+          class="ml-header-burger"
+          id="header-burger"
+          aria-label="Menu principal"
+          aria-expanded="false"
+          aria-controls="header-nav"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            width="24"
+            height="24"
+          >
+            <path
+              d="M4 6h16M4 12h16M4 18h16"
+              stroke-linecap="round"
+              stroke-linejoin="round"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Tiroir de Navigation principal DSML -->
+    <nav class="ml-header-nav" id="header-nav" aria-label="Menu principal">
+      <div class="ml-header-nav-header">
+        <span class="font-bold text-sm text-[var(--ml-color-neutral-800)]"
+          >Navigation</span
+        >
+        <button
+          type="button"
+          class="ml-header-nav-close text-xl font-bold"
+          id="header-nav-close"
+          aria-label="Fermer le menu">&times;</button
+        >
+      </div>
+      {
+        navItems.map((item) => {
+          const isActive =
+            currentPath === item.href ||
+            (item.href !== "/" && currentPath.startsWith(item.href));
+          return (
+            <a
+              href={item.href}
+              class={`ml-nav-item ${isActive ? "active" : ""}`}
+              aria-current={isActive ? "page" : undefined}
+            >
+              {item.label}
+            </a>
+          );
+        })
+      }
+    </nav>
+  </div>
+</header>
+
+<script>
+  function setupHeaderBurger() {
+    const burgerBtn = document.getElementById("header-burger");
+    const closeBtn = document.getElementById("header-nav-close");
+    const navMenu = document.getElementById("header-nav");
+
+    if (!burgerBtn || !navMenu) return;
+
+    function toggleMenu(e: Event) {
+      e.stopPropagation();
+      const isOpen = navMenu.classList.toggle("is-open");
+      burgerBtn.setAttribute("aria-expanded", String(isOpen));
+    }
+
+    burgerBtn.addEventListener("click", toggleMenu);
+
+    if (closeBtn) {
+      closeBtn.addEventListener("click", toggleMenu);
+    }
+  }
+
+  setupHeaderBurger();
+  document.addEventListener("astro:after-swap", setupHeaderBurger);
+</script>

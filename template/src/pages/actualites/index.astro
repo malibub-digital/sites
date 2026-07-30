@@ -1,0 +1,171 @@
+---
+import BaseLayout from '@malihub/sites-core/layouts/BaseLayout.astro';
+import Header from '@malihub/sites-core/components/Header.astro';
+import Footer from '@malihub/sites-core/components/Footer.astro';
+import siteConfig from '../../../site.config.json';
+
+const newsItems = [
+  {
+    title: 'Mise en place de la permanence consulaire du week-end',
+    date: '28 Juillet 2026',
+    category: 'Consulat',
+    author: 'Service Communication',
+    excerpt: 'Pour répondre au flux élevé de demandes pendant la période estivale, une permanence exceptionnelle est ouverte chaque samedi matin de 9h à 12h pour la remise des passeports et cartes consulaires.',
+    slug: 'permanence-ete',
+    image: '/images/actualites/consulat.png',
+    cardVariant: 'featured' as const,
+    featured: true
+  },
+  {
+    title: 'Lancement du nouveau guichet d\'orientation professionnelle APEJ',
+    date: '15 Juillet 2026',
+    category: 'Emploi',
+    author: 'Direction APEJ',
+    excerpt: 'L\'APEJ renforce son dispositif d\'accueil et propose désormais des ateliers hebdomadaires de rédaction de CV, de préparation aux entretiens et d\'orientation vers les métiers du numérique.',
+    slug: 'guichet-apej',
+    image: '/images/actualites/apej.png',
+    cardVariant: 'indigo' as const,
+    featured: false
+  },
+  {
+    title: 'Campagne de distribution et de retrait des cartes consulaires',
+    date: '02 Juillet 2026',
+    category: 'Communiqué',
+    author: 'Consulat Général',
+    excerpt: 'Les usagers ayant effectué leur demande d\'immatriculation consulaire avant le 1er juin 2026 sont invités à se présenter au guichet pour le retrait de leur carte munis du récépissé original.',
+    slug: 'retrait-cartes',
+    cardVariant: 'accent' as const,
+    featured: false
+  },
+  {
+    title: 'Digitalisation des formulaires de demande en ligne',
+    date: '18 Juin 2026',
+    category: 'Innovation',
+    author: 'Équipe Numérique Mali',
+    excerpt: 'Découvrez la nouvelle plateforme de pré-demande en ligne permettant de gagner du temps lors de vos déplacements au guichet administratif.',
+    slug: 'digitalisation-formulaires',
+    cardVariant: 'standard' as const,
+    featured: false
+  }
+];
+
+const cardBgStyles = {
+  featured: 'bg-gradient-to-br from-[var(--ml-color-green-50)] via-white to-white border-2 border-[var(--ml-color-green-500)] shadow-md hover:shadow-xl',
+  accent: 'bg-gradient-to-br from-[var(--ml-color-gold-50)] via-white to-white border border-[var(--ml-color-gold-400)] shadow-sm hover:shadow-lg',
+  indigo: 'bg-gradient-to-br from-[var(--ml-color-indigo-50)] via-white to-white border border-[var(--ml-color-indigo-300)] shadow-sm hover:shadow-lg',
+  standard: 'bg-white border border-[var(--ml-color-neutral-200)] hover:border-[var(--ml-color-green-300)] shadow-sm hover:shadow-md'
+};
+
+const badgeStyles = {
+  Consulat: 'bg-[var(--ml-color-green-600)] text-white font-bold',
+  Emploi: 'bg-[var(--ml-color-indigo-600)] text-white font-bold',
+  Communiqué: 'bg-[var(--ml-color-gold-400)] text-[var(--ml-color-bogolan-nuit)] font-bold',
+  Innovation: 'bg-[var(--ml-color-green-100)] text-[var(--ml-color-green-800)] font-bold'
+};
+---
+
+<BaseLayout title={`Actualités & Communiqués — ${siteConfig.title}`} description="Fil d'actualités officielles, annonces et communiqués aux usagers.">
+  <Header
+    slot="header"
+    title={siteConfig.title}
+    institution={siteConfig.institution}
+    logoUrl={siteConfig.logoUrl}
+  />
+
+  <main id="main-content" class="py-12 bg-[var(--ml-color-bogolan-kaolin)]/50 min-h-screen">
+    <div class="ml-container max-w-6xl mx-auto px-4">
+      <nav class="text-xs text-[var(--ml-color-neutral-500)] mb-6 flex gap-2">
+        <a href="/" class="hover:underline text-[var(--ml-color-neutral-600)]">Accueil</a>
+        <span>/</span>
+        <span class="text-[var(--ml-color-neutral-800)] font-semibold">Actualités</span>
+      </nav>
+
+      <!-- Banner Header Luminant (Palette Orange Mandingue & Bleu Fleuve/Indigo) -->
+      <div class="relative rounded-3xl overflow-hidden mb-12 bg-gradient-to-r from-[var(--ml-color-river-800)] via-[var(--ml-color-indigo-700)] to-[var(--ml-color-indigo-900)] text-white p-8 md:p-12 shadow-xl border-2 border-[var(--ml-color-mandingue-orange)]/50">
+        <div class="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-[var(--ml-color-mandingue-500)] via-transparent to-transparent pointer-events-none"></div>
+        <div class="relative z-10 max-w-2xl">
+          <span class="inline-flex items-center gap-1.5 bg-white/15 text-[var(--ml-color-mandingue-100)] text-xs font-bold px-3.5 py-1 rounded-full uppercase tracking-wider mb-4 border border-white/20 backdrop-blur-md">
+            <span class="w-2 h-2 rounded-full bg-[var(--ml-color-mandingue-orange)] animate-pulse"></span>
+            Information Officielle
+          </span>
+          <h1 class="text-3xl md:text-4xl font-black font-title tracking-tight text-[var(--ml-color-mandingue-100)] mb-3 drop-shadow-md">Actualités & Communiqués</h1>
+          <p class="text-sm md:text-base text-white/95 leading-relaxed font-medium">
+            Suivez en direct l'actualité des services publics, annonces consulaires, opportunités d'emploi et avis aux usagers.
+          </p>
+        </div>
+      </div>
+
+      <!-- Filtres par catégorie -->
+      <div class="flex flex-wrap items-center gap-2 mb-10">
+        <span class="text-xs font-bold text-[var(--ml-color-neutral-600)] mr-2 uppercase tracking-wider">Filtrer par :</span>
+        <button class="px-4 py-1.5 rounded-full text-xs font-bold bg-[var(--ml-color-green-700)] text-white border-none cursor-pointer">Tous</button>
+        <button class="px-4 py-1.5 rounded-full text-xs font-semibold bg-white text-[var(--ml-color-neutral-700)] border border-[var(--ml-color-neutral-200)] hover:bg-[var(--ml-color-green-50)] cursor-pointer">Consulat</button>
+        <button class="px-4 py-1.5 rounded-full text-xs font-semibold bg-white text-[var(--ml-color-neutral-700)] border border-[var(--ml-color-neutral-200)] hover:bg-[var(--ml-color-green-50)] cursor-pointer">Emploi & APEJ</button>
+        <button class="px-4 py-1.5 rounded-full text-xs font-semibold bg-white text-[var(--ml-color-neutral-700)] border border-[var(--ml-color-neutral-200)] hover:bg-[var(--ml-color-green-50)] cursor-pointer">Communiqués</button>
+      </div>
+
+      <!-- Mosaïque de cartes actualités DSML -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {newsItems.map((item) => (
+          <article class={`rounded-2xl overflow-hidden transition-all duration-300 flex flex-col justify-between hover:-translate-y-1.5 ${item.featured ? 'md:col-span-2 lg:col-span-2 flex-col md:flex-row' : ''} ${cardBgStyles[item.cardVariant]}`}>
+            {item.image && (
+              <div class={`overflow-hidden ${item.featured ? 'md:w-1/2 min-h-[260px]' : 'h-48'} relative`}>
+                <img src={item.image} alt={item.title} class="w-full h-full object-cover transition-transform duration-500 hover:scale-105" />
+                <span class={`absolute top-4 left-4 text-[11px] uppercase tracking-wider px-3 py-1 rounded-full ${badgeStyles[item.category as keyof typeof badgeStyles] || badgeStyles.Innovation}`}>
+                  {item.category}
+                </span>
+              </div>
+            )}
+
+            <div class={`p-6 flex flex-col justify-between ${item.featured ? 'md:w-1/2' : 'flex-1'}`}>
+              <div>
+                {!item.image && (
+                  <div class="flex items-center justify-between mb-4">
+                    <span class={`text-[11px] uppercase tracking-wider px-3 py-1 rounded-full ${badgeStyles[item.category as keyof typeof badgeStyles] || badgeStyles.Innovation}`}>
+                      {item.category}
+                    </span>
+                    <time class="text-xs text-[var(--ml-color-neutral-500)]">{item.date}</time>
+                  </div>
+                )}
+                
+                {item.image && (
+                  <div class="flex items-center gap-2 text-xs text-[var(--ml-color-neutral-500)] mb-3">
+                    <time>{item.date}</time>
+                    <span>•</span>
+                    <span>Par {item.author}</span>
+                  </div>
+                )}
+
+                <h2 class="text-lg md:text-xl font-extrabold text-[var(--ml-color-neutral-900)] font-title mb-3 leading-snug">
+                  <a href={`/actualites/${item.slug}`} class="hover:text-[var(--ml-color-green-700)] text-[var(--ml-color-neutral-900)] no-underline transition-colors">
+                    {item.title}
+                  </a>
+                </h2>
+
+                <p class="text-xs md:text-sm text-[var(--ml-color-neutral-600)] leading-relaxed mb-6">
+                  {item.excerpt}
+                </p>
+              </div>
+
+              <div class="pt-4 border-t border-[var(--ml-color-neutral-200)]/60 flex items-center justify-between">
+                <a href={`/actualites/${item.slug}`} class="text-xs font-bold text-[var(--ml-color-green-700)] hover:text-[var(--ml-color-green-800)] inline-flex items-center gap-1.5 group no-underline">
+                  <span>Lire l'article</span>
+                  <span class="transition-transform group-hover:translate-x-1">&rarr;</span>
+                </a>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </main>
+
+  <Footer
+    slot="footer"
+    institution={siteConfig.institution}
+    email={siteConfig.contact.email}
+    phone={siteConfig.contact.phone}
+    address={siteConfig.contact.address}
+    hours={siteConfig.contact.hours}
+  />
+</BaseLayout>

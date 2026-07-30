@@ -1,0 +1,110 @@
+---
+import BaseLayout from '@malihub/sites-core/layouts/BaseLayout.astro';
+import Header from '@malihub/sites-core/components/Header.astro';
+import Footer from '@malihub/sites-core/components/Footer.astro';
+import siteConfig from '../../site.config.json';
+
+const faqCategories = [
+  {
+    category: 'Identité & Consulat',
+    questions: [
+      {
+        q: 'Quelles sont les pièces requises pour établir une carte d\'immatriculation consulaire ?',
+        a: 'Vous devez présenter un extrait d\'acte de naissance (ou copie d\'acte de naissance), 2 photos d\'identité récentes aux normes, un justificatif de domicile récent et votre ancienne carte ou une pièce d\'identité officielle.'
+      },
+      {
+        q: 'Quel est le délai de délivrance d\'un passeport biométrique ?',
+        a: 'Le délai moyen est de 2 à 3 semaines à compter de la date de prise des empreintes biométriques et de validation du dossier complet.'
+      },
+      {
+        q: 'Comment procéder à la transcription d\'un acte d\'état civil ?',
+        a: 'La demande de transcription (naissance, mariage, décès) se fait sur présentation de l\'acte original délivré par l\'autorité locale compétente, accompagné du livret de famille ou des pièces d\'identité des usagers.'
+      }
+    ]
+  },
+  {
+    category: 'Emploi & APEJ',
+    questions: [
+      {
+        q: 'Qui peut bénéficier des programmes d\'accompagnement APEJ ?',
+        a: 'Les programmes APEJ s\'adressent aux jeunes diplômés et demandeurs d\'emploi maliens âgés de 18 à 40 ans, souhaitant réaliser un stage ou lancer leur micro-entreprise.'
+      },
+      {
+        q: 'Comment déposer une demande de financement de projet d\'entreprise ?',
+        a: 'Les dossiers de projets d\'entreprise doivent être soumis lors des vagues d\'appels à projets sur la plateforme en ligne de l\'APEJ ou déposés directement aux guichets régionaux.'
+      }
+    ]
+  },
+  {
+    category: 'Formulaires & Prise de Rendez-vous',
+    questions: [
+      {
+        q: 'La prise de rendez-vous est-elle obligatoire pour se rendre au guichet ?',
+        a: 'Oui, afin d\'éviter de longues files d\'attente et de garantir un accueil personnalisé, la prise de rendez-vous préalable sur le portail en ligne est obligatoire.'
+      },
+      {
+        q: 'Puis-je annuler ou modifier mon rendez-vous ?',
+        a: 'Oui, via le lien de confirmation reçu par email ou SMS, vous pouvez modifier l\'horaire ou annuler votre créneau jusqu\'à 24h avant le rendez-vous.'
+      }
+    ]
+  }
+];
+---
+
+<BaseLayout title={`Foire Aux Questions (FAQ) — ${siteConfig.title}`} description="Questions fréquemment posées sur les démarches consulaires, l'emploi et l'accueil des usagers.">
+  <Header
+    slot="header"
+    title={siteConfig.title}
+    institution={siteConfig.institution}
+    logoUrl={siteConfig.logoUrl}
+  />
+
+  <main id="main-content" class="py-12 bg-[var(--ml-color-bogolan-kaolin)]/50 min-h-screen">
+    <div class="ml-container max-w-4xl mx-auto px-4">
+      <nav class="text-xs text-[var(--ml-color-neutral-500)] mb-6 flex gap-2">
+        <a href="/" class="hover:underline text-[var(--ml-color-neutral-600)]">Accueil</a>
+        <span>/</span>
+        <span class="text-[var(--ml-color-neutral-800)] font-semibold">FAQ</span>
+      </nav>
+
+      <div class="mb-10">
+        <h1 class="text-3xl md:text-4xl font-black text-[var(--ml-color-neutral-900)] font-title">Foire Aux Questions (FAQ)</h1>
+        <p class="text-[var(--ml-color-neutral-600)] mt-2">Retrouvez les réponses aux questions les plus fréquemment posées par les usagers.</p>
+      </div>
+
+      <div class="space-y-12">
+        {faqCategories.map((cat) => (
+          <section>
+            <h2 class="text-xl font-extrabold text-[var(--ml-color-green-800)] font-title mb-5 border-b-2 border-[var(--ml-color-green-200)] pb-2 inline-block">{cat.category}</h2>
+            <div class="space-y-4">
+              {cat.questions.map((item) => (
+                <div class="bg-white p-6 border border-[var(--ml-color-neutral-200)] rounded-2xl shadow-sm hover:shadow-md transition-shadow">
+                  <h3 class="text-base font-extrabold text-[var(--ml-color-neutral-900)] font-title m-0 mb-2.5">{item.q}</h3>
+                  <p class="text-[var(--ml-color-neutral-600)] text-sm leading-relaxed m-0">{item.a}</p>
+                </div>
+              ))}
+            </div>
+          </section>
+        ))}
+      </div>
+
+      <div class="mt-14 bg-gradient-to-br from-[var(--ml-color-green-50)] to-white border border-[var(--ml-color-green-300)] rounded-2xl p-8 text-center shadow-sm">
+        <h3 class="text-xl font-extrabold text-[var(--ml-color-green-900)] font-title m-0 mb-2">Vous ne trouvez pas réponse à votre question ?</h3>
+        <p class="text-[var(--ml-color-neutral-600)] text-sm mb-6 max-w-md mx-auto">Notre équipe d'assistance administrative est à votre disposition pour vous orienter.</p>
+        <a href="/contact" class="inline-flex items-center gap-2 px-6 py-3 bg-[var(--ml-color-green-700)] text-white font-bold rounded-xl hover:bg-[var(--ml-color-green-800)] transition-all shadow-md no-underline text-sm">
+          <span>Nous Contacter</span>
+          <span>&rarr;</span>
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <Footer
+    slot="footer"
+    institution={siteConfig.institution}
+    email={siteConfig.contact.email}
+    phone={siteConfig.contact.phone}
+    address={siteConfig.contact.address}
+    hours={siteConfig.contact.hours}
+  />
+</BaseLayout>

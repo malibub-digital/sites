@@ -1,0 +1,13 @@
+{
+  "name": "sites-faciles-mali",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "packages/*",
+    "template"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace=template",
+    "build": "npm run build --workspaces --if-present"
+  }
+}

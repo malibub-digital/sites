@@ -1,0 +1,80 @@
+---
+interface Props {
+  institution?: string;
+  email?: string;
+  phone?: string;
+  address?: string;
+  hours?: string;
+}
+
+const {
+  institution = 'RÉPUBLIQUE DU MALI',
+  email = 'contact@sitesfaciles.gouv.ml',
+  phone = '+223 20 22 00 00',
+  address = 'Cité Administrative, Bâtiment Numérique, Bamako, République du Mali',
+  hours = 'Du Lundi au Vendredi de 8h00 à 16h00'
+} = Astro.props;
+---
+
+<footer class="ml-footer" aria-label="Pied de page">
+  <div class="ml-container">
+    <div class="footer-top">
+      <!-- Bloc de Marque + Coordonnées -->
+      <div class="footer-brand">
+        <div class="brand-block">
+          <div class="ml-flag" aria-hidden="true">
+            <div class="green"></div>
+            <div class="yellow"></div>
+            <div class="red"></div>
+          </div>
+          <div class="brand-text">
+            <div class="brand-title">{institution}</div>
+            <div class="brand-motto">Un Peuple – Un But – Une Foi</div>
+          </div>
+        </div>
+        <div class="footer-coords" data-cms-bind="siteConfig.footerAddress">
+          <strong>Sites Faciles Mali</strong><br />
+          {address}<br />
+          <span>Email : <a href={`mailto:${email}`}>{email}</a></span><br />
+          <span>Tél : {phone}</span>
+        </div>
+      </div>
+
+      <!-- Colonnes de liens -->
+      <div class="footer-links-container">
+        <nav class="footer-col" aria-label="Démarches populaires">
+          <div class="footer-col-title">Services</div>
+          <a href="/services/carte-consulaire">Carte consulaire</a>
+          <a href="/services/passeport">Passeport biométrique</a>
+          <a href="/services/etat-civil">État civil & Actes</a>
+          <a href="/services/emploi-apej">Insertion APEJ</a>
+        </nav>
+        <nav class="footer-col" aria-label="Navigation du site">
+          <div class="footer-col-title">Navigation</div>
+          <a href="/">Accueil</a>
+          <a href="/services">Toutes les démarches</a>
+          <a href="/actualites">Actualités & Communiqués</a>
+          <a href="/faq">Foire aux questions</a>
+          <a href="/contact">Contact & Horaires</a>
+        </nav>
+        <nav class="footer-col" aria-label="Informations légales et accessibilité">
+          <div class="footer-col-title">Informations</div>
+          <a href="/mentions-legales">Mentions légales</a>
+          <a href="/accessibilite">Accessibilité : partiellement conforme</a>
+          <a href="/contact">Assistance & Support</a>
+        </nav>
+      </div>
+    </div>
+
+    <!-- Ligne légale globale conforme DSML -->
+    <div class="footer-bottom">
+      <div class="footer-bottom-links">
+        <a href="/mentions-legales">Mentions légales</a>
+        <a href="/accessibilite">Accessibilité : partiellement conforme</a>
+      </div>
+      <div class="footer-credits">
+        © {new Date().getFullYear()} République du Mali — Propulsé par Sites Faciles Mali & DSML
+      </div>
+    </div>
+  </div>
+</footer>
