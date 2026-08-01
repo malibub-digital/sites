@@ -1,18 +1,25 @@
 import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
+import { exec } from 'child_process';
+import { promisify } from 'util';
 import { cmsSavePayloadSchema } from '../schemas/index.js';
 import { hashSha256 } from '../utils/auth.js';
+
+const execAsync = promisify(exec);
 
 export interface CmsSaveOptions {
   projectRoot?: string;
   adminSecret?: string;
+  gitEnabled?: boolean;
+  gitBranch?: string;
 }
 
 export interface CmsSaveResult {
   success: boolean;
   message: string;
   updatedFiles?: string[];
+  gitPushed?: boolean;
   errors?: string[];
 }
 
@@ -115,7 +122,6 @@ export async function processCmsSaveRequest(
   }
 
   for (const [relPath, fields] of Object.entries(markdownDraftsByFile)) {
-
     const fullPath = path.join(projectRoot, relPath);
     try {
       if (fs.existsSync(fullPath)) {
@@ -142,19 +148,66 @@ export async function processCmsSaveRequest(
   }
 
   const updatedFiles = Array.from(updatedFilesSet);
-  const success = errors.length === 0;
-  const status = success ? 200 : 207;
+  if (errors.length > 0) {
+    return new Response(
+      JSON.stringify({
+        success: false,
+        message: `Sauvegarde effectuée avec ${errors.length} erreur(s).`,
+        updatedFiles,
+        errors,
+      }),
+      { status: 207, headers: { 'Content-Type': 'application/json' } }
+    );
+  }
+
+  const isGitEnabled = options.gitEnabled !== undefined
+    ? options.gitEnabled
+    : (process.env.CMS_GIT_ENABLED === 'true' || process.env.CMS_GIT_ENABLED === '1');
+
+  let gitPushed = false;
+  if (isGitEnabled) {
+    const targetBranch = options.gitBranch || process.env.CMS_GIT_BRANCH;
+    if (!targetBranch) {
+      return new Response(
+        JSON.stringify({
+          success: false,
+          message: 'Flux Git activé (CMS_GIT_ENABLED=true) mais la branche cible (CMS_GIT_BRANCH) n\'est pas configurée.',
+          updatedFiles,
+          errors: ['Branche Git cible non définie. Commit et Push annulés.'],
+        }),
+        { status: 400, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
+    try {
+      const filesToStage = updatedFiles.join(' ');
+      await execAsync(`git add ${filesToStage}`, { cwd: projectRoot });
+      await execAsync(`git commit -m "cms(publish): mise à jour automatique du contenu via l'éditeur"`, { cwd: projectRoot });
+      await execAsync(`git push origin ${targetBranch}`, { cwd: projectRoot });
+      gitPushed = true;
+    } catch (gitErr: any) {
+      return new Response(
+        JSON.stringify({
+          success: false,
+          message: `Fichiers modifiés localement mais l'opération Git a échoué: ${gitErr.message}`,
+          updatedFiles,
+          errors: [gitErr.message],
+        }),
+        { status: 500, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+  }
 
   return new Response(
     JSON.stringify({
-      success,
-      message: success
-        ? `${updatedFiles.length} fichier(s) mis à jour avec succès.`
-        : `Sauvegarde effectuée avec ${errors.length} erreur(s).`,
+      success: true,
+      message: gitPushed
+        ? `${updatedFiles.length} fichier(s) mis à jour et poussés sur la branche Git '${options.gitBranch || process.env.CMS_GIT_BRANCH}'.`
+        : `${updatedFiles.length} fichier(s) mis à jour localement sur le disque.`,
       updatedFiles,
-      errors: errors.length > 0 ? errors : undefined,
+      gitPushed,
     }),
-    { status, headers: { 'Content-Type': 'application/json' } }
+    { status: 200, headers: { 'Content-Type': 'application/json' } }
   );
 }
 

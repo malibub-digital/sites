@@ -1,5 +1,5 @@
 {
-  "title": "Sites Faciles Mali — Kit de démarrage",
+  "title": "Sites Faciles Mali - Kit de démarrage",
   "tagline": "Plateforme officielle de création de sites web institutionnels maliens",
   "description": "Portail modèle et kit de démarrage réutilisable pour la publication rapide de sites web conformes au Design System Mali (DSML).",
   "institution": "RÉPUBLIQUE DU MALI",
@@ -11,7 +11,14 @@
     "hours": "Du Lundi au Vendredi de 8h00 à 16h00"
   },
   "socialLinks": [
-    { "platform": "Facebook", "url": "https://facebook.com/sitesfacilesmali" },
-    { "platform": "Twitter", "url": "https://twitter.com/sitesfacilesml" }
-  ]
+    {
+      "platform": "Facebook",
+      "url": "https://facebook.com/sitesfacilesmali"
+    },
+    {
+      "platform": "Twitter",
+      "url": "https://twitter.com/sitesfacilesml"
+    }
+  ],
+  "header": "RÉPUBLIQUE DU MALI  Sites Faciles Mali"
 }

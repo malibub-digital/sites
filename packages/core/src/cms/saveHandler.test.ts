@@ -1,8 +1,8 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import fs from 'fs';
 import path from 'path';
-import { processCmsSaveRequest } from '../src/cms/saveHandler.js';
-import { hashSha256 } from '../src/utils/auth.js';
+import { processCmsSaveRequest } from './saveHandler.js';
+import { hashSha256 } from '../utils/auth.js';
 
 const TEST_DIR = path.join(process.cwd(), 'temp_test_cms');
 
@@ -41,7 +41,7 @@ describe('processCmsSaveRequest API Handler', () => {
       body: JSON.stringify({ drafts: { 'siteConfig.title': 'Nouveau Titre' } }),
     });
 
-    const res = await processCmsSaveRequest(req, { projectRoot: TEST_DIR });
+    const res = await processCmsSaveRequest(req, { projectRoot: TEST_DIR, gitEnabled: false });
     expect(res.status).toBe(401);
   });
 
@@ -55,11 +55,11 @@ describe('processCmsSaveRequest API Handler', () => {
       body: JSON.stringify({ drafts: 'invalid-drafts-format' }),
     });
 
-    const res = await processCmsSaveRequest(req, { projectRoot: TEST_DIR });
+    const res = await processCmsSaveRequest(req, { projectRoot: TEST_DIR, gitEnabled: false });
     expect(res.status).toBe(422);
   });
 
-  it('saves site.config.json modifications successfully', async () => {
+  it('saves site.config.json modifications successfully without git', async () => {
     const req = new Request('http://localhost/api/cms/save', {
       method: 'POST',
       headers: {
@@ -73,7 +73,7 @@ describe('processCmsSaveRequest API Handler', () => {
       }),
     });
 
-    const res = await processCmsSaveRequest(req, { projectRoot: TEST_DIR });
+    const res = await processCmsSaveRequest(req, { projectRoot: TEST_DIR, gitEnabled: false });
     expect(res.status).toBe(200);
 
     const body = await res.json();
@@ -99,11 +99,33 @@ describe('processCmsSaveRequest API Handler', () => {
       }),
     });
 
-    const res = await processCmsSaveRequest(req, { projectRoot: TEST_DIR });
+    const res = await processCmsSaveRequest(req, { projectRoot: TEST_DIR, gitEnabled: false });
     expect(res.status).toBe(200);
 
     const updatedMd = fs.readFileSync(path.join(TEST_DIR, 'test-page.md'), 'utf-8');
     expect(updatedMd).toContain('title: Titre MD Modifié');
     expect(updatedMd).toContain('Contenu Markdown mis à jour');
+  });
+
+  it('fails with status 400 if gitEnabled=true but no gitBranch provided', async () => {
+    const req = new Request('http://localhost/api/cms/save', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${validToken}`,
+      },
+      body: JSON.stringify({
+        drafts: {
+          'siteConfig.title': 'Titre Sans Branche',
+        },
+      }),
+    });
+
+    const res = await processCmsSaveRequest(req, { projectRoot: TEST_DIR, gitEnabled: true });
+    expect(res.status).toBe(400);
+
+    const body = await res.json();
+    expect(body.success).toBe(false);
+    expect(body.message).toContain('CMS_GIT_BRANCH');
   });
 });
