@@ -20,8 +20,8 @@ RUN node -e " \
   }); \
 "
 
-# Install root dependencies and sirv-cli for static serving
-RUN npm install -g sirv-cli && npm install
+# Install root dependencies
+RUN npm install
 
 # Copy all source code
 COPY . .
@@ -29,8 +29,12 @@ COPY . .
 # Build the site
 RUN npm run build
 
+# Environment variables for Astro Node server
+ENV HOST=0.0.0.0
+ENV PORT=3000
+
 # Expose port
 EXPOSE 3000
 
-# Start static server
-CMD ["sirv", "template/dist", "--port", "3000", "--host", "0.0.0.0", "--cors"]
+# Start Astro Node server
+CMD ["node", "template/dist/server/entry.mjs"]
