@@ -18,10 +18,46 @@ export interface CmsPublishResult {
   errors?: string[];
 }
 
+async function ensureEnvLoaded(projectRoot: string) {
+  try {
+    const fs = await import('fs');
+    const path = await import('path');
+    const candidates = [
+      path.join(projectRoot, '.env'),
+      path.join(projectRoot, '..', '.env'),
+      path.join(process.cwd(), '.env'),
+      path.join(process.cwd(), '..', '.env'),
+    ];
+
+    for (const envPath of candidates) {
+      if (fs.existsSync(envPath)) {
+        const content = fs.readFileSync(envPath, 'utf-8');
+        for (const line of content.split('\n')) {
+          const trimmed = line.trim();
+          if (trimmed && !trimmed.startsWith('#') && trimmed.includes('=')) {
+            const [k, ...v] = trimmed.split('=');
+            const key = k.trim();
+            let val = v.join('=').trim();
+            if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith("'") && val.endsWith("'"))) {
+              val = val.slice(1, -1);
+            }
+            if (!(key in process.env)) {
+              process.env[key] = val;
+            }
+          }
+        }
+      }
+    }
+  } catch {}
+}
+
 export async function processCmsPublishRequest(
   request: Request,
   options: CmsPublishOptions = {}
 ): Promise<Response> {
+  const projectRoot = options.projectRoot || process.cwd();
+  await ensureEnvLoaded(projectRoot);
+
   const authHeader = request.headers.get('authorization');
   let token = authHeader?.startsWith('Bearer ') ? authHeader.substring(7) : null;
 
@@ -33,7 +69,7 @@ export async function processCmsPublishRequest(
     }
   }
 
-  const rawSecret = options.adminSecret || process.env.CMS_ADMIN_SECRET || 'admin123';
+  const rawSecret = options.adminSecret || process.env.CMS_ADMIN_SECRET || (import.meta as any).env?.CMS_ADMIN_SECRET || 'admin123';
   const expectedHash = await hashSha256(rawSecret);
 
   if (!token || token !== expectedHash) {
@@ -43,9 +79,16 @@ export async function processCmsPublishRequest(
     );
   }
 
+  const envGitEnabled = process.env.CMS_GIT_ENABLED ?? (import.meta as any).env?.CMS_GIT_ENABLED;
+  const envDeployBranch = process.env.GIT_DEPLOY_BRANCH ?? process.env.CMS_GIT_BRANCH ?? (import.meta as any).env?.GIT_DEPLOY_BRANCH ?? (import.meta as any).env?.CMS_GIT_BRANCH;
+
   const isGitEnabled = options.gitEnabled !== undefined
     ? options.gitEnabled
-    : (process.env.CMS_GIT_ENABLED === 'true' || process.env.CMS_GIT_ENABLED === '1');
+    : (
+        String(envGitEnabled).toLowerCase() === 'true' ||
+        String(envGitEnabled) === '1' ||
+        (envGitEnabled !== 'false' && envGitEnabled !== '0' && Boolean(envDeployBranch))
+      );
 
   if (!isGitEnabled) {
     return new Response(
@@ -57,23 +100,21 @@ export async function processCmsPublishRequest(
     );
   }
 
-  const targetBranch = options.gitBranch || process.env.CMS_GIT_BRANCH;
+  const targetBranch = options.gitBranch || process.env.CMS_GIT_BRANCH || process.env.GIT_DEPLOY_BRANCH || (import.meta as any).env?.CMS_GIT_BRANCH || (import.meta as any).env?.GIT_DEPLOY_BRANCH;
   if (!targetBranch) {
     return new Response(
       JSON.stringify({
         success: false,
-        message: 'Flux Git activé mais la branche cible (CMS_GIT_BRANCH) n\'est pas configurée.',
+        message: 'Flux Git activé mais la branche cible (CMS_GIT_BRANCH ou GIT_DEPLOY_BRANCH) n\'est pas configurée.',
         errors: ['Branche Git cible non définie. Publication annulée.'],
       }),
       { status: 400, headers: { 'Content-Type': 'application/json' } }
     );
   }
 
-  const projectRoot = options.projectRoot || process.cwd();
-
   try {
     const extraEnv: Record<string, string> = {};
-    const deployKey = process.env.GIT_DEPLOY_KEY;
+    const deployKey = process.env.GIT_DEPLOY_KEY || (import.meta as any).env?.GIT_DEPLOY_KEY;
     if (deployKey && deployKey.trim().length > 0) {
       const fs = await import('fs');
       const path = await import('path');

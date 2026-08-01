@@ -9,14 +9,16 @@ interface Props {
   lang?: string;
   adminSecret?: string;
   siteId?: string;
+  gitEnabled?: boolean;
 }
 
 const {
   title,
   description = 'Site officiel de l\'administration du Mali',
   lang = 'fr',
-  adminSecret = import.meta.env.CMS_ADMIN_SECRET || '',
-  siteId = 'default'
+  adminSecret = import.meta.env.CMS_ADMIN_SECRET || process.env.CMS_ADMIN_SECRET || '',
+  siteId = 'default',
+  gitEnabled = Astro.props.gitEnabled
 } = Astro.props;
 ---
 
@@ -36,7 +38,7 @@ const {
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
 </head>
 <body class="ml-body">
-  <AdminToolbar adminSecret={adminSecret} siteId={siteId} />
+  <AdminToolbar adminSecret={adminSecret} siteId={siteId} gitEnabled={gitEnabled} />
   <div class="ml-page-wrapper">
     <slot name="header" />
     <main id="main-content" class="ml-main-content">
