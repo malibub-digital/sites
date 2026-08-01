@@ -51,7 +51,14 @@ export const faqSchema = z.object({
   category: z.string().default('Général')
 });
 
+export const cmsSavePayloadSchema = z.object({
+  drafts: z.record(z.string(), z.string()),
+  filePath: z.string().optional()
+});
+
 export type SiteConfig = z.infer<typeof siteConfigSchema>;
 export type Service = z.infer<typeof serviceSchema>;
 export type News = z.infer<typeof newsSchema>;
 export type Faq = z.infer<typeof faqSchema>;
+export type CmsSavePayload = z.infer<typeof cmsSavePayloadSchema>;
+

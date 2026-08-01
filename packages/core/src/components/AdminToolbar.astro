@@ -431,10 +431,43 @@ const hashedSecret = await hashSha256(rawSecret);
       syncDraftsWithDOM();
     });
 
-    saveBtn?.addEventListener("click", () => {
+    saveBtn?.addEventListener("click", async () => {
       const drafts = cmsDraftStore.get();
+      if (Object.keys(drafts).length === 0) return;
+
+      const token = getAdminCookieToken();
+      notify("Enregistrement en cours...");
+      if (saveBtn) (saveBtn as HTMLButtonElement).disabled = true;
+
+      try {
+        const response = await fetch("/api/cms/save", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
+          body: JSON.stringify({ drafts }),
+        });
+
+        const resData = await response.json();
+        if (response.ok && resData.success) {
+          clearDrafts();
+          notify("Modifications enregistrées avec succès !");
+          setTimeout(() => {
+            if (notificationText) notificationText.classList.add("hidden");
+          }, 3000);
+        } else {
+          notify(`Erreur: ${resData.message || "Échec de la sauvegarde."}`);
+        }
+      } catch (err: any) {
+        notify(`Erreur réseau: ${err.message || "Impossible de contacter le serveur."}`);
+      } finally {
+        if (saveBtn) (saveBtn as HTMLButtonElement).disabled = false;
+      }
+
       document.dispatchEvent(new CustomEvent("cms:save-requested", { detail: { drafts } }));
     });
+
 
     popoverReset?.addEventListener("click", resetElement);
 
