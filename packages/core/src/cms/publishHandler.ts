@@ -1,14 +1,17 @@
-import { exec } from 'child_process';
-import { promisify } from 'util';
 import { hashSha256 } from '../utils/auth.js';
-
-const execAsync = promisify(exec);
+import { getGitProvider, GitFileChange } from './gitProvider.js';
+import fs from 'fs';
+import path from 'path';
 
 export interface CmsPublishOptions {
   projectRoot?: string;
   adminSecret?: string;
   gitEnabled?: boolean;
   gitBranch?: string;
+  gitProvider?: string;
+  gitToken?: string;
+  gitOwner?: string;
+  gitRepo?: string;
 }
 
 export interface CmsPublishResult {
@@ -20,8 +23,6 @@ export interface CmsPublishResult {
 
 async function ensureEnvLoaded(projectRoot: string) {
   try {
-    const fs = await import('fs');
-    const path = await import('path');
     const candidates = [
       path.join(projectRoot, '.env'),
       path.join(projectRoot, '..', '.env'),
@@ -49,6 +50,28 @@ async function ensureEnvLoaded(projectRoot: string) {
       }
     }
   } catch {}
+}
+
+function findModifiedContentFiles(dir: string, baseDir: string = dir): GitFileChange[] {
+  const changes: GitFileChange[] = [];
+  if (!fs.existsSync(dir)) return changes;
+
+  const entries = fs.readdirSync(dir, { withFileTypes: true });
+  for (const entry of entries) {
+    const fullPath = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      if (entry.name !== 'node_modules' && entry.name !== '.git' && entry.name !== '.astro' && entry.name !== 'dist') {
+        changes.push(...findModifiedContentFiles(fullPath, baseDir));
+      }
+    } else if (entry.isFile()) {
+      if (entry.name.endsWith('.json') || entry.name.endsWith('.md') || entry.name.endsWith('.mdx')) {
+        const relPath = path.relative(baseDir, fullPath).replace(/\\/g, '/');
+        const content = fs.readFileSync(fullPath, 'utf-8');
+        changes.push({ path: relPath, content });
+      }
+    }
+  }
+  return changes;
 }
 
 export async function processCmsPublishRequest(
@@ -112,52 +135,56 @@ export async function processCmsPublishRequest(
     );
   }
 
+  const gitToken = options.gitToken || process.env.GITHUB_TOKEN || process.env.GIT_TOKEN || (import.meta as any).env?.GITHUB_TOKEN || (import.meta as any).env?.GIT_TOKEN;
+  if (!gitToken) {
+    return new Response(
+      JSON.stringify({
+        success: false,
+        message: 'Token de publication Git manquant (GITHUB_TOKEN ou GIT_TOKEN non défini).',
+        errors: ['Token API Git manquant. Publication impossible.'],
+      }),
+      { status: 400, headers: { 'Content-Type': 'application/json' } }
+    );
+  }
+
+  const gitOwner = options.gitOwner || process.env.GIT_OWNER || (import.meta as any).env?.GIT_OWNER || 'malibub-digital';
+  const gitRepo = options.gitRepo || process.env.GIT_REPO || (import.meta as any).env?.GIT_REPO || 'sites';
+  const providerType = options.gitProvider || process.env.GIT_PROVIDER || (import.meta as any).env?.GIT_PROVIDER || 'github';
+
   try {
-    const extraEnv: Record<string, string> = {};
-    const deployKey = process.env.GIT_DEPLOY_KEY || (import.meta as any).env?.GIT_DEPLOY_KEY;
-    if (deployKey && deployKey.trim().length > 0) {
-      const fs = await import('fs');
-      const path = await import('path');
-      const os = await import('os');
-      const keyPath = path.join(os.tmpdir(), 'cms_git_deploy_key');
-      fs.writeFileSync(keyPath, deployKey.trim() + '\n', { mode: 0o600 });
-      extraEnv.GIT_SSH_COMMAND = `ssh -i "${keyPath}" -o StrictHostKeyChecking=no`;
-    }
+    const srcDir = path.join(projectRoot, 'src', 'content');
+    const templateSrcDir = path.join(projectRoot, 'template', 'src', 'content');
+    const contentDir = fs.existsSync(srcDir) ? srcDir : (fs.existsSync(templateSrcDir) ? templateSrcDir : projectRoot);
 
-    const execOptions = { cwd: projectRoot, env: { ...process.env, ...extraEnv } };
+    const modifiedFiles = findModifiedContentFiles(contentDir, projectRoot);
 
-    const { ensureGitRepositoryInitialized } = await import('./gitInit.js');
-    await ensureGitRepositoryInitialized({ projectRoot, targetBranch, execOptions });
-
-    try {
-      await execAsync(`git fetch origin ${targetBranch}`, execOptions);
-      await execAsync(`git pull --rebase origin ${targetBranch}`, execOptions);
-    } catch (pullErr: any) {
-      console.warn(`[CMS Git Warning] Impossible d'effectuer le git pull --rebase: ${pullErr.message}`);
-    }
-
-    await execAsync('git add .', execOptions);
-
-    const { stdout: statusOutput } = await execAsync('git status --porcelain', execOptions);
-    if (!statusOutput.trim()) {
+    if (modifiedFiles.length === 0) {
       return new Response(
         JSON.stringify({
           success: true,
-          message: 'Aucune modification locale à publier sur GitHub.',
+          message: 'Aucun fichier de contenu (.json/.md) à publier.',
           gitPushed: false,
         }),
         { status: 200, headers: { 'Content-Type': 'application/json' } }
       );
     }
 
-    await execAsync(`git commit -m "cms(publish): mise à jour du contenu via l'éditeur"`, execOptions);
-    await execAsync(`git push origin ${targetBranch}`, execOptions);
+    const provider = getGitProvider(providerType);
+    const result = await provider.publish({
+      owner: gitOwner,
+      repo: gitRepo,
+      branch: targetBranch,
+      commitMessage: "cms(publish): mise à jour du contenu via l'éditeur",
+      files: modifiedFiles,
+      token: gitToken,
+    });
 
     return new Response(
       JSON.stringify({
         success: true,
-        message: `Modifications publiées sur GitHub sur la branche '${targetBranch}'.`,
+        message: result.message,
         gitPushed: true,
+        commitSha: result.commitSha,
       }),
       { status: 200, headers: { 'Content-Type': 'application/json' } }
     );
@@ -165,7 +192,7 @@ export async function processCmsPublishRequest(
     return new Response(
       JSON.stringify({
         success: false,
-        message: `Erreur lors de la publication Git sur GitHub: ${gitErr.message}`,
+        message: `Erreur lors de la publication API sur ${providerType}: ${gitErr.message}`,
         errors: [gitErr.message],
       }),
       { status: 500, headers: { 'Content-Type': 'application/json' } }
