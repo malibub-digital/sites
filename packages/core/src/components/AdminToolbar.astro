@@ -12,14 +12,12 @@ const siteId = Astro.props.siteId || "default";
 const hashedSecret = await hashSha256(rawSecret);
 
 const envGitEnabled = import.meta.env.CMS_GIT_ENABLED ?? process.env.CMS_GIT_ENABLED;
-const envDeployBranch = import.meta.env.GIT_DEPLOY_BRANCH ?? process.env.GIT_DEPLOY_BRANCH ?? import.meta.env.CMS_GIT_BRANCH ?? process.env.CMS_GIT_BRANCH;
 
 const gitEnabled = Astro.props.gitEnabled !== undefined
   ? Astro.props.gitEnabled
   : (
       String(envGitEnabled).toLowerCase() === 'true' ||
-      String(envGitEnabled) === '1' ||
-      (envGitEnabled !== 'false' && envGitEnabled !== '0' && Boolean(envDeployBranch))
+      String(envGitEnabled) === '1'
     );
 ---
 

@@ -18,7 +18,7 @@ Pour piloter le comportement de la sauvegarde et du déploiement Git, configurez
 | `GIT_PROVIDER` | `string` | `github` | Provider Git API (`github`, `gitlab`, `gitea`). |
 | `GIT_OWNER` | `string` | `malibub-digital` | Nom du compte ou de l'organisation sur le provider Git. |
 | `GIT_REPO` | `string` | `sites` | Nom du dépôt sur le provider Git. |
-| `GITHUB_TOKEN` / `GIT_TOKEN` | `string` | *(Aucune)* | **Obligatoire si `CMS_GIT_ENABLED=true`**. Token d'accès API avec droits d'écriture sur le dépôt. |
+| `GIT_TOKEN` | `string` | *(Aucune)* | **Obligatoire si `CMS_GIT_ENABLED=true`**. Token d'accès API avec droits d'écriture sur le dépôt. |
 
 ---
 

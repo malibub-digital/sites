@@ -135,13 +135,13 @@ export async function processCmsPublishRequest(
     );
   }
 
-  const gitToken = options.gitToken || process.env.GITHUB_TOKEN || process.env.GIT_TOKEN || (import.meta as any).env?.GITHUB_TOKEN || (import.meta as any).env?.GIT_TOKEN;
+  const gitToken = options.gitToken || process.env.GIT_TOKEN || (import.meta as any).env?.GIT_TOKEN;
   if (!gitToken) {
     return new Response(
       JSON.stringify({
         success: false,
-        message: 'Token de publication Git manquant (GITHUB_TOKEN ou GIT_TOKEN non défini).',
-        errors: ['Token API Git manquant. Publication impossible.'],
+        message: 'Token de publication Git manquant (GIT_TOKEN non défini).',
+        errors: ['Token API Git manquant (GIT_TOKEN). Publication impossible.'],
       }),
       { status: 400, headers: { 'Content-Type': 'application/json' } }
     );
