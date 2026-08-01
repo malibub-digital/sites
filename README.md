@@ -6,9 +6,50 @@ Projet de moteur de sites web institutionnels et démarches publiques pour le Ma
 
 Le projet inclut un moteur d'édition visuelle en temps réel permettant aux agents autorisés de modifier le contenu des pages directement depuis leur navigateur.
 
-## 2. Variables d'Environnement
+---
 
-Pour piloter le comportement de la sauvegarde et du déploiement Git, configurez les variables d'environnement suivantes dans votre conteneur ou sur le serveur d'hébergement :
+## 2. Guide de Configuration Pas à Pas (ex: GitHub + Dokploy)
+
+Pour activer la publication automatique des contenus modifiés sur le site depuis le bandeau d'administration vers GitHub et votre hébergement (Dokploy/Coolify) :
+
+### Étape 1 : Créer le Token d'Accès API (`GIT_TOKEN`) sur GitHub
+
+1. Connectez-vous à votre compte GitHub.
+2. Allez dans **Settings** (Paramètres de votre compte) > **Developer Settings**.
+3. Dans le menu latéral de gauche, développez **Personal access tokens** :
+   - **Option A — Tokens (classic)** : Cliquez sur *Tokens (classic)* > *Generate new token (classic)*. Donnez un nom (ex: `MaliHub Sites CMS`) et cochez la portée **`repo`**.
+   - **Option B — Fine-grained tokens (Recommandé)** : Cliquez sur *Fine-grained tokens* > *Generate new token*. Sélectionnez le dépôt `sites` (Repository access: *Only select repositories* > `sites`), puis sous **Repository permissions**, recherchez **`Contents`** et définissez-la sur **Access: Read and Write** (aucune autre permission n'est requise).
+4. Cliquez sur **Generate token** et **copiez immédiatement la clé générée** (`ghp_...` ou `github_pat_...`).
+
+### Étape 2 : Configurer les Variables d'Environnement dans Dokploy (ou `.env`)
+
+Dans votre projet sur Dokploy (ou dans le fichier `.env` du conteneur) :
+
+```env
+# Secret d'administration pour la connexion au mode édition
+CMS_ADMIN_SECRET=votre_mot_de_passe_admin_securise
+
+# Activation de la publication Git
+CMS_GIT_ENABLED=true
+CMS_GIT_BRANCH=prod
+
+# Configuration du dépôt distant GitHub
+GIT_PROVIDER=github
+GIT_OWNER=malibub-digital
+GIT_REPO=sites
+GIT_TOKEN=ghp_votre_token_securise_copie_a_l_etape_1
+```
+
+### Étape 3 : Configurer l'Auto-Déploiement sur Dokploy
+
+1. Dans Dokploy, ouvrez l'application **Sites Faciles**.
+2. Dans l'onglet **General / Git**, assurez-vous que la branche écoutée est `prod`.
+3. Activez l'option **Auto Deploy** (Webhooks / Push Trigger).
+4. Désormais, dès qu'un administrateur clique sur **Publier** dans le site, le CMS crée un commit via l'API GitHub sur la branche `prod`, et Dokploy redéploie automatiquement le site en zéro-downtime !
+
+---
+
+## 3. Récapitulatif des Variables d'Environnement
 
 | Variable | Type | Valeur par défaut | Description |
 | :--- | :--- | :--- | :--- |
@@ -16,15 +57,15 @@ Pour piloter le comportement de la sauvegarde et du déploiement Git, configurez
 | `CMS_GIT_ENABLED` | `boolean` | `false` | Activer ou désactiver la publication Git. |
 | `CMS_GIT_BRANCH` / `GIT_DEPLOY_BRANCH` | `string` | *(Aucune)* | **Obligatoire si `CMS_GIT_ENABLED=true`**. Branche cible pour la publication API (ex: `prod` ou `main`). |
 | `GIT_PROVIDER` | `string` | `github` | Provider Git API (`github`, `gitlab`, `gitea`). |
-| `GIT_OWNER` | `string` | `malibub-digital` | Nom du compte ou de l'organisation sur le provider Git. |
-| `GIT_REPO` | `string` | `sites` | Nom du dépôt sur le provider Git. |
+| `GIT_OWNER` | `string` | `malibub-digital` | Nom du compte ou de l'organisation sur la forge Git. |
+| `GIT_REPO` | `string` | `sites` | Nom du dépôt sur la forge Git. |
 | `GIT_TOKEN` | `string` | *(Aucune)* | **Obligatoire si `CMS_GIT_ENABLED=true`**. Token d'accès API avec droits d'écriture sur le dépôt. |
 
 ---
 
-## 3. Déploiement Continu CI/CD & Publication API REST
+## 4. Architecture de Publication API REST
 
-Le flux de publication n'utilise pas de commandes CLI shell local ni de dossier `.git` dans le container. 
+Le flux de publication n'utilise pas de commandes CLI shell locales ni de dossier `.git` dans le container. 
 Lors du clic sur **Publier** dans le bandeau d'administration :
 
 1. L'API du serveur Astro identifie l'ensemble des fichiers Markdown/JSON modifiés.
