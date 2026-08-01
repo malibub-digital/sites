@@ -65,8 +65,9 @@ const gitEnabled = Astro.props.gitEnabled !== undefined
         <button
           type="button"
           id="ml-admin-save-btn"
-          class="ml-btn ml-btn--primary ml-btn--sm hidden"
+          class="ml-btn ml-btn--primary ml-btn--sm"
           title="Enregistrer les modifications"
+          disabled
         >
           <i class="ml-icon-save-line ml-icon--xs"></i>
           <span>Enregistrer</span>
@@ -77,6 +78,7 @@ const gitEnabled = Astro.props.gitEnabled !== undefined
           id="ml-admin-publish-btn"
           class="ml-btn ml-btn--success ml-btn--sm hidden"
           title="Publier les modifications sur GitHub"
+          disabled
         >
           <i class="ml-icon-upload-cloud-line ml-icon--xs"></i>
           <span>Publier</span>
@@ -277,6 +279,13 @@ const gitEnabled = Astro.props.gitEnabled !== undefined
     background: #15803d;
   }
 
+  .ml-btn:disabled,
+  .ml-btn[disabled] {
+    opacity: 0.4;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
   .hidden {
     display: none !important;
   }
@@ -285,6 +294,8 @@ const gitEnabled = Astro.props.gitEnabled !== undefined
 <script>
   import { getAdminCookieToken } from '../utils/auth.js';
   import { cmsDraftStore, updateDraft, removeDraft, clearDrafts } from '../store/cms.js';
+
+  const STORAGE_KEY_UNPUBLISHED = "cms_has_unpublished_changes";
 
   function initAdminToolbar() {
     const root = document.getElementById("ml-admin-toolbar-root");
@@ -307,6 +318,28 @@ const gitEnabled = Astro.props.gitEnabled !== undefined
     const expectedHash = root.getAttribute("data-secret") || "";
     const isGitEnabled = root.getAttribute("data-git-enabled") === "true";
     let activeTargetElement: HTMLElement | null = null;
+
+    function updateToolbarButtonsState() {
+      const drafts = cmsDraftStore.get();
+      const hasDrafts = Object.keys(drafts).length > 0;
+      const hasUnpublished = localStorage.getItem(STORAGE_KEY_UNPUBLISHED) === "true";
+
+      if (saveBtn) {
+        (saveBtn as HTMLButtonElement).disabled = !hasDrafts;
+      }
+
+      if (publishBtn) {
+        (publishBtn as HTMLButtonElement).disabled = !isGitEnabled || hasDrafts || !hasUnpublished;
+      }
+
+      if (hasDrafts) {
+        notify(`${Object.keys(drafts).length} modification(s) non enregistrée(s)`);
+      } else if (hasUnpublished && isGitEnabled) {
+        notify("Modifications enregistrées. Prêt pour publication.");
+      } else {
+        if (notificationText) notificationText.classList.add("hidden");
+      }
+    }
 
     function cacheOriginalValues() {
       const elements = document.querySelectorAll("[data-cms-bind]");
@@ -333,14 +366,7 @@ const gitEnabled = Astro.props.gitEnabled !== undefined
         }
       });
 
-      const keys = Object.keys(drafts);
-      if (keys.length > 0) {
-        saveBtn?.classList.remove("hidden");
-        notify(`${keys.length} modification(s) non enregistrée(s)`);
-      } else {
-        saveBtn?.classList.add("hidden");
-        if (notificationText) notificationText.classList.add("hidden");
-      }
+      updateToolbarButtonsState();
     }
 
     function notify(message: string) {
@@ -377,6 +403,7 @@ const gitEnabled = Astro.props.gitEnabled !== undefined
 
       if (isAuthenticated) {
         bar?.classList.remove("hidden");
+        saveBtn?.classList.remove("hidden");
         if (isGitEnabled) {
           publishBtn?.classList.remove("hidden");
         } else {
@@ -385,6 +412,7 @@ const gitEnabled = Astro.props.gitEnabled !== undefined
         setEditingMode(true);
       } else {
         bar?.classList.add("hidden");
+        saveBtn?.classList.add("hidden");
         publishBtn?.classList.add("hidden");
         setEditingMode(false);
       }
@@ -415,7 +443,6 @@ const gitEnabled = Astro.props.gitEnabled !== undefined
       const bindKey = el.getAttribute("data-cms-bind") || "element";
       const token = getAdminCookieToken();
 
-      // Prise du verrou sur la ressource
       try {
         const lockRes = await fetch("/api/cms/lock", {
           method: "POST",
@@ -505,7 +532,6 @@ const gitEnabled = Astro.props.gitEnabled !== undefined
       closePopover();
     }
 
-
     cmsDraftStore.subscribe(() => {
       syncDraftsWithDOM();
     });
@@ -531,23 +557,30 @@ const gitEnabled = Astro.props.gitEnabled !== undefined
         const resData = await response.json();
         if (response.ok && resData.success) {
           clearDrafts();
+          localStorage.setItem(STORAGE_KEY_UNPUBLISHED, "true");
+          updateToolbarButtonsState();
           notify("Modifications enregistrées avec succès !");
           setTimeout(() => {
-            if (notificationText) notificationText.classList.add("hidden");
+            if (notificationText && localStorage.getItem(STORAGE_KEY_UNPUBLISHED) !== "true") {
+              notificationText.classList.add("hidden");
+            }
           }, 3000);
         } else {
           notify(`Erreur: ${resData.message || "Échec de la sauvegarde."}`);
+          updateToolbarButtonsState();
         }
       } catch (err: any) {
         notify(`Erreur réseau: ${err.message || "Impossible de contacter le serveur."}`);
-      } finally {
-        if (saveBtn) (saveBtn as HTMLButtonElement).disabled = false;
+        updateToolbarButtonsState();
       }
 
       document.dispatchEvent(new CustomEvent("cms:save-requested", { detail: { drafts } }));
     });
 
     publishBtn?.addEventListener("click", async () => {
+      const drafts = cmsDraftStore.get();
+      if (Object.keys(drafts).length > 0 || localStorage.getItem(STORAGE_KEY_UNPUBLISHED) !== "true") return;
+
       const token = getAdminCookieToken();
       notify("Publication sur GitHub en cours...");
       if (publishBtn) (publishBtn as HTMLButtonElement).disabled = true;
@@ -563,24 +596,23 @@ const gitEnabled = Astro.props.gitEnabled !== undefined
 
         const resData = await response.json();
         if (response.ok && resData.success) {
+          localStorage.removeItem(STORAGE_KEY_UNPUBLISHED);
+          updateToolbarButtonsState();
           notify(resData.message || "Modifications publiées sur GitHub avec succès !");
           setTimeout(() => {
             if (notificationText) notificationText.classList.add("hidden");
           }, 4000);
         } else {
           notify(`Erreur publication: ${resData.message || "Échec de la publication."}`);
+          updateToolbarButtonsState();
         }
       } catch (err: any) {
         notify(`Erreur réseau: ${err.message || "Impossible de contacter le serveur."}`);
-      } finally {
-        if (publishBtn) (publishBtn as HTMLButtonElement).disabled = false;
+        updateToolbarButtonsState();
       }
     });
 
-
     popoverReset?.addEventListener("click", resetElement);
-
-
     modeEditBtn?.addEventListener("click", () => setEditingMode(true));
     modePreviewBtn?.addEventListener("click", () => setEditingMode(false));
     popoverClose?.addEventListener("click", closePopover);
