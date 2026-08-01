@@ -16,7 +16,7 @@ export function updateDraft(bindPath: string, value: string) {
 }
 
 export function removeDraft(bindPath: string) {
-  cmsDraftStore.removeKey(bindPath);
+  cmsDraftStore.setKey(bindPath, undefined as any);
   const current = cmsDraftStore.get();
   if (Object.keys(current).length === 0) {
     cmsStatusStore.set('idle');
