@@ -14,7 +14,7 @@ RUN node -e " \
   pkgs.forEach(p => { \
     if (fs.existsSync(p)) { \
       let content = fs.readFileSync(p, 'utf8'); \
-      content = content.replace(/\"file:.*?dsml\/packages\/core\"/g, '\"^0.1.0\"'); \
+      content = content.replace(/\"file:.*?dsml\/packages\/core\"/g, '\"^0.1.1\"'); \
       fs.writeFileSync(p, content, 'utf8'); \
     } \
   }); \
