@@ -1,0 +1,207 @@
+---
+import { hashSha256 } from '../utils/auth.js';
+
+interface Props {
+  adminSecret?: string;
+  siteId?: string;
+}
+
+const rawSecret = Astro.props.adminSecret || import.meta.env.CMS_ADMIN_SECRET || process.env.CMS_ADMIN_SECRET || "admin123";
+const siteId = Astro.props.siteId || "default";
+const hashedSecret = await hashSha256(rawSecret);
+---
+
+<div id="ml-admin-toolbar-root" data-site-id={siteId} data-secret={hashedSecret}>
+  <div id="ml-admin-bar" class="ml-admin-bar hidden">
+    <div class="ml-admin-bar-container">
+      <div class="ml-admin-left">
+        <span class="ml-admin-badge ml-badge-admin">
+          <span class="ml-status-dot ml-dot-green"></span>
+          Admin
+        </span>
+
+        <div class="ml-admin-segmented-control" role="radiogroup" aria-label="Mode de travail">
+          <button
+            type="button"
+            id="ml-admin-mode-edit"
+            class="ml-segment-btn active"
+            role="radio"
+            aria-checked="true"
+            title="Mode Édition"
+          >
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+            </svg>
+            <span>Édition</span>
+          </button>
+
+          <button
+            type="button"
+            id="ml-admin-mode-preview"
+            class="ml-segment-btn"
+            role="radio"
+            aria-checked="false"
+            title="Mode Aperçu"
+          >
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+              <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+            <span>Aperçu</span>
+          </button>
+        </div>
+      </div>
+
+      <div id="ml-admin-notification-zone" class="ml-admin-notification-zone" aria-live="polite">
+        <span id="ml-admin-notification-text" class="ml-admin-notification-text hidden"></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .ml-admin-bar {
+    position: sticky;
+    top: 0;
+    z-index: 9999;
+    background: #0f172a;
+    color: #f8fafc;
+    font-family: inherit;
+    font-size: 0.875rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    border-bottom: 2px solid #0284c7;
+  }
+  .ml-admin-bar-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0.375rem 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  .ml-admin-left {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .ml-admin-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 9999px;
+    font-weight: 600;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .ml-badge-admin {
+    background: rgba(14, 165, 233, 0.15);
+    color: #38bdf8;
+  }
+  .ml-status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+  }
+  .ml-dot-green {
+    background-color: #22c55e;
+    box-shadow: 0 0 8px #22c55e;
+  }
+  .ml-admin-segmented-control {
+    display: inline-flex;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 0.375rem;
+    padding: 2px;
+    gap: 2px;
+  }
+  .ml-segment-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.25rem 0.625rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #94a3b8;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .ml-segment-btn:hover {
+    color: #f8fafc;
+  }
+  .ml-segment-btn.active {
+    background: #0284c7;
+    color: #ffffff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  }
+  .ml-admin-notification-zone {
+    font-size: 0.75rem;
+    color: #38bdf8;
+    font-weight: 500;
+  }
+  .hidden {
+    display: none !important;
+  }
+</style>
+
+<script>
+  import { getAdminCookieToken } from '../utils/auth.js';
+
+  function initAdminToolbar() {
+    const root = document.getElementById("ml-admin-toolbar-root");
+    if (!root) return;
+
+    const bar = document.getElementById("ml-admin-bar");
+    const modeEditBtn = document.getElementById("ml-admin-mode-edit");
+    const modePreviewBtn = document.getElementById("ml-admin-mode-preview");
+    const expectedHash = root.getAttribute("data-secret") || "";
+
+    function setEditingMode(active: boolean) {
+      document.body.classList.toggle("cms-mode-editing", active);
+      document.documentElement.setAttribute("data-cms-editing", String(active));
+
+      if (active) {
+        modeEditBtn?.classList.add("active");
+        modeEditBtn?.setAttribute("aria-checked", "true");
+        modePreviewBtn?.classList.remove("active");
+        modePreviewBtn?.setAttribute("aria-checked", "false");
+      } else {
+        modeEditBtn?.classList.remove("active");
+        modeEditBtn?.setAttribute("aria-checked", "false");
+        modePreviewBtn?.classList.add("active");
+        modePreviewBtn?.setAttribute("aria-checked", "true");
+      }
+
+      document.dispatchEvent(new CustomEvent("cms:editing-toggled", {
+        detail: { isEditing: active }
+      }));
+    }
+
+    function checkAuthState() {
+      const token = getAdminCookieToken();
+      const isAuthenticated = token !== null && token.length > 0 && (!expectedHash || token === expectedHash);
+
+      if (isAuthenticated) {
+        bar?.classList.remove("hidden");
+        setEditingMode(true);
+      } else {
+        bar?.classList.add("hidden");
+        setEditingMode(false);
+      }
+    }
+
+    modeEditBtn?.addEventListener("click", () => setEditingMode(true));
+    modePreviewBtn?.addEventListener("click", () => setEditingMode(false));
+
+    checkAuthState();
+  }
+
+  initAdminToolbar();
+  document.addEventListener("astro:after-swap", initAdminToolbar);
+</script>

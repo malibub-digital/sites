@@ -1,14 +1,23 @@
 ---
 import '@malihub/dsml-core/css/dsml.css';
 import '@malihub/dsml-core/css/dsml-icons.css';
+import AdminToolbar from '../components/AdminToolbar.astro';
 
 interface Props {
   title: string;
   description?: string;
   lang?: string;
+  adminSecret?: string;
+  siteId?: string;
 }
 
-const { title, description = 'Site officiel de l\'administration du Mali', lang = 'fr' } = Astro.props;
+const {
+  title,
+  description = 'Site officiel de l\'administration du Mali',
+  lang = 'fr',
+  adminSecret = import.meta.env.CMS_ADMIN_SECRET || '',
+  siteId = 'default'
+} = Astro.props;
 ---
 
 <!DOCTYPE html>
@@ -27,6 +36,7 @@ const { title, description = 'Site officiel de l\'administration du Mali', lang 
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
 </head>
 <body class="ml-body">
+  <AdminToolbar adminSecret={adminSecret} siteId={siteId} />
   <div class="ml-page-wrapper">
     <slot name="header" />
     <main id="main-content" class="ml-main-content">
@@ -34,5 +44,20 @@ const { title, description = 'Site officiel de l\'administration du Mali', lang 
     </main>
     <slot name="footer" />
   </div>
+
+  <style is:global>
+    body.cms-mode-editing [data-cms-bind] {
+      outline: 2px dashed #0284c7;
+      outline-offset: 3px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: outline-color 0.2s ease, background-color 0.2s ease;
+    }
+    body.cms-mode-editing [data-cms-bind]:hover {
+      outline: 2px solid #0284c7;
+      background-color: rgba(2, 132, 199, 0.08);
+    }
+  </style>
 </body>
 </html>
+
