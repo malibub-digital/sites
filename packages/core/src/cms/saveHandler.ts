@@ -180,6 +180,16 @@ export async function processCmsSaveRequest(
     }
 
     try {
+      // Solution 1 : Auto-fetch & Rebase pour rapatrier les modifications distantes avant de commiter
+      try {
+        await execAsync(`git fetch origin ${targetBranch}`, { cwd: projectRoot });
+        await execAsync(`git pull --rebase origin ${targetBranch}`, { cwd: projectRoot });
+      } catch (pullErr: any) {
+        // En cas d'échec du rebase (non-git repo ou pas encore de remote initialisé), on continue proprement
+        console.warn(`[CMS Git Warning] Impossible d'effectuer le git pull --rebase: ${pullErr.message}`);
+      }
+
+      // Solution 2 : Stage strictement ciblé uniquement sur les fichiers modifiés (site.config.json / markdown)
       const filesToStage = updatedFiles.join(' ');
       await execAsync(`git add ${filesToStage}`, { cwd: projectRoot });
       await execAsync(`git commit -m "cms(publish): mise à jour automatique du contenu via l'éditeur"`, { cwd: projectRoot });

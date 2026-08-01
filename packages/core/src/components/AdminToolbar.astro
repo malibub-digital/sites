@@ -355,14 +355,52 @@ const hashedSecret = await hashSha256(rawSecret);
       }
     }
 
-    function closePopover() {
+    async function closePopover() {
+      if (activeTargetElement) {
+        const bindKey = activeTargetElement.getAttribute("data-cms-bind");
+        if (bindKey) {
+          const token = getAdminCookieToken();
+          try {
+            await fetch("/api/cms/lock", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                ...(token ? { Authorization: `Bearer ${token}` } : {}),
+              },
+              body: JSON.stringify({ resourceId: bindKey, action: "release" }),
+            });
+          } catch {}
+        }
+      }
       popover?.classList.add("hidden");
       activeTargetElement = null;
     }
 
-    function openPopover(el: HTMLElement, event: MouseEvent) {
-      activeTargetElement = el;
+    async function openPopover(el: HTMLElement, event: MouseEvent) {
       const bindKey = el.getAttribute("data-cms-bind") || "element";
+      const token = getAdminCookieToken();
+
+      // Prise du verrou sur la ressource
+      try {
+        const lockRes = await fetch("/api/cms/lock", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
+          body: JSON.stringify({ resourceId: bindKey, action: "acquire" }),
+        });
+
+        if (lockRes.status === 423) {
+          const lockData = await lockRes.json();
+          notify(`⚠️ Élément actuellement en cours d'édition par ${lockData.holderName || "un autre administrateur"}.`);
+          return;
+        }
+      } catch (err: any) {
+        console.warn("Échec de la vérification de verrou:", err);
+      }
+
+      activeTargetElement = el;
       const drafts = cmsDraftStore.get();
       const hasDraft = bindKey in drafts;
 
@@ -392,7 +430,7 @@ const hashedSecret = await hashSha256(rawSecret);
       }
     }
 
-    function handleElementClick(event: MouseEvent) {
+    async function handleElementClick(event: MouseEvent) {
       if (document.documentElement.getAttribute("data-cms-editing") !== "true") return;
       const target = (event.target as HTMLElement).closest("[data-cms-bind]") as HTMLElement | null;
       if (!target) return;
@@ -403,7 +441,7 @@ const hashedSecret = await hashSha256(rawSecret);
 
       event.preventDefault();
       event.stopPropagation();
-      openPopover(target, event);
+      await openPopover(target, event);
     }
 
     function resetElement() {

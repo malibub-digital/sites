@@ -56,9 +56,17 @@ export const cmsSavePayloadSchema = z.object({
   filePath: z.string().optional()
 });
 
+export const cmsLockPayloadSchema = z.object({
+  resourceId: z.string(),
+  action: z.enum(['acquire', 'release', 'check']),
+  holderName: z.string().optional()
+});
+
 export type SiteConfig = z.infer<typeof siteConfigSchema>;
 export type Service = z.infer<typeof serviceSchema>;
 export type News = z.infer<typeof newsSchema>;
 export type Faq = z.infer<typeof faqSchema>;
 export type CmsSavePayload = z.infer<typeof cmsSavePayloadSchema>;
+export type CmsLockPayload = z.infer<typeof cmsLockPayloadSchema>;
+
 
