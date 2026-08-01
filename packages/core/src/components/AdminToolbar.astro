@@ -477,13 +477,6 @@ const hashedSecret = await hashSha256(rawSecret);
 
     popoverReset?.addEventListener("click", resetElement);
 
-    window.addEventListener("beforeunload", (event) => {
-      const drafts = cmsDraftStore.get();
-      if (Object.keys(drafts).length > 0) {
-        event.preventDefault();
-        event.returnValue = "";
-      }
-    });
 
     modeEditBtn?.addEventListener("click", () => setEditingMode(true));
     modePreviewBtn?.addEventListener("click", () => setEditingMode(false));
