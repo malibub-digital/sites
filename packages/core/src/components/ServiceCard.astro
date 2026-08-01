@@ -46,11 +46,11 @@ const badgeStyles = {
       )}
     </div>
     <h3 class="text-lg font-extrabold text-[var(--ml-color-neutral-900)] mb-2 font-title leading-snug">
-      <a href={href} class="no-underline text-[var(--ml-color-neutral-900)] hover:text-[var(--ml-color-green-700)] transition-colors">
+      <a href={href} class="no-underline text-[var(--ml-color-neutral-900)] hover:text-[var(--ml-color-green-700)] transition-colors" data-cms-bind="service.title">
         {title}
       </a>
     </h3>
-    <p class="text-xs md:text-sm text-[var(--ml-color-neutral-600)] leading-relaxed mb-5">
+    <p class="text-xs md:text-sm text-[var(--ml-color-neutral-600)] leading-relaxed mb-5" data-cms-bind="service.summary">
       {summary}
     </p>
   </div>

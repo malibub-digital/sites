@@ -47,9 +47,40 @@ const hashedSecret = await hashSha256(rawSecret);
         </div>
       </div>
 
-      <div id="ml-admin-notification-zone" class="ml-admin-notification-zone" aria-live="polite">
-        <span id="ml-admin-notification-text" class="ml-admin-notification-text hidden"></span>
+      <div class="ml-admin-right" style="display: flex; align-items: center; gap: 0.75rem;">
+        <div id="ml-admin-notification-zone" class="ml-admin-notification-zone" aria-live="polite">
+          <span id="ml-admin-notification-text" class="ml-admin-notification-text hidden"></span>
+        </div>
+
+        <button
+          type="button"
+          id="ml-admin-save-btn"
+          class="ml-btn ml-btn--primary ml-btn--sm hidden"
+          title="Enregistrer les modifications"
+        >
+          <i class="ml-icon-save-line ml-icon--xs"></i>
+          <span>Enregistrer</span>
+        </button>
       </div>
+    </div>
+  </div>
+
+  <div id="ml-cms-edit-popover" class="ml-cms-popover hidden" role="dialog" aria-modal="true" aria-labelledby="ml-cms-popover-title">
+    <div class="ml-cms-popover-header">
+      <span class="ml-cms-popover-badge" id="ml-cms-popover-bind-key">field</span>
+      <h3 id="ml-cms-popover-title" class="ml-cms-popover-heading">Éditer l'élément</h3>
+      <button type="button" id="ml-cms-popover-close" class="ml-cms-popover-close-btn" aria-label="Fermer">&times;</button>
+    </div>
+    <div class="ml-cms-popover-body">
+      <div class="ml-form-group">
+        <label for="ml-cms-popover-input" class="ml-form-label">Contenu textuel</label>
+        <textarea id="ml-cms-popover-input" class="ml-form-input ml-cms-textarea" rows="3"></textarea>
+      </div>
+    </div>
+    <div class="ml-cms-popover-footer">
+      <button type="button" id="ml-cms-popover-reset" class="ml-btn ml-btn--danger ml-btn--sm hidden" title="Rétablir la valeur initiale">Rétablir initial</button>
+      <button type="button" id="ml-cms-popover-cancel" class="ml-btn ml-btn--secondary ml-btn--sm">Annuler</button>
+      <button type="button" id="ml-cms-popover-save" class="ml-btn ml-btn--primary ml-btn--sm">Appliquer</button>
     </div>
   </div>
 </div>
@@ -109,6 +140,116 @@ const hashedSecret = await hashSha256(rawSecret);
     color: #38bdf8;
     font-weight: 500;
   }
+
+  /* Inline CMS Popover styles */
+  .ml-cms-popover {
+    position: fixed;
+    z-index: 10000;
+    width: 360px;
+    max-width: calc(100vw - 2rem);
+    background: #ffffff;
+    color: #0f172a;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e2e8f0;
+    padding: 1rem;
+    font-family: system-ui, -apple-system, sans-serif;
+  }
+  .ml-cms-popover-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+  }
+  .ml-cms-popover-badge {
+    font-size: 0.7rem;
+    font-family: monospace;
+    background: #e0f2fe;
+    color: #0369a1;
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    font-weight: 600;
+  }
+  .ml-cms-popover-heading {
+    font-size: 0.9rem;
+    font-weight: 700;
+    margin: 0;
+    color: #0f172a;
+    flex-grow: 1;
+  }
+  .ml-cms-popover-close-btn {
+    background: transparent;
+    border: none;
+    font-size: 1.25rem;
+    cursor: pointer;
+    color: #64748b;
+    line-height: 1;
+    padding: 0.2rem 0.4rem;
+  }
+  .ml-cms-popover-close-btn:hover {
+    color: #0f172a;
+  }
+  .ml-cms-popover-body {
+    margin-bottom: 1rem;
+  }
+  .ml-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+  .ml-form-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #475569;
+  }
+  .ml-cms-textarea {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0.5rem;
+    font-size: 0.875rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    resize: vertical;
+    outline-color: #0284c7;
+  }
+  .ml-cms-popover-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+  }
+  .ml-btn {
+    padding: 0.35rem 0.75rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    border-radius: 6px;
+    cursor: pointer;
+    border: 1px solid transparent;
+  }
+  .ml-btn--secondary {
+    background: #f1f5f9;
+    color: #475569;
+    border-color: #cbd5e1;
+  }
+  .ml-btn--secondary:hover {
+    background: #e2e8f0;
+  }
+  .ml-btn--primary {
+    background: #0284c7;
+    color: #ffffff;
+  }
+  .ml-btn--primary:hover {
+    background: #0369a1;
+  }
+  .ml-btn--danger {
+    background: #fff1f2;
+    color: #e11d48;
+    border-color: #fecdd3;
+  }
+  .ml-btn--danger:hover {
+    background: #ffe4e6;
+  }
+
   .hidden {
     display: none !important;
   }
@@ -116,6 +257,7 @@ const hashedSecret = await hashSha256(rawSecret);
 
 <script>
   import { getAdminCookieToken } from '../utils/auth.js';
+  import { cmsDraftStore, updateDraft, removeDraft, clearDrafts } from '../store/cms.js';
 
   function initAdminToolbar() {
     const root = document.getElementById("ml-admin-toolbar-root");
@@ -124,7 +266,59 @@ const hashedSecret = await hashSha256(rawSecret);
     const bar = document.getElementById("ml-admin-bar");
     const modeEditBtn = document.getElementById("ml-admin-mode-edit");
     const modePreviewBtn = document.getElementById("ml-admin-mode-preview");
+    const saveBtn = document.getElementById("ml-admin-save-btn");
+    const notificationText = document.getElementById("ml-admin-notification-text");
+    const popover = document.getElementById("ml-cms-edit-popover");
+    const popoverBindKey = document.getElementById("ml-cms-popover-bind-key");
+    const popoverInput = document.getElementById("ml-cms-popover-input") as HTMLTextAreaElement | null;
+    const popoverClose = document.getElementById("ml-cms-popover-close");
+    const popoverCancel = document.getElementById("ml-cms-popover-cancel");
+    const popoverReset = document.getElementById("ml-cms-popover-reset");
+    const popoverSave = document.getElementById("ml-cms-popover-save");
+
     const expectedHash = root.getAttribute("data-secret") || "";
+    let activeTargetElement: HTMLElement | null = null;
+
+    function cacheOriginalValues() {
+      const elements = document.querySelectorAll("[data-cms-bind]");
+      elements.forEach((el) => {
+        if (!el.hasAttribute("data-cms-original")) {
+          el.setAttribute("data-cms-original", el.textContent?.trim() || "");
+        }
+      });
+    }
+
+    function syncDraftsWithDOM() {
+      cacheOriginalValues();
+      const drafts = cmsDraftStore.get();
+      const elements = document.querySelectorAll("[data-cms-bind]");
+
+      elements.forEach((el) => {
+        const path = el.getAttribute("data-cms-bind");
+        const original = el.getAttribute("data-cms-original") || "";
+
+        if (path && drafts[path] !== undefined) {
+          el.textContent = drafts[path];
+        } else {
+          el.textContent = original;
+        }
+      });
+
+      const keys = Object.keys(drafts);
+      if (keys.length > 0) {
+        saveBtn?.classList.remove("hidden");
+        notify(`${keys.length} modification(s) non enregistrée(s)`);
+      } else {
+        saveBtn?.classList.add("hidden");
+        if (notificationText) notificationText.classList.add("hidden");
+      }
+    }
+
+    function notify(message: string) {
+      if (!notificationText) return;
+      notificationText.textContent = message;
+      notificationText.classList.remove("hidden");
+    }
 
     function setEditingMode(active: boolean) {
       document.body.classList.toggle("cms-mode-editing", active);
@@ -140,6 +334,7 @@ const hashedSecret = await hashSha256(rawSecret);
         modeEditBtn?.setAttribute("aria-checked", "false");
         modePreviewBtn?.classList.add("active");
         modePreviewBtn?.setAttribute("aria-checked", "true");
+        closePopover();
       }
 
       document.dispatchEvent(new CustomEvent("cms:editing-toggled", {
@@ -160,12 +355,110 @@ const hashedSecret = await hashSha256(rawSecret);
       }
     }
 
+    function closePopover() {
+      popover?.classList.add("hidden");
+      activeTargetElement = null;
+    }
+
+    function openPopover(el: HTMLElement, event: MouseEvent) {
+      activeTargetElement = el;
+      const bindKey = el.getAttribute("data-cms-bind") || "element";
+      const drafts = cmsDraftStore.get();
+      const hasDraft = bindKey in drafts;
+
+      if (popoverBindKey) popoverBindKey.textContent = bindKey;
+      if (popoverInput) popoverInput.value = el.textContent?.trim() || "";
+
+      if (hasDraft) {
+        popoverReset?.classList.remove("hidden");
+      } else {
+        popoverReset?.classList.add("hidden");
+      }
+
+      if (popover) {
+        popover.classList.remove("hidden");
+        const rect = el.getBoundingClientRect();
+        const popoverWidth = 360;
+        let left = rect.left + window.scrollX;
+        let top = rect.bottom + window.scrollY + 8;
+
+        if (left + popoverWidth > window.innerWidth - 16) {
+          left = Math.max(16, window.innerWidth - popoverWidth - 16);
+        }
+
+        popover.style.left = `${left}px`;
+        popover.style.top = `${top}px`;
+        popoverInput?.focus();
+      }
+    }
+
+    function handleElementClick(event: MouseEvent) {
+      if (document.documentElement.getAttribute("data-cms-editing") !== "true") return;
+      const target = (event.target as HTMLElement).closest("[data-cms-bind]") as HTMLElement | null;
+      if (!target) return;
+
+      if (target.children.length > 0 && Array.from(target.children).some(child => !child.classList.contains("ml-tricolor-bar"))) {
+        return;
+      }
+
+      event.preventDefault();
+      event.stopPropagation();
+      openPopover(target, event);
+    }
+
+    function resetElement() {
+      if (!activeTargetElement) return;
+      const bindPath = activeTargetElement.getAttribute("data-cms-bind");
+      if (bindPath) {
+        removeDraft(bindPath);
+      }
+      closePopover();
+    }
+
+    function applyChange() {
+      if (!activeTargetElement || !popoverInput) return;
+      const newValue = popoverInput.value.trim();
+      const bindPath = activeTargetElement.getAttribute("data-cms-bind");
+
+      if (bindPath) {
+        updateDraft(bindPath, newValue);
+      }
+
+      closePopover();
+    }
+
+    cmsDraftStore.subscribe(() => {
+      syncDraftsWithDOM();
+    });
+
+    saveBtn?.addEventListener("click", () => {
+      const drafts = cmsDraftStore.get();
+      document.dispatchEvent(new CustomEvent("cms:save-requested", { detail: { drafts } }));
+    });
+
+    popoverReset?.addEventListener("click", resetElement);
+
+    window.addEventListener("beforeunload", (event) => {
+      const drafts = cmsDraftStore.get();
+      if (Object.keys(drafts).length > 0) {
+        event.preventDefault();
+        event.returnValue = "";
+      }
+    });
+
     modeEditBtn?.addEventListener("click", () => setEditingMode(true));
     modePreviewBtn?.addEventListener("click", () => setEditingMode(false));
+    popoverClose?.addEventListener("click", closePopover);
+    popoverCancel?.addEventListener("click", closePopover);
+    popoverSave?.addEventListener("click", applyChange);
+
+    document.addEventListener("click", handleElementClick);
 
     checkAuthState();
+    syncDraftsWithDOM();
   }
 
   initAdminToolbar();
   document.addEventListener("astro:after-swap", initAdminToolbar);
 </script>
+
