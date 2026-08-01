@@ -126,6 +126,9 @@ export async function processCmsPublishRequest(
 
     const execOptions = { cwd: projectRoot, env: { ...process.env, ...extraEnv } };
 
+    const { ensureGitRepositoryInitialized } = await import('./gitInit.js');
+    await ensureGitRepositoryInitialized({ projectRoot, targetBranch, execOptions });
+
     try {
       await execAsync(`git fetch origin ${targetBranch}`, execOptions);
       await execAsync(`git pull --rebase origin ${targetBranch}`, execOptions);
