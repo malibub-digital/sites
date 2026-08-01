@@ -4,14 +4,18 @@ import { hashSha256 } from '../utils/auth.js';
 interface Props {
   adminSecret?: string;
   siteId?: string;
+  gitEnabled?: boolean;
 }
 
 const rawSecret = Astro.props.adminSecret || import.meta.env.CMS_ADMIN_SECRET || process.env.CMS_ADMIN_SECRET || "admin123";
 const siteId = Astro.props.siteId || "default";
 const hashedSecret = await hashSha256(rawSecret);
+const gitEnabled = Astro.props.gitEnabled !== undefined
+  ? Astro.props.gitEnabled
+  : (import.meta.env.CMS_GIT_ENABLED === 'true' || process.env.CMS_GIT_ENABLED === 'true' || import.meta.env.CMS_GIT_ENABLED === '1' || process.env.CMS_GIT_ENABLED === '1');
 ---
 
-<div id="ml-admin-toolbar-root" data-site-id={siteId} data-secret={hashedSecret}>
+<div id="ml-admin-toolbar-root" data-site-id={siteId} data-secret={hashedSecret} data-git-enabled={gitEnabled ? "true" : "false"}>
   <div id="ml-admin-bar" class="ml-admin-bar hidden">
     <div class="ml-admin-bar-container">
       <div class="ml-admin-left">
@@ -60,6 +64,16 @@ const hashedSecret = await hashSha256(rawSecret);
         >
           <i class="ml-icon-save-line ml-icon--xs"></i>
           <span>Enregistrer</span>
+        </button>
+
+        <button
+          type="button"
+          id="ml-admin-publish-btn"
+          class="ml-btn ml-btn--success ml-btn--sm hidden"
+          title="Publier les modifications sur GitHub"
+        >
+          <i class="ml-icon-upload-cloud-line ml-icon--xs"></i>
+          <span>Publier</span>
         </button>
       </div>
     </div>
@@ -249,6 +263,13 @@ const hashedSecret = await hashSha256(rawSecret);
   .ml-btn--danger:hover {
     background: #ffe4e6;
   }
+  .ml-btn--success {
+    background: #16a34a;
+    color: #ffffff;
+  }
+  .ml-btn--success:hover {
+    background: #15803d;
+  }
 
   .hidden {
     display: none !important;
@@ -267,6 +288,7 @@ const hashedSecret = await hashSha256(rawSecret);
     const modeEditBtn = document.getElementById("ml-admin-mode-edit");
     const modePreviewBtn = document.getElementById("ml-admin-mode-preview");
     const saveBtn = document.getElementById("ml-admin-save-btn");
+    const publishBtn = document.getElementById("ml-admin-publish-btn");
     const notificationText = document.getElementById("ml-admin-notification-text");
     const popover = document.getElementById("ml-cms-edit-popover");
     const popoverBindKey = document.getElementById("ml-cms-popover-bind-key");
@@ -277,6 +299,7 @@ const hashedSecret = await hashSha256(rawSecret);
     const popoverSave = document.getElementById("ml-cms-popover-save");
 
     const expectedHash = root.getAttribute("data-secret") || "";
+    const isGitEnabled = root.getAttribute("data-git-enabled") === "true";
     let activeTargetElement: HTMLElement | null = null;
 
     function cacheOriginalValues() {
@@ -348,9 +371,15 @@ const hashedSecret = await hashSha256(rawSecret);
 
       if (isAuthenticated) {
         bar?.classList.remove("hidden");
+        if (isGitEnabled) {
+          publishBtn?.classList.remove("hidden");
+        } else {
+          publishBtn?.classList.add("hidden");
+        }
         setEditingMode(true);
       } else {
         bar?.classList.add("hidden");
+        publishBtn?.classList.add("hidden");
         setEditingMode(false);
       }
     }
@@ -510,6 +539,36 @@ const hashedSecret = await hashSha256(rawSecret);
       }
 
       document.dispatchEvent(new CustomEvent("cms:save-requested", { detail: { drafts } }));
+    });
+
+    publishBtn?.addEventListener("click", async () => {
+      const token = getAdminCookieToken();
+      notify("Publication sur GitHub en cours...");
+      if (publishBtn) (publishBtn as HTMLButtonElement).disabled = true;
+
+      try {
+        const response = await fetch("/api/cms/publish", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
+        });
+
+        const resData = await response.json();
+        if (response.ok && resData.success) {
+          notify(resData.message || "Modifications publiées sur GitHub avec succès !");
+          setTimeout(() => {
+            if (notificationText) notificationText.classList.add("hidden");
+          }, 4000);
+        } else {
+          notify(`Erreur publication: ${resData.message || "Échec de la publication."}`);
+        }
+      } catch (err: any) {
+        notify(`Erreur réseau: ${err.message || "Impossible de contacter le serveur."}`);
+      } finally {
+        if (publishBtn) (publishBtn as HTMLButtonElement).disabled = false;
+      }
     });
 
 

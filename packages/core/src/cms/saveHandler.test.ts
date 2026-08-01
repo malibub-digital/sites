@@ -107,7 +107,7 @@ describe('processCmsSaveRequest API Handler', () => {
     expect(updatedMd).toContain('Contenu Markdown mis à jour');
   });
 
-  it('fails with status 400 if gitEnabled=true but no gitBranch provided', async () => {
+  it('saves modifications locally and returns success status', async () => {
     const req = new Request('http://localhost/api/cms/save', {
       method: 'POST',
       headers: {
@@ -116,16 +116,16 @@ describe('processCmsSaveRequest API Handler', () => {
       },
       body: JSON.stringify({
         drafts: {
-          'siteConfig.title': 'Titre Sans Branche',
+          'siteConfig.title': 'Titre Sauvegardé',
         },
       }),
     });
 
-    const res = await processCmsSaveRequest(req, { projectRoot: TEST_DIR, gitEnabled: true });
-    expect(res.status).toBe(400);
+    const res = await processCmsSaveRequest(req, { projectRoot: TEST_DIR });
+    expect(res.status).toBe(200);
 
     const body = await res.json();
-    expect(body.success).toBe(false);
-    expect(body.message).toContain('CMS_GIT_BRANCH');
+    expect(body.success).toBe(true);
+    expect(body.message).toContain('mis à jour localement');
   });
 });

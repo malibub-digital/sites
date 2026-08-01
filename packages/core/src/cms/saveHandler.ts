@@ -160,77 +160,11 @@ export async function processCmsSaveRequest(
     );
   }
 
-  const isGitEnabled = options.gitEnabled !== undefined
-    ? options.gitEnabled
-    : (process.env.CMS_GIT_ENABLED === 'true' || process.env.CMS_GIT_ENABLED === '1');
-
-  let gitPushed = false;
-  if (isGitEnabled) {
-    const targetBranch = options.gitBranch || process.env.CMS_GIT_BRANCH;
-    if (!targetBranch) {
-      return new Response(
-        JSON.stringify({
-          success: false,
-          message: 'Flux Git activé (CMS_GIT_ENABLED=true) mais la branche cible (CMS_GIT_BRANCH) n\'est pas configurée.',
-          updatedFiles,
-          errors: ['Branche Git cible non définie. Commit et Push annulés.'],
-        }),
-        { status: 400, headers: { 'Content-Type': 'application/json' } }
-      );
-    }
-
-    try {
-      // Configuration optionnelle de la clé SSH en mémoire via GIT_DEPLOY_KEY
-      const extraEnv: Record<string, string> = {};
-      const deployKey = process.env.GIT_DEPLOY_KEY;
-      if (deployKey && deployKey.trim().length > 0) {
-        // Si le fichier temporaire n'existe pas ou a changé, on l'écrit
-        const fs = await import('fs');
-        const path = await import('path');
-        const os = await import('os');
-        const keyPath = path.join(os.tmpdir(), 'cms_git_deploy_key');
-        fs.writeFileSync(keyPath, deployKey.trim() + '\n', { mode: 0o600 });
-        extraEnv.GIT_SSH_COMMAND = `ssh -i "${keyPath}" -o StrictHostKeyChecking=no`;
-      }
-
-      const execOptions = { cwd: projectRoot, env: { ...process.env, ...extraEnv } };
-
-      // Solution 1 : Auto-fetch & Rebase pour rapatrier les modifications distantes avant de commiter
-      try {
-        await execAsync(`git fetch origin ${targetBranch}`, execOptions);
-        await execAsync(`git pull --rebase origin ${targetBranch}`, execOptions);
-      } catch (pullErr: any) {
-        // En cas d'échec du rebase (non-git repo ou pas encore de remote initialisé), on continue proprement
-        console.warn(`[CMS Git Warning] Impossible d'effectuer le git pull --rebase: ${pullErr.message}`);
-      }
-
-      // Solution 2 : Stage strictly ciblé uniquement sur les fichiers modifiés (site.config.json / markdown)
-      const filesToStage = updatedFiles.join(' ');
-      await execAsync(`git add ${filesToStage}`, execOptions);
-      await execAsync(`git commit -m "cms(publish): mise à jour automatique du contenu via l'éditeur"`, execOptions);
-      await execAsync(`git push origin ${targetBranch}`, execOptions);
-      gitPushed = true;
-    } catch (gitErr: any) {
-      return new Response(
-        JSON.stringify({
-          success: false,
-          message: `Fichiers modifiés localement mais l'opération Git a échoué: ${gitErr.message}`,
-          updatedFiles,
-          errors: [gitErr.message],
-        }),
-        { status: 500, headers: { 'Content-Type': 'application/json' } }
-      );
-    }
-  }
-
   return new Response(
     JSON.stringify({
       success: true,
-      message: gitPushed
-        ? `${updatedFiles.length} fichier(s) mis à jour et poussés sur la branche Git '${options.gitBranch || process.env.CMS_GIT_BRANCH}'.`
-        : `${updatedFiles.length} fichier(s) mis à jour localement sur le disque.`,
+      message: `${updatedFiles.length} fichier(s) mis à jour localement sur le disque.`,
       updatedFiles,
-      gitPushed,
     }),
     { status: 200, headers: { 'Content-Type': 'application/json' } }
   );

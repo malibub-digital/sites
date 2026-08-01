@@ -10,6 +10,7 @@ export * from './utils/auth.js';
 export * from './store/cms.js';
 export * from './cms/saveHandler.js';
 export * from './cms/lockHandler.js';
+export * from './cms/publishHandler.js';
 
 
 
