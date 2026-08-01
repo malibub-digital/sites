@@ -419,13 +419,19 @@ const hashedSecret = await hashSha256(rawSecret);
       if (!activeTargetElement || !popoverInput) return;
       const newValue = popoverInput.value.trim();
       const bindPath = activeTargetElement.getAttribute("data-cms-bind");
+      const originalValue = activeTargetElement.getAttribute("data-cms-original") || "";
 
       if (bindPath) {
-        updateDraft(bindPath, newValue);
+        if (newValue === originalValue) {
+          removeDraft(bindPath);
+        } else {
+          updateDraft(bindPath, newValue);
+        }
       }
 
       closePopover();
     }
+
 
     cmsDraftStore.subscribe(() => {
       syncDraftsWithDOM();
