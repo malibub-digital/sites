@@ -131,6 +131,39 @@ const {
 <script>
   import { reorderArrayItem, deleteArrayItem, deleteContentFile } from '../store/cms.js';
 
+  function reindexCollectionItems(container: Element, colPath: string) {
+    const allItems = Array.from(container.querySelectorAll('[data-cms-item-index]'));
+    allItems.forEach((el, newIdx) => {
+      el.setAttribute('data-cms-item-index', String(newIdx));
+
+      const upBtn = el.querySelector('.ml-cms-item-up') as HTMLButtonElement | null;
+      const downBtn = el.querySelector('.ml-cms-item-down') as HTMLButtonElement | null;
+      const deleteBtn = el.querySelector('.ml-cms-item-delete') as HTMLButtonElement | null;
+
+      if (upBtn) {
+        upBtn.setAttribute('data-index', String(newIdx));
+        upBtn.disabled = newIdx === 0;
+      }
+      if (downBtn) {
+        downBtn.setAttribute('data-index', String(newIdx));
+        downBtn.disabled = newIdx === allItems.length - 1;
+      }
+      if (deleteBtn) {
+        deleteBtn.setAttribute('data-index', String(newIdx));
+      }
+
+      const bindElements = el.querySelectorAll('[data-cms-bind]');
+      bindElements.forEach((bindEl) => {
+        const currentBind = bindEl.getAttribute('data-cms-bind') || '';
+        const updatedBind = currentBind.replace(
+          new RegExp(`^${colPath.replace('.', '\\.')}\\.\\[\\d+\\]`),
+          `${colPath}.[${newIdx}]`
+        );
+        bindEl.setAttribute('data-cms-bind', updatedBind);
+      });
+    });
+  }
+
   function attachGlobalItemControlsHandler() {
     if ((window as any).__ml_cms_item_controls_listener) return;
     (window as any).__ml_cms_item_controls_listener = true;
@@ -147,37 +180,35 @@ const {
       const idx = parseInt(btn.getAttribute('data-index') || '0', 10);
       const slug = btn.getAttribute('data-slug') || '';
 
+      const itemEl = btn.closest('[data-cms-item-index]') as HTMLElement | null;
+      const container = itemEl?.closest('[data-cms-collection]') || itemEl?.parentElement;
+
       if (action === 'up') {
-        if (idx > 0) {
+        if (idx > 0 && itemEl && itemEl.previousElementSibling) {
           reorderArrayItem(path, idx, idx - 1);
-          const itemEl = btn.closest('[data-cms-item-index]');
-          const prevEl = itemEl?.previousElementSibling;
-          if (itemEl && prevEl) {
-            itemEl.parentNode?.insertBefore(itemEl, prevEl);
-          }
+          itemEl.parentNode?.insertBefore(itemEl, itemEl.previousElementSibling);
+          if (container) reindexCollectionItems(container, path);
         }
       } else if (action === 'down') {
-        reorderArrayItem(path, idx, idx + 1);
-        const itemEl = btn.closest('[data-cms-item-index]');
-        const nextEl = itemEl?.nextElementSibling;
-        if (itemEl && nextEl) {
-          itemEl.parentNode?.insertBefore(nextEl, itemEl);
+        if (itemEl && itemEl.nextElementSibling) {
+          reorderArrayItem(path, idx, idx + 1);
+          itemEl.parentNode?.insertBefore(itemEl.nextElementSibling, itemEl);
+          if (container) reindexCollectionItems(container, path);
         }
       } else if (action === 'delete-array') {
         deleteArrayItem(path, idx);
-        const itemEl = btn.closest('[data-cms-item-index]') as HTMLElement | null;
         if (itemEl) {
-          itemEl.style.opacity = '0.4';
+          itemEl.style.opacity = '0.3';
           itemEl.style.textDecoration = 'line-through';
           itemEl.style.pointerEvents = 'none';
         }
       } else if (action === 'delete-file') {
         deleteContentFile(path, slug);
-        const itemEl = btn.closest('[data-cms-file]') as HTMLElement | null;
-        if (itemEl) {
-          itemEl.style.opacity = '0.4';
-          itemEl.style.textDecoration = 'line-through';
-          itemEl.style.pointerEvents = 'none';
+        const fileItemEl = btn.closest('[data-cms-file]') as HTMLElement | null;
+        if (fileItemEl) {
+          fileItemEl.style.opacity = '0.3';
+          fileItemEl.style.textDecoration = 'line-through';
+          fileItemEl.style.pointerEvents = 'none';
         }
       }
     });

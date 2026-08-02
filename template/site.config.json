@@ -31,12 +31,12 @@
       "answer": "Connectez-vous via l'espace d'administration (/admin). Une fois authentifié, activez le Mode Édition sur le bandeau supérieur pour modifier les textes inline ou ajouter/supprimer des éléments."
     },
     {
-      "question": "Comment les modifications sont-elles enregistrées ?",
-      "answer": "Les modifications sont enregistrées localement sur le disque puis publiées sur le dépôt Git de l'institution, déclenchant automatiquement le déploiement continu Dokploy."
-    },
-    {
       "question": "Nouvelle question posée ?",
       "answer": "Explication et réponse de l'administration."
+    },
+    {
+      "question": "Comment les modifications sont-elles enregistrées ?",
+      "answer": "Les modifications sont enregistrées localement sur le disque puis publiées sur le dépôt Git de l'institution, déclenchant automatiquement le déploiement continu Dokploy."
     }
   ],
   "meta": {}
