@@ -673,7 +673,7 @@ const gitEnabled = Astro.props.gitEnabled !== undefined
 
 <script>
   import { getAdminCookieToken } from '../utils/auth.js';
-  import { cmsDraftStore, updateDraft, removeDraft, clearDrafts } from '../store/cms.js';
+  import { cmsDraftStore, cmsSavedStore, updateDraft, removeDraft, clearDrafts, addSavedChanges, removeSaved, clearSavedChanges } from '../store/cms.js';
 
   const STORAGE_KEY_UNPUBLISHED = "cms_has_unpublished_changes";
 
@@ -881,6 +881,7 @@ const gitEnabled = Astro.props.gitEnabled !== undefined
     function syncDraftsWithDOM() {
       cacheOriginalValues();
       const drafts = cmsDraftStore.get();
+      const saved = cmsSavedStore.get();
       const elements = document.querySelectorAll("[data-cms-bind]");
 
       elements.forEach((el) => {
@@ -890,9 +891,15 @@ const gitEnabled = Astro.props.gitEnabled !== undefined
         if (path && drafts[path] !== undefined) {
           el.textContent = drafts[path];
           el.setAttribute("data-cms-has-draft", "true");
+          el.removeAttribute("data-cms-has-saved");
+        } else if (path && saved[path] !== undefined) {
+          el.textContent = saved[path];
+          el.removeAttribute("data-cms-has-draft");
+          el.setAttribute("data-cms-has-saved", "true");
         } else {
           el.textContent = original;
           el.removeAttribute("data-cms-has-draft");
+          el.removeAttribute("data-cms-has-saved");
         }
       });
 
@@ -995,12 +1002,14 @@ const gitEnabled = Astro.props.gitEnabled !== undefined
       activeTargetElement = el;
       activeTargetElement.setAttribute("data-cms-active", "true");
       const drafts = cmsDraftStore.get();
+      const saved = cmsSavedStore.get();
       const hasDraft = bindKey in drafts;
+      const hasSaved = bindKey in saved;
 
       if (popoverBindKey) popoverBindKey.textContent = bindKey;
       if (popoverInput) popoverInput.value = el.textContent?.trim() || "";
 
-      if (hasDraft) {
+      if (hasDraft || hasSaved) {
         popoverReset?.classList.remove("hidden");
       } else {
         popoverReset?.classList.add("hidden");
@@ -1042,6 +1051,7 @@ const gitEnabled = Astro.props.gitEnabled !== undefined
       const bindPath = activeTargetElement.getAttribute("data-cms-bind");
       if (bindPath) {
         removeDraft(bindPath);
+        removeSaved(bindPath);
       }
       closePopover();
     }
@@ -1055,6 +1065,7 @@ const gitEnabled = Astro.props.gitEnabled !== undefined
       if (bindPath) {
         if (newValue === originalValue) {
           removeDraft(bindPath);
+          removeSaved(bindPath);
         } else {
           updateDraft(bindPath, newValue);
         }
@@ -1064,6 +1075,10 @@ const gitEnabled = Astro.props.gitEnabled !== undefined
     }
 
     cmsDraftStore.subscribe(() => {
+      syncDraftsWithDOM();
+    });
+
+    cmsSavedStore.subscribe(() => {
       syncDraftsWithDOM();
     });
 
@@ -1089,6 +1104,7 @@ const gitEnabled = Astro.props.gitEnabled !== undefined
         setSaveLoading(false);
 
         if (response.ok && resData.success) {
+          addSavedChanges(drafts);
           clearDrafts();
           localStorage.setItem(STORAGE_KEY_UNPUBLISHED, "true");
           updateToolbarButtonsState();
@@ -1132,6 +1148,7 @@ const gitEnabled = Astro.props.gitEnabled !== undefined
         setPublishLoading(false);
 
         if (response.ok && resData.success) {
+          clearSavedChanges();
           localStorage.removeItem(STORAGE_KEY_UNPUBLISHED);
           updateToolbarButtonsState();
           notify(resData.message || "Modifications publiées sur GitHub avec succès !", 'success');
@@ -1184,6 +1201,10 @@ const gitEnabled = Astro.props.gitEnabled !== undefined
 
     document.addEventListener("click", handleElementClick);
 
+    if (localStorage.getItem(STORAGE_KEY_UNPUBLISHED) !== "true") {
+      clearSavedChanges();
+    }
+
     checkAuthState();
     syncDraftsWithDOM();
   }
@@ -1191,4 +1212,5 @@ const gitEnabled = Astro.props.gitEnabled !== undefined
   initAdminToolbar();
   document.addEventListener("astro:after-swap", initAdminToolbar);
 </script>
+
 
