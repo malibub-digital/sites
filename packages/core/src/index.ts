@@ -6,6 +6,8 @@ export { default as Hero } from './components/Hero.astro';
 export { default as ServiceCard } from './components/ServiceCard.astro';
 export { default as SideMenu } from './components/SideMenu.astro';
 export { default as AdminToolbar } from './components/AdminToolbar.astro';
+export { default as CollectionAddButton } from './components/CollectionAddButton.astro';
+export { default as CollectionItemControls } from './components/CollectionItemControls.astro';
 export * from './utils/auth.js';
 export * from './store/cms.js';
 export * from './cms/saveHandler.js';

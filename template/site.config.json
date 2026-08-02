@@ -21,5 +21,19 @@
     }
   ],
   "header": "RÉPUBLIQUE DU MALI  Sites Faciles Mali",
+  "faq": [
+    {
+      "question": "Qu'est-ce que la plateforme Sites Faciles Mali ?",
+      "answer": "Sites Faciles Mali est un kit de démarrage et un socle technique unifié permettant aux institutions publiques maliennes de déployer des sites web accessibles, sécurisés et conformes au Design System Mali (DSML)."
+    },
+    {
+      "question": "Comment éditer le contenu d'un site en ligne ?",
+      "answer": "Connectez-vous via l'espace d'administration (/admin). Une fois authentifié, activez le Mode Édition sur le bandeau supérieur pour modifier les textes inline ou ajouter/supprimer des éléments."
+    },
+    {
+      "question": "Comment les modifications sont-elles enregistrées ?",
+      "answer": "Les modifications sont enregistrées localement sur le disque puis publiées sur le dépôt Git de l'institution, déclenchant automatiquement le déploiement continu Dokploy."
+    }
+  ],
   "meta": {}
 }

@@ -304,12 +304,72 @@ const gitEnabled =
         >
         </div>
       </div>
+  <!-- Content Creation Modal -->
+  <div
+    id="ml-cms-create-content-modal"
+    class="ml-cms-modal-overlay hidden"
+    role="dialog"
+    aria-modal="true"
+  >
+    <div class="ml-cms-modal-content">
+      <div class="ml-cms-modal-header">
+        <h3 class="ml-cms-modal-heading" style="display:flex; align-items:center; gap:0.5rem;">
+          <i class="ml-icon-file-add-line ml-icon--xs"></i>
+          <span>Nouveau document / article</span>
+        </h3>
+        <button type="button" id="ml-cms-create-content-close" class="ml-cms-popover-close-btn">&times;</button>
+      </div>
+      <div class="ml-cms-modal-body">
+        <div class="ml-form-group mb-3">
+          <label for="ml-create-content-title" class="ml-form-label">Titre du document</label>
+          <input type="text" id="ml-create-content-title" class="ml-form-input ml-cms-textarea" style="height: auto;" placeholder="Ex: Communiqué sur les horaires d'été" />
+        </div>
+        <div class="ml-form-group mb-3">
+          <label for="ml-create-content-category" class="ml-form-label">Catégorie</label>
+          <input type="text" id="ml-create-content-category" class="ml-form-input ml-cms-textarea" style="height: auto;" placeholder="Ex: Communiqués" />
+        </div>
+        <input type="hidden" id="ml-create-content-collection" value="actualites" />
+      </div>
       <div class="ml-cms-modal-footer">
-        <button
-          type="button"
-          id="ml-cms-error-done"
-          class="ml-btn ml-btn--secondary ml-btn--sm">Fermer</button
-        >
+        <button type="button" id="ml-cms-create-content-cancel" class="ml-btn ml-btn--secondary ml-btn--sm">
+          Annuler
+        </button>
+        <button type="button" id="ml-cms-create-content-submit" class="ml-btn ml-btn--primary ml-btn--sm">
+          <i class="ml-icon-add-line ml-icon--xs"></i>
+          <span>Créer le document</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirm Delete Modal -->
+  <div
+    id="ml-cms-confirm-delete-modal"
+    class="ml-cms-modal-overlay hidden"
+    role="dialog"
+    aria-modal="true"
+  >
+    <div class="ml-cms-modal-content" style="width: 420px;">
+      <div class="ml-cms-modal-header">
+        <h3 class="ml-cms-modal-heading" style="color: #e11d48; display:flex; align-items:center; gap:0.5rem;">
+          <i class="ml-icon-delete-bin-line ml-icon--xs"></i>
+          <span>Confirmer la suppression</span>
+        </h3>
+        <button type="button" id="ml-cms-confirm-delete-close" class="ml-cms-popover-close-btn">&times;</button>
+      </div>
+      <div class="ml-cms-modal-body">
+        <p id="ml-cms-confirm-delete-text" class="ml-cms-modal-desc">
+          Êtes-vous sûr de vouloir supprimer cet élément ? Cette action sera enregistrée lors de la sauvegarde.
+        </p>
+      </div>
+      <div class="ml-cms-modal-footer">
+        <button type="button" id="ml-cms-confirm-delete-cancel" class="ml-btn ml-btn--secondary ml-btn--sm">
+          Annuler
+        </button>
+        <button type="button" id="ml-cms-confirm-delete-submit" class="ml-btn ml-btn--danger ml-btn--sm">
+          <i class="ml-icon-delete-bin-line ml-icon--xs"></i>
+          <span>Supprimer</span>
+        </button>
       </div>
     </div>
   </div>
@@ -731,6 +791,63 @@ const gitEnabled =
     border-bottom-right-radius: 12px;
   }
 
+  /* Collection Controls Styles */
+  :global([data-cms-collection]) {
+    position: relative;
+  }
+  :global([data-cms-item-index]),
+  :global([data-cms-file]) {
+    position: relative;
+  }
+  :global(.ml-cms-collection-add-container) {
+    display: flex;
+    justify-content: center;
+    padding: 0.75rem 0;
+    margin: 0.5rem 0;
+    width: 100%;
+  }
+  :global(.ml-cms-item-toolbar) {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    z-index: 99;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    background: rgba(15, 23, 42, 0.92);
+    padding: 3px 5px;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    transform: translateY(-2px);
+    pointer-events: auto;
+  }
+  :global([data-cms-item-index]:hover) :global(.ml-cms-item-toolbar),
+  :global([data-cms-file]:hover) :global(.ml-cms-item-toolbar) {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  :global(.ml-cms-item-btn) {
+    background: transparent;
+    color: #ffffff;
+    border: none;
+    padding: 4px 6px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s ease;
+  }
+  :global(.ml-cms-item-btn:hover) {
+    background: rgba(255, 255, 255, 0.2);
+  }
+  :global(.ml-cms-item-btn.ml-cms-item-delete:hover) {
+    background: #e11d48;
+    color: #ffffff;
+  }
+
   .hidden {
     display: none !important;
   }
@@ -863,9 +980,13 @@ const gitEnabled =
   import {
     cmsDraftStore,
     cmsSavedStore,
+    cmsOperationsStore,
     updateDraft,
     removeDraft,
     clearDrafts,
+    addOperation,
+    removeOperation,
+    clearOperations,
     addSavedChanges,
     removeSaved,
     clearSavedChanges,
@@ -933,9 +1054,24 @@ const gitEnabled =
     const errorModalClose = document.getElementById("ml-cms-error-close");
     const errorModalDone = document.getElementById("ml-cms-error-done");
 
+    const createContentModal = document.getElementById("ml-cms-create-content-modal");
+    const createContentTitle = document.getElementById("ml-create-content-title") as HTMLInputElement | null;
+    const createContentCategory = document.getElementById("ml-create-content-category") as HTMLInputElement | null;
+    const createContentCollection = document.getElementById("ml-create-content-collection") as HTMLInputElement | null;
+    const createContentClose = document.getElementById("ml-cms-create-content-close");
+    const createContentCancel = document.getElementById("ml-cms-create-content-cancel");
+    const createContentSubmit = document.getElementById("ml-cms-create-content-submit");
+
+    const confirmDeleteModal = document.getElementById("ml-cms-confirm-delete-modal");
+    const confirmDeleteText = document.getElementById("ml-cms-confirm-delete-text");
+    const confirmDeleteClose = document.getElementById("ml-cms-confirm-delete-close");
+    const confirmDeleteCancel = document.getElementById("ml-cms-confirm-delete-cancel");
+    const confirmDeleteSubmit = document.getElementById("ml-cms-confirm-delete-submit");
+
     const expectedHash = root.getAttribute("data-secret") || "";
     const isGitEnabled = root.getAttribute("data-git-enabled") === "true";
     let activeTargetElement: HTMLElement | null = null;
+    let pendingDeleteTarget: { type: 'array' | 'file'; collectionPath: string; index?: number; slug?: string } | null = null;
     let lastErrorData: {
       title: string;
       message: string;
@@ -1034,23 +1170,52 @@ const gitEnabled =
       resetModal?.classList.add("hidden");
     }
 
+    function openCreateContentModal(collectionName: string) {
+      if (createContentCollection) createContentCollection.value = collectionName;
+      if (createContentTitle) createContentTitle.value = "";
+      if (createContentCategory) createContentCategory.value = "";
+      createContentModal?.classList.remove("hidden");
+    }
+
+    function closeCreateContentModal() {
+      createContentModal?.classList.add("hidden");
+    }
+
+    function openConfirmDeleteModal(target: { type: 'array' | 'file'; collectionPath: string; index?: number; slug?: string }) {
+      pendingDeleteTarget = target;
+      if (confirmDeleteText) {
+        confirmDeleteText.textContent = target.type === 'file'
+          ? `Êtes-vous sûr de vouloir supprimer l'article "${target.slug}" ?`
+          : `Êtes-vous sûr de vouloir supprimer cet élément de la liste ?`;
+      }
+      confirmDeleteModal?.classList.remove("hidden");
+    }
+
+    function closeConfirmDeleteModal() {
+      confirmDeleteModal?.classList.add("hidden");
+      pendingDeleteTarget = null;
+    }
+
     function updateToolbarButtonsState() {
       const drafts = cmsDraftStore.get();
+      const ops = cmsOperationsStore.get();
       const hasDrafts = Object.keys(drafts).length > 0;
+      const hasOps = ops.length > 0;
+      const hasChanges = hasDrafts || hasOps;
       const hasUnpublished =
         localStorage.getItem(STORAGE_KEY_UNPUBLISHED) === "true";
 
       if (saveBtn) {
-        (saveBtn as HTMLButtonElement).disabled = !hasDrafts;
+        (saveBtn as HTMLButtonElement).disabled = !hasChanges;
       }
 
       if (publishBtn) {
         (publishBtn as HTMLButtonElement).disabled =
-          !isGitEnabled || hasDrafts || !hasUnpublished;
+          !isGitEnabled || hasChanges || !hasUnpublished;
       }
 
-      if (hasDrafts) {
-        const count = Object.keys(drafts).length;
+      if (hasChanges) {
+        const count = Object.keys(drafts).length + ops.length;
         const s = count > 1 ? "s" : "";
         notify(`${count} modification${s} non enregistrée${s}`, "info");
       } else if (hasUnpublished && isGitEnabled) {
@@ -1121,6 +1286,124 @@ const gitEnabled =
       });
     }
 
+    function renderCollectionControls() {
+      const isEditing = document.documentElement.getAttribute("data-cms-editing") === "true";
+      const collections = document.querySelectorAll("[data-cms-collection]");
+
+      collections.forEach((colEl) => {
+        const colPath = colEl.getAttribute("data-cms-collection") || "";
+        const colType = colEl.getAttribute("data-cms-collection-type") || "json";
+
+        let addContainer = colEl.querySelector(":scope > .ml-cms-collection-add-container");
+        if (isEditing) {
+          if (!addContainer) {
+            addContainer = document.createElement("div");
+            addContainer.className = "ml-cms-collection-add-container";
+
+            const addBtn = document.createElement("button");
+            addBtn.type = "button";
+            if (colType === "content") {
+              addBtn.className = "ml-btn ml-btn--primary ml-btn--sm ml-cms-add-content-btn";
+              addBtn.innerHTML = `<i class="ml-icon-file-add-line ml-icon--xs"></i><span>Ajouter un document</span>`;
+              addBtn.addEventListener("click", (e) => {
+                e.stopPropagation();
+                openCreateContentModal(colPath);
+              });
+            } else {
+              addBtn.className = "ml-btn ml-btn--secondary ml-btn--sm ml-cms-add-item-btn";
+              addBtn.innerHTML = `<i class="ml-icon-add-line ml-icon--xs"></i><span>Ajouter un élément</span>`;
+              addBtn.addEventListener("click", (e) => {
+                e.stopPropagation();
+                addOperation({ type: "ADD_ARRAY_ITEM", arrayPath: colPath });
+                notify("Nouvel élément ajouté à la liste. N'oubliez pas d'enregistrer.", "info");
+              });
+            }
+
+            addContainer.appendChild(addBtn);
+            colEl.appendChild(addContainer);
+          } else {
+            (addContainer as HTMLElement).style.display = "flex";
+          }
+        } else if (addContainer) {
+          (addContainer as HTMLElement).style.display = "none";
+        }
+
+        const items = colEl.querySelectorAll("[data-cms-item-index], [data-cms-file]");
+        items.forEach((itemEl, idx) => {
+          const fileAttr = itemEl.getAttribute("data-cms-file");
+          let itemToolbar = itemEl.querySelector(":scope > .ml-cms-item-toolbar");
+
+          if (isEditing) {
+            if (!itemToolbar) {
+              itemToolbar = document.createElement("div");
+              itemToolbar.className = "ml-cms-item-toolbar";
+
+              if (fileAttr) {
+                const delBtn = document.createElement("button");
+                delBtn.type = "button";
+                delBtn.className = "ml-cms-item-btn ml-cms-item-delete";
+                delBtn.title = "Supprimer l'article";
+                delBtn.innerHTML = `<i class="ml-icon-delete-bin-line ml-icon--xs"></i>`;
+                delBtn.addEventListener("click", (e) => {
+                  e.stopPropagation();
+                  const slugMatch = fileAttr.match(/\/([^\/]+)\.md$/);
+                  const slug = slugMatch ? slugMatch[1] : fileAttr;
+                  openConfirmDeleteModal({ type: 'file', collectionPath: colPath, slug });
+                });
+                itemToolbar.appendChild(delBtn);
+              } else {
+                const upBtn = document.createElement("button");
+                upBtn.type = "button";
+                upBtn.className = "ml-cms-item-btn ml-cms-item-up";
+                upBtn.title = "Monter";
+                upBtn.innerHTML = `<i class="ml-icon-arrow-up-line ml-icon--xs"></i>`;
+                upBtn.addEventListener("click", (e) => {
+                  e.stopPropagation();
+                  if (idx > 0) {
+                    addOperation({ type: "REORDER_ARRAY_ITEM", arrayPath: colPath, fromIndex: idx, toIndex: idx - 1 });
+                    notify("Élément déplacé. N'oubliez pas d'enregistrer.", "info");
+                  }
+                });
+
+                const downBtn = document.createElement("button");
+                downBtn.type = "button";
+                downBtn.className = "ml-cms-item-btn ml-cms-item-down";
+                downBtn.title = "Descendre";
+                downBtn.innerHTML = `<i class="ml-icon-arrow-down-line ml-icon--xs"></i>`;
+                downBtn.addEventListener("click", (e) => {
+                  e.stopPropagation();
+                  if (idx < items.length - 1) {
+                    addOperation({ type: "REORDER_ARRAY_ITEM", arrayPath: colPath, fromIndex: idx, toIndex: idx + 1 });
+                    notify("Élément déplacé. N'oubliez pas d'enregistrer.", "info");
+                  }
+                });
+
+                const delBtn = document.createElement("button");
+                delBtn.type = "button";
+                delBtn.className = "ml-cms-item-btn ml-cms-item-delete";
+                delBtn.title = "Supprimer";
+                delBtn.innerHTML = `<i class="ml-icon-delete-bin-line ml-icon--xs"></i>`;
+                delBtn.addEventListener("click", (e) => {
+                  e.stopPropagation();
+                  openConfirmDeleteModal({ type: 'array', collectionPath: colPath, index: idx });
+                });
+
+                itemToolbar.appendChild(upBtn);
+                itemToolbar.appendChild(downBtn);
+                itemToolbar.appendChild(delBtn);
+              }
+
+              itemEl.appendChild(itemToolbar);
+            } else {
+              (itemToolbar as HTMLElement).style.display = "flex";
+            }
+          } else if (itemToolbar) {
+            (itemToolbar as HTMLElement).style.display = "none";
+          }
+        });
+      });
+    }
+
     function syncDraftsWithDOM() {
       cacheOriginalValues();
       const drafts = cmsDraftStore.get();
@@ -1146,6 +1429,7 @@ const gitEnabled =
         }
       });
 
+      renderCollectionControls();
       updateToolbarButtonsState();
     }
 
@@ -1165,6 +1449,8 @@ const gitEnabled =
         modePreviewBtn?.setAttribute("aria-checked", "true");
         closePopover();
       }
+
+      renderCollectionControls();
 
       document.dispatchEvent(
         new CustomEvent("cms:editing-toggled", {
@@ -1346,9 +1632,14 @@ const gitEnabled =
       syncDraftsWithDOM();
     });
 
+    cmsOperationsStore.subscribe(() => {
+      syncDraftsWithDOM();
+    });
+
     saveBtn?.addEventListener("click", async () => {
       const drafts = cmsDraftStore.get();
-      if (Object.keys(drafts).length === 0) return;
+      const operations = cmsOperationsStore.get();
+      if (Object.keys(drafts).length === 0 && operations.length === 0) return;
 
       const token = getAdminCookieToken();
       setSaveLoading(true);
@@ -1361,7 +1652,7 @@ const gitEnabled =
             "Content-Type": "application/json",
             ...(token ? { Authorization: `Bearer ${token}` } : {}),
           },
-          body: JSON.stringify({ drafts }),
+          body: JSON.stringify({ drafts, operations }),
         });
 
         const resData = await response.json();
@@ -1370,6 +1661,7 @@ const gitEnabled =
         if (response.ok && resData.success) {
           addSavedChanges(drafts);
           clearDrafts();
+          clearOperations();
           localStorage.setItem(STORAGE_KEY_UNPUBLISHED, "true");
           updateToolbarButtonsState();
           notify("Modifications enregistrées avec succès !", "success");
@@ -1400,14 +1692,16 @@ const gitEnabled =
       }
 
       document.dispatchEvent(
-        new CustomEvent("cms:save-requested", { detail: { drafts } }),
+        new CustomEvent("cms:save-requested", { detail: { drafts, operations } }),
       );
     });
 
     publishBtn?.addEventListener("click", async () => {
       const drafts = cmsDraftStore.get();
+      const operations = cmsOperationsStore.get();
       if (
         Object.keys(drafts).length > 0 ||
+        operations.length > 0 ||
         localStorage.getItem(STORAGE_KEY_UNPUBLISHED) !== "true"
       )
         return;
@@ -1456,6 +1750,53 @@ const gitEnabled =
         );
         updateToolbarButtonsState();
       }
+    });
+
+    createContentClose?.addEventListener("click", closeCreateContentModal);
+    createContentCancel?.addEventListener("click", closeCreateContentModal);
+    createContentSubmit?.addEventListener("click", () => {
+      const collection = createContentCollection?.value || "actualites";
+      const title = createContentTitle?.value.trim() || "Nouveau document";
+      const category = createContentCategory?.value.trim() || "Général";
+      const slug = title
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/(^-|-$)/g, "");
+
+      addOperation({
+        type: "CREATE_CONTENT_FILE",
+        collection,
+        slug: slug || "nouveau-document",
+        frontmatter: { title, category, date: new Date().toISOString().split("T")[0] },
+        content: `# ${title}\n\nSaisissez le contenu du document ici.`,
+      });
+
+      closeCreateContentModal();
+      notify(`Document "${title}" prêt à être créé. N'oubliez pas d'enregistrer.`, "info");
+    });
+
+    confirmDeleteClose?.addEventListener("click", closeConfirmDeleteModal);
+    confirmDeleteCancel?.addEventListener("click", closeConfirmDeleteModal);
+    confirmDeleteSubmit?.addEventListener("click", () => {
+      if (!pendingDeleteTarget) return;
+      if (pendingDeleteTarget.type === "file" && pendingDeleteTarget.slug) {
+        addOperation({
+          type: "DELETE_CONTENT_FILE",
+          collection: pendingDeleteTarget.collectionPath,
+          slug: pendingDeleteTarget.slug,
+        });
+        notify(`Article marqué pour suppression. N'oubliez pas d'enregistrer.`, "info");
+      } else if (pendingDeleteTarget.type === "array" && pendingDeleteTarget.index !== undefined) {
+        addOperation({
+          type: "DELETE_ARRAY_ITEM",
+          arrayPath: pendingDeleteTarget.collectionPath,
+          index: pendingDeleteTarget.index,
+        });
+        notify(`Élément marqué pour suppression. N'oubliez pas d'enregistrer.`, "info");
+      }
+      closeConfirmDeleteModal();
     });
 
     resetBtn?.addEventListener("click", openResetModal);

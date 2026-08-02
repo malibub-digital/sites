@@ -2,10 +2,14 @@ import { describe, it, expect, beforeEach } from 'vitest';
 import {
   cmsDraftStore,
   cmsSavedStore,
+  cmsOperationsStore,
   cmsStatusStore,
   updateDraft,
   removeDraft,
   clearDrafts,
+  addOperation,
+  removeOperation,
+  clearOperations,
   addSavedChanges,
   removeSaved,
   clearSavedChanges,
@@ -16,6 +20,7 @@ describe('CMS Store', () => {
   beforeEach(() => {
     clearDrafts();
     clearSavedChanges();
+    clearOperations();
   });
 
   it('updates draft and status correctly', () => {
@@ -58,6 +63,20 @@ describe('CMS Store', () => {
 
     expect(cmsDraftStore.get()).toEqual({});
     expect(cmsSavedStore.get()).toEqual({});
+    expect(cmsStatusStore.get()).toBe('idle');
+  });
+
+  it('manages operations store correctly', () => {
+    addOperation({ type: 'ADD_ARRAY_ITEM', arrayPath: 'siteConfig.faq', defaultData: { question: 'Q' } });
+    expect(cmsOperationsStore.get()).toHaveLength(1);
+    expect(cmsStatusStore.get()).toBe('dirty');
+
+    removeOperation(0);
+    expect(cmsOperationsStore.get()).toHaveLength(0);
+
+    addOperation({ type: 'DELETE_CONTENT_FILE', collection: 'actualites', slug: 'art' });
+    clearOperations();
+    expect(cmsOperationsStore.get()).toHaveLength(0);
     expect(cmsStatusStore.get()).toBe('idle');
   });
 });

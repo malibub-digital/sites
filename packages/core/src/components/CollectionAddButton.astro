@@ -1,0 +1,84 @@
+---
+interface Props {
+  collectionPath: string;
+  collectionType?: 'json' | 'content';
+  label?: string;
+  defaultData?: Record<string, any>;
+  class?: string;
+}
+
+const {
+  collectionPath,
+  collectionType = 'json',
+  label = collectionType === 'content' ? 'Ajouter un document' : 'Ajouter un élément',
+  defaultData,
+  class: className = '',
+} = Astro.props;
+---
+
+<div class={`ml-cms-collection-add-container ${className}`} data-cms-collection-add={collectionPath}>
+  <button
+    type="button"
+    class={`ml-btn ${collectionType === 'content' ? 'ml-btn--primary' : 'ml-btn--secondary'} ml-btn--sm ml-cms-add-btn`}
+    data-collection-path={collectionPath}
+    data-collection-type={collectionType}
+    data-default-data={defaultData ? JSON.stringify(defaultData) : ''}
+  >
+    <i class={collectionType === 'content' ? 'ml-icon-file-add-line ml-icon--xs' : 'ml-icon-add-line ml-icon--xs'}></i>
+    <span>{label}</span>
+  </button>
+</div>
+
+<style>
+  .ml-cms-collection-add-container {
+    display: none;
+    justify-content: center;
+    padding: 0.75rem 0;
+    margin: 0.5rem 0;
+    width: 100%;
+  }
+
+  :global(:root[data-cms-editing="true"]) .ml-cms-collection-add-container,
+  :global(body.cms-mode-editing) .ml-cms-collection-add-container {
+    display: flex !important;
+  }
+</style>
+
+<script>
+  import { addArrayItem } from '../store/cms.js';
+
+  function attachGlobalAddButtonsHandler() {
+    if ((window as any).__ml_cms_add_button_listener) return;
+    (window as any).__ml_cms_add_button_listener = true;
+
+    document.addEventListener('click', (e) => {
+      const btn = (e.target as HTMLElement).closest('.ml-cms-add-btn') as HTMLButtonElement | null;
+      if (!btn) return;
+
+      e.preventDefault();
+      e.stopPropagation();
+
+      const path = btn.getAttribute('data-collection-path');
+      const type = btn.getAttribute('data-collection-type');
+      const rawData = btn.getAttribute('data-default-data');
+
+      if (!path) return;
+
+      if (type === 'content') {
+        const modal = document.getElementById('ml-cms-create-content-modal');
+        const collectionInput = document.getElementById('ml-create-content-collection') as HTMLInputElement | null;
+        if (collectionInput) collectionInput.value = path;
+        modal?.classList.remove('hidden');
+      } else {
+        let defaultData: any;
+        if (rawData) {
+          try { defaultData = JSON.parse(rawData); } catch {}
+        }
+        addArrayItem(path, defaultData);
+      }
+    });
+  }
+
+  attachGlobalAddButtonsHandler();
+  document.addEventListener('astro:after-swap', attachGlobalAddButtonsHandler);
+</script>

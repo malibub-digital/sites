@@ -1,0 +1,188 @@
+---
+interface Props {
+  collectionPath: string;
+  index?: number;
+  slug?: string;
+  type?: 'json' | 'content';
+  isFirst?: boolean;
+  isLast?: boolean;
+  class?: string;
+}
+
+const {
+  collectionPath,
+  index = 0,
+  slug = '',
+  type = 'json',
+  isFirst = false,
+  isLast = false,
+  class: className = '',
+} = Astro.props;
+---
+
+<div class={`ml-cms-item-controls-toolbar ${className}`} data-cms-item-toolbar>
+  {type === 'json' ? (
+    <>
+      <button
+        type="button"
+        class="ml-cms-item-btn ml-cms-item-up"
+        title="Monter"
+        data-action="up"
+        data-collection-path={collectionPath}
+        data-index={index}
+        disabled={isFirst}
+      >
+        <i class="ml-icon-arrow-up-line ml-icon--xs"></i>
+      </button>
+      <button
+        type="button"
+        class="ml-cms-item-btn ml-cms-item-down"
+        title="Descendre"
+        data-action="down"
+        data-collection-path={collectionPath}
+        data-index={index}
+        disabled={isLast}
+      >
+        <i class="ml-icon-arrow-down-line ml-icon--xs"></i>
+      </button>
+      <button
+        type="button"
+        class="ml-cms-item-btn ml-cms-item-delete"
+        title="Supprimer"
+        data-action="delete-array"
+        data-collection-path={collectionPath}
+        data-index={index}
+      >
+        <i class="ml-icon-delete-bin-line ml-icon--xs"></i>
+      </button>
+    </>
+  ) : (
+    <button
+      type="button"
+      class="ml-cms-item-btn ml-cms-item-delete"
+      title="Supprimer l'article"
+      data-action="delete-file"
+      data-collection-path={collectionPath}
+      data-slug={slug}
+    >
+      <i class="ml-icon-delete-bin-line ml-icon--xs"></i>
+    </button>
+  )}
+</div>
+
+<style>
+  .ml-cms-item-controls-toolbar {
+    display: none;
+    align-items: center;
+    gap: 0.375rem;
+    flex-shrink: 0;
+  }
+
+  :global(:root[data-cms-editing="true"]) .ml-cms-item-controls-toolbar,
+  :global(body.cms-mode-editing) .ml-cms-item-controls-toolbar {
+    display: inline-flex !important;
+  }
+
+  .ml-cms-item-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1px solid #cbd5e1;
+    background: #ffffff;
+    color: #475569;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    padding: 0;
+    line-height: 1;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  }
+
+  .ml-cms-item-btn:hover:not([disabled]) {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  }
+
+  .ml-cms-item-up:hover:not([disabled]),
+  .ml-cms-item-down:hover:not([disabled]) {
+    border-color: #0284c7;
+    color: #0284c7;
+    background: #f0f9ff;
+  }
+
+  .ml-cms-item-delete:hover:not([disabled]) {
+    border-color: #e11d48;
+    color: #e11d48;
+    background: #fff1f2;
+  }
+
+  .ml-cms-item-btn[disabled] {
+    opacity: 0.3;
+    cursor: not-allowed;
+    border-color: #e2e8f0;
+    color: #94a3b8;
+    background: #f8fafc;
+    box-shadow: none;
+  }
+</style>
+
+<script>
+  import { reorderArrayItem, deleteArrayItem, deleteContentFile } from '../store/cms.js';
+
+  function attachGlobalItemControlsHandler() {
+    if ((window as any).__ml_cms_item_controls_listener) return;
+    (window as any).__ml_cms_item_controls_listener = true;
+
+    document.addEventListener('click', (e) => {
+      const btn = (e.target as HTMLElement).closest('.ml-cms-item-btn') as HTMLButtonElement | null;
+      if (!btn || btn.disabled) return;
+
+      e.preventDefault();
+      e.stopPropagation();
+
+      const action = btn.getAttribute('data-action');
+      const path = btn.getAttribute('data-collection-path') || '';
+      const idx = parseInt(btn.getAttribute('data-index') || '0', 10);
+      const slug = btn.getAttribute('data-slug') || '';
+
+      if (action === 'up') {
+        if (idx > 0) {
+          reorderArrayItem(path, idx, idx - 1);
+          const itemEl = btn.closest('[data-cms-item-index]');
+          const prevEl = itemEl?.previousElementSibling;
+          if (itemEl && prevEl) {
+            itemEl.parentNode?.insertBefore(itemEl, prevEl);
+          }
+        }
+      } else if (action === 'down') {
+        reorderArrayItem(path, idx, idx + 1);
+        const itemEl = btn.closest('[data-cms-item-index]');
+        const nextEl = itemEl?.nextElementSibling;
+        if (itemEl && nextEl) {
+          itemEl.parentNode?.insertBefore(nextEl, itemEl);
+        }
+      } else if (action === 'delete-array') {
+        deleteArrayItem(path, idx);
+        const itemEl = btn.closest('[data-cms-item-index]') as HTMLElement | null;
+        if (itemEl) {
+          itemEl.style.opacity = '0.4';
+          itemEl.style.textDecoration = 'line-through';
+          itemEl.style.pointerEvents = 'none';
+        }
+      } else if (action === 'delete-file') {
+        deleteContentFile(path, slug);
+        const itemEl = btn.closest('[data-cms-file]') as HTMLElement | null;
+        if (itemEl) {
+          itemEl.style.opacity = '0.4';
+          itemEl.style.textDecoration = 'line-through';
+          itemEl.style.pointerEvents = 'none';
+        }
+      }
+    });
+  }
+
+  attachGlobalItemControlsHandler();
+  document.addEventListener('astro:after-swap', attachGlobalItemControlsHandler);
+</script>
