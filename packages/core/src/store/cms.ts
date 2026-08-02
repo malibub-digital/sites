@@ -58,3 +58,10 @@ export function clearSavedChanges() {
   }
 }
 
+export function resetAllCmsState() {
+  cmsDraftStore.set({});
+  cmsSavedStore.set({});
+  cmsStatusStore.set('idle');
+}
+
+

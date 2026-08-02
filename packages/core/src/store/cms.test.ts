@@ -9,6 +9,7 @@ import {
   addSavedChanges,
   removeSaved,
   clearSavedChanges,
+  resetAllCmsState,
 } from './cms.js';
 
 describe('CMS Store', () => {
@@ -49,4 +50,15 @@ describe('CMS Store', () => {
     expect(cmsSavedStore.get()).toEqual({});
     expect(cmsStatusStore.get()).toBe('idle');
   });
+
+  it('resets both drafts and saved state with resetAllCmsState', () => {
+    updateDraft('hero.title', 'Draft Title');
+    addSavedChanges({ 'siteConfig.title': 'Saved Site Title' });
+    resetAllCmsState();
+
+    expect(cmsDraftStore.get()).toEqual({});
+    expect(cmsSavedStore.get()).toEqual({});
+    expect(cmsStatusStore.get()).toBe('idle');
+  });
 });
+

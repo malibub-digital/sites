@@ -1,5 +1,5 @@
 ---
-import { hashSha256 } from '../utils/auth.js';
+import { hashSha256 } from "../utils/auth.js";
 
 interface Props {
   adminSecret?: string;
@@ -8,23 +8,35 @@ interface Props {
   scrollable?: boolean;
 }
 
-const rawSecret = Astro.props.adminSecret || import.meta.env.CMS_ADMIN_SECRET || process.env.CMS_ADMIN_SECRET || "admin123";
+const rawSecret =
+  Astro.props.adminSecret ||
+  import.meta.env.CMS_ADMIN_SECRET ||
+  process.env.CMS_ADMIN_SECRET ||
+  "admin123";
 const siteId = Astro.props.siteId || "default";
 const hashedSecret = await hashSha256(rawSecret);
 const scrollable = Astro.props.scrollable ?? true;
 
-const envGitEnabled = import.meta.env.CMS_GIT_ENABLED ?? process.env.CMS_GIT_ENABLED;
+const envGitEnabled =
+  import.meta.env.CMS_GIT_ENABLED ?? process.env.CMS_GIT_ENABLED;
 
-const gitEnabled = Astro.props.gitEnabled !== undefined
-  ? Astro.props.gitEnabled
-  : (
-      String(envGitEnabled).toLowerCase() === 'true' ||
-      String(envGitEnabled) === '1'
-    );
+const gitEnabled =
+  Astro.props.gitEnabled !== undefined
+    ? Astro.props.gitEnabled
+    : String(envGitEnabled).toLowerCase() === "true" ||
+      String(envGitEnabled) === "1";
 ---
 
-<div id="ml-admin-toolbar-root" data-site-id={siteId} data-secret={hashedSecret} data-git-enabled={gitEnabled ? "true" : "false"}>
-  <div id="ml-admin-bar" class={`ml-admin-bar hidden ${scrollable ? "ml-admin-bar-scrollable" : ""}`}>
+<div
+  id="ml-admin-toolbar-root"
+  data-site-id={siteId}
+  data-secret={hashedSecret}
+  data-git-enabled={gitEnabled ? "true" : "false"}
+>
+  <div
+    id="ml-admin-bar"
+    class={`ml-admin-bar hidden ${scrollable ? "ml-admin-bar-scrollable" : ""}`}
+  >
     <div class="ml-admin-bar-container">
       <div class="ml-admin-left">
         <span class="ml-admin-badge ml-badge-admin">
@@ -32,7 +44,11 @@ const gitEnabled = Astro.props.gitEnabled !== undefined
           Admin
         </span>
 
-        <div class="ml-segmented-control ml-segmented-control-dark" role="radiogroup" aria-label="Mode de travail">
+        <div
+          class="ml-segmented-control ml-segmented-control-dark"
+          role="radiogroup"
+          aria-label="Mode de travail"
+        >
           <button
             type="button"
             id="ml-admin-mode-preview"
@@ -59,12 +75,35 @@ const gitEnabled = Astro.props.gitEnabled !== undefined
         </div>
       </div>
 
-      <div class="ml-admin-right" style="display: flex; align-items: center; gap: 0.75rem;">
-        <div id="ml-admin-notification-zone" class="ml-admin-notification-zone ml-notification--info hidden" aria-live="polite">
-          <span id="ml-admin-notification-icon" class="ml-icon ml-icon--xs ml-icon-information-line"></span>
-          <button type="button" id="ml-admin-notification-text" class="ml-admin-notification-btn" title="Voir les détails"></button>
-          <button type="button" id="ml-admin-notification-details-btn" class="ml-admin-notification-action-btn hidden" title="Voir le détail des erreurs">Détails</button>
-          <button type="button" id="ml-admin-notification-dismiss" class="ml-admin-notification-close-btn hidden" aria-label="Masquer la notification">&times;</button>
+      <div
+        class="ml-admin-right"
+        style="display: flex; align-items: center; gap: 0.75rem;"
+      >
+        <div
+          id="ml-admin-notification-zone"
+          class="ml-admin-notification-zone ml-notification--info hidden"
+          aria-live="polite"
+        >
+          <span
+            id="ml-admin-notification-icon"
+            class="ml-icon ml-icon--xs ml-icon-information-line"></span>
+          <button
+            type="button"
+            id="ml-admin-notification-text"
+            class="ml-admin-notification-btn"
+            title="Voir les détails"></button>
+          <button
+            type="button"
+            id="ml-admin-notification-details-btn"
+            class="ml-admin-notification-action-btn hidden"
+            title="Voir le détail des erreurs">Détails</button
+          >
+          <button
+            type="button"
+            id="ml-admin-notification-dismiss"
+            class="ml-admin-notification-close-btn hidden"
+            aria-label="Masquer la notification">&times;</button
+          >
         </div>
 
         <button
@@ -76,6 +115,16 @@ const gitEnabled = Astro.props.gitEnabled !== undefined
         >
           <i class="ml-icon-save-line ml-icon--xs"></i>
           <span>Enregistrer</span>
+        </button>
+
+        <button
+          type="button"
+          id="ml-admin-reset-btn"
+          class="ml-btn ml-btn--secondary ml-btn--sm hidden"
+          title="Réinitialiser toutes les données locales pour afficher l'état exact du serveur"
+        >
+          <i class="ml-icon-refresh-line ml-icon--xs"></i>
+          <span>Réinitialiser</span>
         </button>
 
         <button
@@ -92,57 +141,175 @@ const gitEnabled = Astro.props.gitEnabled !== undefined
     </div>
   </div>
 
-  <div id="ml-cms-edit-popover" class="ml-cms-popover hidden" role="dialog" aria-modal="true" aria-labelledby="ml-cms-popover-title">
+  <div
+    id="ml-cms-edit-popover"
+    class="ml-cms-popover hidden"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="ml-cms-popover-title"
+  >
     <div class="ml-cms-popover-header">
-      <span class="ml-cms-popover-badge" id="ml-cms-popover-bind-key">field</span>
-      <h3 id="ml-cms-popover-title" class="ml-cms-popover-heading">Éditer l'élément</h3>
-      <button type="button" id="ml-cms-popover-close" class="ml-cms-popover-close-btn" aria-label="Fermer">&times;</button>
+      <span class="ml-cms-popover-badge" id="ml-cms-popover-bind-key"
+        >field</span
+      >
+      <h3 id="ml-cms-popover-title" class="ml-cms-popover-heading">
+        Éditer l'élément
+      </h3>
+      <button
+        type="button"
+        id="ml-cms-popover-close"
+        class="ml-cms-popover-close-btn"
+        aria-label="Fermer">&times;</button
+      >
     </div>
     <div class="ml-cms-popover-body">
       <div class="ml-form-group">
-        <label for="ml-cms-popover-input" class="ml-form-label">Contenu textuel</label>
-        <textarea id="ml-cms-popover-input" class="ml-form-input ml-cms-textarea" rows="3"></textarea>
+        <label for="ml-cms-popover-input" class="ml-form-label"
+          >Contenu textuel</label
+        >
+        <textarea
+          id="ml-cms-popover-input"
+          class="ml-form-input ml-cms-textarea"
+          rows="3"></textarea>
       </div>
     </div>
     <div class="ml-cms-popover-footer">
-      <button type="button" id="ml-cms-popover-reset" class="ml-btn ml-btn--danger ml-btn--sm hidden" title="Rétablir la valeur initiale">Rétablir initial</button>
-      <button type="button" id="ml-cms-popover-cancel" class="ml-btn ml-btn--secondary ml-btn--sm">Annuler</button>
-      <button type="button" id="ml-cms-popover-save" class="ml-btn ml-btn--primary ml-btn--sm">Appliquer</button>
+      <button
+        type="button"
+        id="ml-cms-popover-reset"
+        class="ml-btn ml-btn--danger ml-btn--sm hidden"
+        title="Rétablir la valeur initiale">Rétablir initial</button
+      >
+      <button
+        type="button"
+        id="ml-cms-popover-cancel"
+        class="ml-btn ml-btn--secondary ml-btn--sm">Annuler</button
+      >
+      <button
+        type="button"
+        id="ml-cms-popover-save"
+        class="ml-btn ml-btn--primary ml-btn--sm">Appliquer</button
+      >
     </div>
   </div>
 
-  <div id="ml-cms-drafts-modal" class="ml-cms-modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="ml-cms-modal-title">
+  <div
+    id="ml-cms-drafts-modal"
+    class="ml-cms-modal-overlay hidden"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="ml-cms-modal-title"
+  >
     <div class="ml-cms-modal-content">
       <div class="ml-cms-modal-header">
-        <h3 id="ml-cms-modal-title" class="ml-cms-modal-heading">Modifications non enregistrées</h3>
-        <button type="button" id="ml-cms-modal-close" class="ml-cms-popover-close-btn" aria-label="Fermer">&times;</button>
+        <h3 id="ml-cms-modal-title" class="ml-cms-modal-heading">
+          Modifications non enregistrées
+        </h3>
+        <button
+          type="button"
+          id="ml-cms-modal-close"
+          class="ml-cms-popover-close-btn"
+          aria-label="Fermer">&times;</button
+        >
       </div>
       <div class="ml-cms-modal-body">
-        <p class="ml-cms-modal-desc">Voici la liste des modifications locales non encore enregistrées :</p>
+        <p class="ml-cms-modal-desc">
+          Voici la liste des modifications locales non encore enregistrées :
+        </p>
         <div id="ml-cms-modal-list" class="ml-cms-drafts-list"></div>
       </div>
       <div class="ml-cms-modal-footer">
-        <button type="button" id="ml-cms-modal-clear-all" class="ml-btn ml-btn--danger ml-btn--sm">Tout réinitialiser</button>
-        <button type="button" id="ml-cms-modal-done" class="ml-btn ml-btn--secondary ml-btn--sm">Fermer</button>
+        <button
+          type="button"
+          id="ml-cms-modal-clear-all"
+          class="ml-btn ml-btn--danger ml-btn--sm">Tout réinitialiser</button
+        >
+        <button
+          type="button"
+          id="ml-cms-modal-done"
+          class="ml-btn ml-btn--secondary ml-btn--sm">Fermer</button
+        >
       </div>
     </div>
   </div>
 
-  <div id="ml-cms-error-modal" class="ml-cms-modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="ml-cms-error-title">
+  <div
+    id="ml-cms-reset-modal"
+    class="ml-cms-modal-overlay hidden"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="ml-cms-reset-title"
+  >
+    <div class="ml-cms-modal-content">
+      <div class="ml-cms-modal-header">
+        <h3 id="ml-cms-reset-title" class="ml-cms-modal-heading">
+          Réinitialiser le contenu local
+        </h3>
+        <button
+          type="button"
+          id="ml-cms-reset-close"
+          class="ml-cms-popover-close-btn"
+          aria-label="Fermer">&times;</button
+        >
+      </div>
+      <div class="ml-cms-modal-body">
+        <p class="ml-cms-modal-desc">
+          Voulez-vous retirer les modifications locales qui n'ont pas encore été
+          publiées, comme les brouillons et lesenregistrements conservés dans
+          votre navigateur, pour réafficher l'état exact du serveur ?
+        </p>
+      </div>
+      <div class="ml-cms-modal-footer">
+        <button
+          type="button"
+          id="ml-cms-reset-cancel"
+          class="ml-btn ml-btn--secondary ml-btn--sm">Annuler</button
+        >
+        <button
+          type="button"
+          id="ml-cms-reset-confirm"
+          class="ml-btn ml-btn--danger ml-btn--sm">Réinitialiser</button
+        >
+      </div>
+    </div>
+  </div>
+
+  <div
+    id="ml-cms-error-modal"
+    class="ml-cms-modal-overlay hidden"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="ml-cms-error-title"
+  >
     <div class="ml-cms-modal-content">
       <div class="ml-cms-modal-header ml-cms-modal-header-error">
-        <h3 id="ml-cms-error-title" class="ml-cms-modal-heading ml-text-danger">Échec de la publication</h3>
-        <button type="button" id="ml-cms-error-close" class="ml-cms-popover-close-btn" aria-label="Fermer">&times;</button>
+        <h3 id="ml-cms-error-title" class="ml-cms-modal-heading ml-text-danger">
+          Échec de la publication
+        </h3>
+        <button
+          type="button"
+          id="ml-cms-error-close"
+          class="ml-cms-popover-close-btn"
+          aria-label="Fermer">&times;</button
+        >
       </div>
       <div class="ml-cms-modal-body">
         <div class="ml-cms-error-alert-box">
           <i class="ml-icon-alert-fill ml-icon--sm"></i>
           <p id="ml-cms-error-message" class="ml-cms-error-msg"></p>
         </div>
-        <div id="ml-cms-error-details-list" class="ml-cms-error-details-list hidden"></div>
+        <div
+          id="ml-cms-error-details-list"
+          class="ml-cms-error-details-list hidden"
+        >
+        </div>
       </div>
       <div class="ml-cms-modal-footer">
-        <button type="button" id="ml-cms-error-done" class="ml-btn ml-btn--secondary ml-btn--sm">Fermer</button>
+        <button
+          type="button"
+          id="ml-cms-error-done"
+          class="ml-btn ml-btn--secondary ml-btn--sm">Fermer</button
+        >
       </div>
     </div>
   </div>
@@ -208,17 +375,30 @@ const gitEnabled = Astro.props.gitEnabled !== undefined
     flex-shrink: 0;
   }
   @keyframes ml-pulse {
-    0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
-    70% { transform: scale(1.1); box-shadow: 0 0 0 6px rgba(34, 197, 94, 0); }
-    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+    0% {
+      transform: scale(0.95);
+      box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+    }
+    70% {
+      transform: scale(1.1);
+      box-shadow: 0 0 0 6px rgba(34, 197, 94, 0);
+    }
+    100% {
+      transform: scale(0.95);
+      box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
+    }
   }
   .ml-dot-green {
     background-color: #22c55e;
     animation: ml-pulse 2s infinite;
   }
   @keyframes ml-spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
   }
   .ml-spin {
     animation: ml-spin 1s linear infinite;
@@ -334,10 +514,15 @@ const gitEnabled = Astro.props.gitEnabled !== undefined
     background: #ffffff;
     color: #0f172a;
     border-radius: 12px;
-    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    box-shadow:
+      0 10px 25px -5px rgba(0, 0, 0, 0.2),
+      0 8px 10px -6px rgba(0, 0, 0, 0.1);
     border: 1px solid #e2e8f0;
     padding: 1rem;
-    font-family: system-ui, -apple-system, sans-serif;
+    font-family:
+      system-ui,
+      -apple-system,
+      sans-serif;
   }
   .ml-cms-popover-header {
     display: flex;
@@ -617,7 +802,9 @@ const gitEnabled = Astro.props.gitEnabled !== undefined
       -webkit-backdrop-filter: blur(12px);
       padding: 0.5rem 0.75rem;
       border-radius: 10px;
-      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+      box-shadow:
+        0 10px 25px -5px rgba(0, 0, 0, 0.4),
+        0 4px 6px -2px rgba(0, 0, 0, 0.2);
       z-index: 10000;
       display: flex;
       align-items: center;
@@ -672,8 +859,18 @@ const gitEnabled = Astro.props.gitEnabled !== undefined
 </style>
 
 <script>
-  import { getAdminCookieToken } from '../utils/auth.js';
-  import { cmsDraftStore, cmsSavedStore, updateDraft, removeDraft, clearDrafts, addSavedChanges, removeSaved, clearSavedChanges } from '../store/cms.js';
+  import { getAdminCookieToken } from "../utils/auth.js";
+  import {
+    cmsDraftStore,
+    cmsSavedStore,
+    updateDraft,
+    removeDraft,
+    clearDrafts,
+    addSavedChanges,
+    removeSaved,
+    clearSavedChanges,
+    resetAllCmsState,
+  } from "../store/cms.js";
 
   const STORAGE_KEY_UNPUBLISHED = "cms_has_unpublished_changes";
 
@@ -686,16 +883,29 @@ const gitEnabled = Astro.props.gitEnabled !== undefined
     const modePreviewBtn = document.getElementById("ml-admin-mode-preview");
     const saveBtn = document.getElementById("ml-admin-save-btn");
     const publishBtn = document.getElementById("ml-admin-publish-btn");
+    const resetBtn = document.getElementById("ml-admin-reset-btn");
 
-    const notificationZone = document.getElementById("ml-admin-notification-zone");
-    const notificationIcon = document.getElementById("ml-admin-notification-icon");
-    const notificationText = document.getElementById("ml-admin-notification-text") as HTMLButtonElement | null;
-    const notificationDetailsBtn = document.getElementById("ml-admin-notification-details-btn") as HTMLButtonElement | null;
-    const notificationDismissBtn = document.getElementById("ml-admin-notification-dismiss") as HTMLButtonElement | null;
+    const notificationZone = document.getElementById(
+      "ml-admin-notification-zone",
+    );
+    const notificationIcon = document.getElementById(
+      "ml-admin-notification-icon",
+    );
+    const notificationText = document.getElementById(
+      "ml-admin-notification-text",
+    ) as HTMLButtonElement | null;
+    const notificationDetailsBtn = document.getElementById(
+      "ml-admin-notification-details-btn",
+    ) as HTMLButtonElement | null;
+    const notificationDismissBtn = document.getElementById(
+      "ml-admin-notification-dismiss",
+    ) as HTMLButtonElement | null;
 
     const popover = document.getElementById("ml-cms-edit-popover");
     const popoverBindKey = document.getElementById("ml-cms-popover-bind-key");
-    const popoverInput = document.getElementById("ml-cms-popover-input") as HTMLTextAreaElement | null;
+    const popoverInput = document.getElementById(
+      "ml-cms-popover-input",
+    ) as HTMLTextAreaElement | null;
     const popoverClose = document.getElementById("ml-cms-popover-close");
     const popoverCancel = document.getElementById("ml-cms-popover-cancel");
     const popoverReset = document.getElementById("ml-cms-popover-reset");
@@ -705,21 +915,38 @@ const gitEnabled = Astro.props.gitEnabled !== undefined
     const draftsModalList = document.getElementById("ml-cms-modal-list");
     const draftsModalClose = document.getElementById("ml-cms-modal-close");
     const draftsModalDone = document.getElementById("ml-cms-modal-done");
-    const draftsModalClearAll = document.getElementById("ml-cms-modal-clear-all");
+    const draftsModalClearAll = document.getElementById(
+      "ml-cms-modal-clear-all",
+    );
+
+    const resetModal = document.getElementById("ml-cms-reset-modal");
+    const resetModalClose = document.getElementById("ml-cms-reset-close");
+    const resetModalCancel = document.getElementById("ml-cms-reset-cancel");
+    const resetModalConfirm = document.getElementById("ml-cms-reset-confirm");
 
     const errorModal = document.getElementById("ml-cms-error-modal");
     const errorModalTitle = document.getElementById("ml-cms-error-title");
     const errorModalMsg = document.getElementById("ml-cms-error-message");
-    const errorModalDetails = document.getElementById("ml-cms-error-details-list");
+    const errorModalDetails = document.getElementById(
+      "ml-cms-error-details-list",
+    );
     const errorModalClose = document.getElementById("ml-cms-error-close");
     const errorModalDone = document.getElementById("ml-cms-error-done");
 
     const expectedHash = root.getAttribute("data-secret") || "";
     const isGitEnabled = root.getAttribute("data-git-enabled") === "true";
     let activeTargetElement: HTMLElement | null = null;
-    let lastErrorData: { title: string; message: string; details?: string[] } | null = null;
+    let lastErrorData: {
+      title: string;
+      message: string;
+      details?: string[];
+    } | null = null;
 
-    function notify(message: string, type: 'info' | 'success' | 'error' = 'info', details?: string[]) {
+    function notify(
+      message: string,
+      type: "info" | "success" | "error" = "info",
+      details?: string[],
+    ) {
       if (!notificationZone || !notificationText) return;
 
       notificationZone.className = `ml-admin-notification-zone ml-notification--${type}`;
@@ -727,29 +954,35 @@ const gitEnabled = Astro.props.gitEnabled !== undefined
 
       if (notificationIcon) {
         notificationIcon.className = `ml-icon ml-icon--xs ${
-          type === 'error'
-            ? 'ml-icon-alert-fill'
-            : type === 'success'
-            ? 'ml-icon-checkbox-circle-fill'
-            : 'ml-icon-information-line'
+          type === "error"
+            ? "ml-icon-alert-fill"
+            : type === "success"
+              ? "ml-icon-checkbox-circle-fill"
+              : "ml-icon-information-line"
         }`;
       }
 
-      if (type === 'error') {
+      if (type === "error") {
         lastErrorData = { title: "Échec de l'opération", message, details };
-        if (notificationDetailsBtn) notificationDetailsBtn.classList.remove('hidden');
-        if (notificationDismissBtn) notificationDismissBtn.classList.remove('hidden');
-      } else if (type === 'success') {
+        if (notificationDetailsBtn)
+          notificationDetailsBtn.classList.remove("hidden");
+        if (notificationDismissBtn)
+          notificationDismissBtn.classList.remove("hidden");
+      } else if (type === "success") {
         lastErrorData = null;
-        if (notificationDetailsBtn) notificationDetailsBtn.classList.add('hidden');
-        if (notificationDismissBtn) notificationDismissBtn.classList.remove('hidden');
+        if (notificationDetailsBtn)
+          notificationDetailsBtn.classList.remove("hidden");
+        if (notificationDismissBtn)
+          notificationDismissBtn.classList.remove("hidden");
       } else {
         lastErrorData = null;
-        if (notificationDetailsBtn) notificationDetailsBtn.classList.add('hidden');
-        if (notificationDismissBtn) notificationDismissBtn.classList.add('hidden');
+        if (notificationDetailsBtn)
+          notificationDetailsBtn.classList.add("hidden");
+        if (notificationDismissBtn)
+          notificationDismissBtn.classList.add("hidden");
       }
 
-      notificationZone.classList.remove('hidden');
+      notificationZone.classList.remove("hidden");
     }
 
     function setSaveLoading(loading: boolean) {
@@ -779,39 +1012,49 @@ const gitEnabled = Astro.props.gitEnabled !== undefined
 
       if (errorModalDetails) {
         if (lastErrorData.details && lastErrorData.details.length > 0) {
-          errorModalDetails.textContent = lastErrorData.details.join('\n');
-          errorModalDetails.classList.remove('hidden');
+          errorModalDetails.textContent = lastErrorData.details.join("\n");
+          errorModalDetails.classList.remove("hidden");
         } else {
-          errorModalDetails.classList.add('hidden');
+          errorModalDetails.classList.add("hidden");
         }
       }
 
-      errorModal.classList.remove('hidden');
+      errorModal.classList.remove("hidden");
     }
 
     function closeErrorModal() {
-      errorModal?.classList.add('hidden');
+      errorModal?.classList.add("hidden");
+    }
+
+    function openResetModal() {
+      resetModal?.classList.remove("hidden");
+    }
+
+    function closeResetModal() {
+      resetModal?.classList.add("hidden");
     }
 
     function updateToolbarButtonsState() {
       const drafts = cmsDraftStore.get();
       const hasDrafts = Object.keys(drafts).length > 0;
-      const hasUnpublished = localStorage.getItem(STORAGE_KEY_UNPUBLISHED) === "true";
+      const hasUnpublished =
+        localStorage.getItem(STORAGE_KEY_UNPUBLISHED) === "true";
 
       if (saveBtn) {
         (saveBtn as HTMLButtonElement).disabled = !hasDrafts;
       }
 
       if (publishBtn) {
-        (publishBtn as HTMLButtonElement).disabled = !isGitEnabled || hasDrafts || !hasUnpublished;
+        (publishBtn as HTMLButtonElement).disabled =
+          !isGitEnabled || hasDrafts || !hasUnpublished;
       }
 
       if (hasDrafts) {
         const count = Object.keys(drafts).length;
-        const s = count > 1 ? 's' : '';
-        notify(`${count} modification${s} non enregistrée${s}`, 'info');
+        const s = count > 1 ? "s" : "";
+        notify(`${count} modification${s} non enregistrée${s}`, "info");
       } else if (hasUnpublished && isGitEnabled) {
-        notify("Modifications enregistrées. Prêt pour publication.", 'info');
+        notify("Modifications enregistrées. Prêt pour publication.", "info");
       } else if (!lastErrorData) {
         notificationZone?.classList.add("hidden");
       }
@@ -923,19 +1166,25 @@ const gitEnabled = Astro.props.gitEnabled !== undefined
         closePopover();
       }
 
-      document.dispatchEvent(new CustomEvent("cms:editing-toggled", {
-        detail: { isEditing: active }
-      }));
+      document.dispatchEvent(
+        new CustomEvent("cms:editing-toggled", {
+          detail: { isEditing: active },
+        }),
+      );
     }
 
     function checkAuthState() {
       const token = getAdminCookieToken();
-      const isAuthenticated = token !== null && token.length > 0 && (!expectedHash || token === expectedHash);
+      const isAuthenticated =
+        token !== null &&
+        token.length > 0 &&
+        (!expectedHash || token === expectedHash);
 
       if (isAuthenticated) {
         bar?.classList.remove("hidden");
         document.body.classList.add("ml-admin-logged-in");
         saveBtn?.classList.remove("hidden");
+        resetBtn?.classList.remove("hidden");
         if (isGitEnabled) {
           publishBtn?.classList.remove("hidden");
         } else {
@@ -947,7 +1196,10 @@ const gitEnabled = Astro.props.gitEnabled !== undefined
         document.body.classList.remove("ml-admin-logged-in");
         saveBtn?.classList.add("hidden");
         publishBtn?.classList.add("hidden");
+        resetBtn?.classList.add("hidden");
         setEditingMode(false);
+        resetAllCmsState();
+        localStorage.removeItem(STORAGE_KEY_UNPUBLISHED);
       }
     }
 
@@ -992,7 +1244,10 @@ const gitEnabled = Astro.props.gitEnabled !== undefined
 
         if (lockRes.status === 423) {
           const lockData = await lockRes.json();
-          notify(`⚠️ Élément actuellement en cours d'édition par ${lockData.holderName || "un autre administrateur"}.`, 'info');
+          notify(
+            `⚠️ Élément actuellement en cours d'édition par ${lockData.holderName || "un autre administrateur"}.`,
+            "info",
+          );
           return;
         }
       } catch (err: any) {
@@ -1033,11 +1288,19 @@ const gitEnabled = Astro.props.gitEnabled !== undefined
     }
 
     async function handleElementClick(event: MouseEvent) {
-      if (document.documentElement.getAttribute("data-cms-editing") !== "true") return;
-      const target = (event.target as HTMLElement).closest("[data-cms-bind]") as HTMLElement | null;
+      if (document.documentElement.getAttribute("data-cms-editing") !== "true")
+        return;
+      const target = (event.target as HTMLElement).closest(
+        "[data-cms-bind]",
+      ) as HTMLElement | null;
       if (!target) return;
 
-      if (target.children.length > 0 && Array.from(target.children).some(child => !child.classList.contains("ml-tricolor-bar"))) {
+      if (
+        target.children.length > 0 &&
+        Array.from(target.children).some(
+          (child) => !child.classList.contains("ml-tricolor-bar"),
+        )
+      ) {
         return;
       }
 
@@ -1060,7 +1323,8 @@ const gitEnabled = Astro.props.gitEnabled !== undefined
       if (!activeTargetElement || !popoverInput) return;
       const newValue = popoverInput.value.trim();
       const bindPath = activeTargetElement.getAttribute("data-cms-bind");
-      const originalValue = activeTargetElement.getAttribute("data-cms-original") || "";
+      const originalValue =
+        activeTargetElement.getAttribute("data-cms-original") || "";
 
       if (bindPath) {
         if (newValue === originalValue) {
@@ -1088,7 +1352,7 @@ const gitEnabled = Astro.props.gitEnabled !== undefined
 
       const token = getAdminCookieToken();
       setSaveLoading(true);
-      notify("Enregistrement en cours...", 'info');
+      notify("Enregistrement en cours...", "info");
 
       try {
         const response = await fetch("/api/cms/save", {
@@ -1108,32 +1372,49 @@ const gitEnabled = Astro.props.gitEnabled !== undefined
           clearDrafts();
           localStorage.setItem(STORAGE_KEY_UNPUBLISHED, "true");
           updateToolbarButtonsState();
-          notify("Modifications enregistrées avec succès !", 'success');
+          notify("Modifications enregistrées avec succès !", "success");
           setTimeout(() => {
             if (localStorage.getItem(STORAGE_KEY_UNPUBLISHED) === "true") {
-              notify("Modifications enregistrées. Prêt pour publication.", 'info');
+              notify(
+                "Modifications enregistrées. Prêt pour publication.",
+                "info",
+              );
             }
           }, 3000);
         } else {
-          notify(`Erreur: ${resData.message || "Échec de la sauvegarde."}`, 'error', resData.errors);
+          notify(
+            `Erreur: ${resData.message || "Échec de la sauvegarde."}`,
+            "error",
+            resData.errors,
+          );
           updateToolbarButtonsState();
         }
       } catch (err: any) {
         setSaveLoading(false);
-        notify(`Erreur réseau: ${err.message || "Impossible de contacter le serveur."}`, 'error', [err.message]);
+        notify(
+          `Erreur réseau: ${err.message || "Impossible de contacter le serveur."}`,
+          "error",
+          [err.message],
+        );
         updateToolbarButtonsState();
       }
 
-      document.dispatchEvent(new CustomEvent("cms:save-requested", { detail: { drafts } }));
+      document.dispatchEvent(
+        new CustomEvent("cms:save-requested", { detail: { drafts } }),
+      );
     });
 
     publishBtn?.addEventListener("click", async () => {
       const drafts = cmsDraftStore.get();
-      if (Object.keys(drafts).length > 0 || localStorage.getItem(STORAGE_KEY_UNPUBLISHED) !== "true") return;
+      if (
+        Object.keys(drafts).length > 0 ||
+        localStorage.getItem(STORAGE_KEY_UNPUBLISHED) !== "true"
+      )
+        return;
 
       const token = getAdminCookieToken();
       setPublishLoading(true);
-      notify("Publication sur GitHub en cours...", 'info');
+      notify("Publication sur GitHub en cours...", "info");
 
       try {
         const response = await fetch("/api/cms/publish", {
@@ -1151,19 +1432,45 @@ const gitEnabled = Astro.props.gitEnabled !== undefined
           clearSavedChanges();
           localStorage.removeItem(STORAGE_KEY_UNPUBLISHED);
           updateToolbarButtonsState();
-          notify(resData.message || "Modifications publiées sur GitHub avec succès !", 'success');
+          notify(
+            resData.message ||
+              "Modifications publiées sur GitHub avec succès !",
+            "success",
+          );
           setTimeout(() => {
             notificationZone?.classList.add("hidden");
           }, 4000);
         } else {
-          notify(resData.message || "Échec de la publication sur GitHub.", 'error', resData.errors);
+          notify(
+            resData.message || "Échec de la publication sur GitHub.",
+            "error",
+            resData.errors,
+          );
           updateToolbarButtonsState();
         }
       } catch (err: any) {
         setPublishLoading(false);
-        notify(`Erreur réseau: ${err.message || "Impossible de contacter le serveur."}`, 'error', [err.message]);
+        notify(
+          `Erreur réseau: ${err.message || "Impossible de contacter le serveur."}`,
+          "error",
+          [err.message],
+        );
         updateToolbarButtonsState();
       }
+    });
+
+    resetBtn?.addEventListener("click", openResetModal);
+    resetModalClose?.addEventListener("click", closeResetModal);
+    resetModalCancel?.addEventListener("click", closeResetModal);
+    resetModalConfirm?.addEventListener("click", () => {
+      resetAllCmsState();
+      localStorage.removeItem(STORAGE_KEY_UNPUBLISHED);
+      syncDraftsWithDOM();
+      closeResetModal();
+      notify("Version du serveur rechargée avec succès.", "info");
+      setTimeout(() => {
+        notificationZone?.classList.add("hidden");
+      }, 3000);
     });
 
     notificationText?.addEventListener("click", () => {
@@ -1188,7 +1495,7 @@ const gitEnabled = Astro.props.gitEnabled !== undefined
     draftsModalClose?.addEventListener("click", closeDraftsModal);
     draftsModalDone?.addEventListener("click", closeDraftsModal);
     draftsModalClearAll?.addEventListener("click", () => {
-      clearDrafts();
+      openResetModal();
       closeDraftsModal();
     });
 
@@ -1212,5 +1519,3 @@ const gitEnabled = Astro.props.gitEnabled !== undefined
   initAdminToolbar();
   document.addEventListener("astro:after-swap", initAdminToolbar);
 </script>
-
-
