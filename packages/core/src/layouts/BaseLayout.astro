@@ -76,9 +76,15 @@ const {
       border-radius: 4px;
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
       pointer-events: none;
-      z-index: 100;
+      z-index: 10001;
       white-space: nowrap;
       line-height: 1.2;
+    }
+    body.cms-mode-editing header [data-cms-bind]:hover::after,
+    body.cms-mode-editing .brand-text [data-cms-bind]:hover::after {
+      top: 0;
+      right: 0;
+      transform: translateY(-50%);
     }
     body.cms-mode-editing [data-cms-bind][data-cms-active="true"] {
       outline: 2px solid #0284c7;

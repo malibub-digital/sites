@@ -5,11 +5,13 @@ interface Props {
   adminSecret?: string;
   siteId?: string;
   gitEnabled?: boolean;
+  scrollable?: boolean;
 }
 
 const rawSecret = Astro.props.adminSecret || import.meta.env.CMS_ADMIN_SECRET || process.env.CMS_ADMIN_SECRET || "admin123";
 const siteId = Astro.props.siteId || "default";
 const hashedSecret = await hashSha256(rawSecret);
+const scrollable = Astro.props.scrollable ?? true;
 
 const envGitEnabled = import.meta.env.CMS_GIT_ENABLED ?? process.env.CMS_GIT_ENABLED;
 
@@ -22,7 +24,7 @@ const gitEnabled = Astro.props.gitEnabled !== undefined
 ---
 
 <div id="ml-admin-toolbar-root" data-site-id={siteId} data-secret={hashedSecret} data-git-enabled={gitEnabled ? "true" : "false"}>
-  <div id="ml-admin-bar" class="ml-admin-bar hidden">
+  <div id="ml-admin-bar" class={`ml-admin-bar hidden ${scrollable ? "ml-admin-bar-scrollable" : ""}`}>
     <div class="ml-admin-bar-container">
       <div class="ml-admin-left">
         <span class="ml-admin-badge ml-badge-admin">
@@ -58,8 +60,11 @@ const gitEnabled = Astro.props.gitEnabled !== undefined
       </div>
 
       <div class="ml-admin-right" style="display: flex; align-items: center; gap: 0.75rem;">
-        <div id="ml-admin-notification-zone" class="ml-admin-notification-zone" aria-live="polite">
-          <button type="button" id="ml-admin-notification-text" class="ml-admin-notification-btn hidden" title="Voir les modifications"></button>
+        <div id="ml-admin-notification-zone" class="ml-admin-notification-zone ml-notification--info hidden" aria-live="polite">
+          <span id="ml-admin-notification-icon" class="ml-icon ml-icon--xs ml-icon-information-line"></span>
+          <button type="button" id="ml-admin-notification-text" class="ml-admin-notification-btn" title="Voir les détails"></button>
+          <button type="button" id="ml-admin-notification-details-btn" class="ml-admin-notification-action-btn hidden" title="Voir le détail des erreurs">Détails</button>
+          <button type="button" id="ml-admin-notification-dismiss" class="ml-admin-notification-close-btn hidden" aria-label="Masquer la notification">&times;</button>
         </div>
 
         <button
@@ -122,6 +127,25 @@ const gitEnabled = Astro.props.gitEnabled !== undefined
       </div>
     </div>
   </div>
+
+  <div id="ml-cms-error-modal" class="ml-cms-modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="ml-cms-error-title">
+    <div class="ml-cms-modal-content">
+      <div class="ml-cms-modal-header ml-cms-modal-header-error">
+        <h3 id="ml-cms-error-title" class="ml-cms-modal-heading ml-text-danger">Échec de la publication</h3>
+        <button type="button" id="ml-cms-error-close" class="ml-cms-popover-close-btn" aria-label="Fermer">&times;</button>
+      </div>
+      <div class="ml-cms-modal-body">
+        <div class="ml-cms-error-alert-box">
+          <i class="ml-icon-alert-fill ml-icon--sm"></i>
+          <p id="ml-cms-error-message" class="ml-cms-error-msg"></p>
+        </div>
+        <div id="ml-cms-error-details-list" class="ml-cms-error-details-list hidden"></div>
+      </div>
+      <div class="ml-cms-modal-footer">
+        <button type="button" id="ml-cms-error-done" class="ml-btn ml-btn--secondary ml-btn--sm">Fermer</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <style>
@@ -144,6 +168,18 @@ const gitEnabled = Astro.props.gitEnabled !== undefined
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
+  }
+  /* Optional Horizontal Scroll for Admin Toolbar (Mobile/Responsive) */
+  .ml-admin-bar-scrollable .ml-admin-bar-container,
+  .ml-admin-bar-container.ml-admin-bar-scrollable {
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .ml-admin-bar-scrollable .ml-admin-bar-container::-webkit-scrollbar,
+  .ml-admin-bar-container.ml-admin-bar-scrollable::-webkit-scrollbar {
+    display: none;
   }
   .ml-admin-left {
     display: flex;
@@ -169,20 +205,53 @@ const gitEnabled = Astro.props.gitEnabled !== undefined
     width: 6px;
     height: 6px;
     border-radius: 50%;
+    flex-shrink: 0;
+  }
+  @keyframes ml-pulse {
+    0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
+    70% { transform: scale(1.1); box-shadow: 0 0 0 6px rgba(34, 197, 94, 0); }
+    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
   }
   .ml-dot-green {
     background-color: #22c55e;
-    box-shadow: 0 0 8px #22c55e;
+    animation: ml-pulse 2s infinite;
+  }
+  @keyframes ml-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  .ml-spin {
+    animation: ml-spin 1s linear infinite;
   }
   .ml-admin-notification-zone {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.25rem 0.6rem;
+    border-radius: 6px;
     font-size: 0.75rem;
-    color: #38bdf8;
     font-weight: 500;
+    transition: all 0.2s ease;
+  }
+  .ml-notification--info {
+    background: rgba(56, 189, 248, 0.12);
+    color: #38bdf8;
+    border: 1px solid rgba(56, 189, 248, 0.25);
+  }
+  .ml-notification--success {
+    background: rgba(34, 197, 94, 0.15);
+    color: #4ade80;
+    border: 1px solid rgba(34, 197, 94, 0.3);
+  }
+  .ml-notification--error {
+    background: rgba(244, 63, 94, 0.18);
+    color: #fb7185;
+    border: 1px solid rgba(244, 63, 94, 0.35);
   }
   .ml-admin-notification-btn {
     background: transparent;
     border: none;
-    color: #38bdf8;
+    color: inherit;
     font-size: 0.75rem;
     font-weight: 600;
     cursor: pointer;
@@ -191,7 +260,69 @@ const gitEnabled = Astro.props.gitEnabled !== undefined
     font-family: inherit;
   }
   .ml-admin-notification-btn:hover {
-    color: #7dd3fc;
+    opacity: 0.85;
+  }
+  .ml-admin-notification-action-btn {
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid currentColor;
+    color: inherit;
+    font-size: 0.7rem;
+    font-weight: 600;
+    border-radius: 4px;
+    padding: 0.1rem 0.4rem;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .ml-admin-notification-action-btn:hover {
+    background: rgba(255, 255, 255, 0.25);
+  }
+  .ml-admin-notification-close-btn {
+    background: transparent;
+    border: none;
+    color: inherit;
+    font-size: 1rem;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0 0.2rem;
+    opacity: 0.75;
+  }
+  .ml-admin-notification-close-btn:hover {
+    opacity: 1;
+  }
+  .ml-cms-modal-header-error {
+    background: #fff1f2;
+    border-bottom: 1px solid #fecdd3;
+  }
+  .ml-text-danger {
+    color: #e11d48 !important;
+  }
+  .ml-cms-error-alert-box {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    background: #fff1f2;
+    border: 1px solid #fecdd3;
+    color: #9f1239;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    margin-bottom: 0.75rem;
+  }
+  .ml-cms-error-msg {
+    margin: 0;
+    font-size: 0.875rem;
+    font-weight: 600;
+    word-break: break-word;
+  }
+  .ml-cms-error-details-list {
+    font-family: monospace;
+    font-size: 0.75rem;
+    background: #0f172a;
+    color: #f8fafc;
+    padding: 0.75rem;
+    border-radius: 6px;
+    max-height: 200px;
+    overflow-y: auto;
+    white-space: pre-wrap;
   }
 
   /* Inline CMS Popover styles */
@@ -278,6 +409,10 @@ const gitEnabled = Astro.props.gitEnabled !== undefined
     border-radius: 6px;
     cursor: pointer;
     border: 1px solid transparent;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    transition: all 0.15s ease;
   }
   .ml-btn--secondary {
     background: #f1f5f9;
@@ -420,50 +555,109 @@ const gitEnabled = Astro.props.gitEnabled !== undefined
       position: fixed;
       top: auto;
       bottom: 0;
+      left: 0;
+      right: 0;
       border-bottom: none;
       border-top: 2px solid #0284c7;
-      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.4);
+      background: rgba(15, 23, 42, 0.96);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding-bottom: env(safe-area-inset-bottom, 0px);
     }
     .ml-admin-bar-container {
-      padding: 0.5rem 0.75rem;
-      gap: 0.5rem;
+      padding: 0.4rem 0.5rem;
+      gap: 0.35rem;
+      max-width: 100%;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .ml-admin-left {
+      gap: 0.35rem;
+      flex-shrink: 0;
     }
     .ml-badge-admin {
-      padding: 0.25rem 0.375rem;
+      padding: 0.25rem 0.35rem;
     }
     .ml-badge-admin span:not(.ml-status-dot) {
       display: none;
     }
-    .ml-btn span {
-      display: inline-block;
-    }
-    .ml-btn {
-      padding: 0.35rem 0.5rem;
-      font-size: 0.75rem;
-    }
-    .ml-segment-btn span {
-      display: inline-block;
-    }
     .ml-segmented-control {
+      padding: 2px;
+      gap: 2px;
+    }
+    .ml-segment-btn {
+      padding: 0.3rem 0.45rem;
+      font-size: 0.75rem;
       gap: 0.25rem;
     }
     .ml-admin-right {
-      gap: 0.5rem !important;
+      gap: 0.35rem !important;
+      flex-shrink: 0;
     }
+    .ml-btn {
+      padding: 0.35rem 0.55rem;
+      font-size: 0.75rem;
+      gap: 0.25rem;
+      white-space: nowrap;
+    }
+    .ml-btn span {
+      display: inline-block;
+    }
+
     .ml-admin-notification-zone {
       position: absolute;
-      bottom: calc(100% + 8px);
-      right: 12px;
-      background: #0f172a;
-      border: 1px solid #0284c7;
-      padding: 0.35rem 0.75rem;
-      border-radius: 9999px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+      bottom: calc(100% + 10px);
+      left: 50%;
+      transform: translateX(-50%);
+      width: calc(100% - 20px);
+      max-width: 480px;
+      background: rgba(15, 23, 42, 0.96);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding: 0.5rem 0.75rem;
+      border-radius: 10px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
       z-index: 10000;
-      max-width: calc(100vw - 24px);
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      box-sizing: border-box;
+      animation: ml-slide-up 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .ml-admin-notification-btn {
+      white-space: normal;
+      word-break: break-word;
+      text-align: left;
+      flex: 1;
+      min-width: 0;
+    }
+  }
+
+  @keyframes ml-slide-up {
+    from {
+      opacity: 0;
+      transform: translate(-50%, 8px);
+    }
+    to {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+  }
+
+  @media (max-width: 380px) {
+    .ml-admin-bar-container {
+      padding: 0.35rem 0.25rem;
+      gap: 0.25rem;
+    }
+    .ml-segment-btn {
+      padding: 0.25rem 0.35rem;
+      font-size: 0.7rem;
+    }
+    .ml-btn {
+      padding: 0.3rem 0.45rem;
+      font-size: 0.7rem;
     }
   }
 
@@ -471,8 +665,8 @@ const gitEnabled = Astro.props.gitEnabled !== undefined
     scroll-padding-top: 0;
   }
   @media (max-width: 767px) {
-    :global(:root[data-cms-editing="true"] body) {
-      padding-bottom: 60px !important;
+    :global(body.ml-admin-logged-in) {
+      padding-bottom: calc(58px + env(safe-area-inset-bottom, 0px)) !important;
     }
   }
 </style>
@@ -492,7 +686,13 @@ const gitEnabled = Astro.props.gitEnabled !== undefined
     const modePreviewBtn = document.getElementById("ml-admin-mode-preview");
     const saveBtn = document.getElementById("ml-admin-save-btn");
     const publishBtn = document.getElementById("ml-admin-publish-btn");
+
+    const notificationZone = document.getElementById("ml-admin-notification-zone");
+    const notificationIcon = document.getElementById("ml-admin-notification-icon");
     const notificationText = document.getElementById("ml-admin-notification-text") as HTMLButtonElement | null;
+    const notificationDetailsBtn = document.getElementById("ml-admin-notification-details-btn") as HTMLButtonElement | null;
+    const notificationDismissBtn = document.getElementById("ml-admin-notification-dismiss") as HTMLButtonElement | null;
+
     const popover = document.getElementById("ml-cms-edit-popover");
     const popoverBindKey = document.getElementById("ml-cms-popover-bind-key");
     const popoverInput = document.getElementById("ml-cms-popover-input") as HTMLTextAreaElement | null;
@@ -507,9 +707,91 @@ const gitEnabled = Astro.props.gitEnabled !== undefined
     const draftsModalDone = document.getElementById("ml-cms-modal-done");
     const draftsModalClearAll = document.getElementById("ml-cms-modal-clear-all");
 
+    const errorModal = document.getElementById("ml-cms-error-modal");
+    const errorModalTitle = document.getElementById("ml-cms-error-title");
+    const errorModalMsg = document.getElementById("ml-cms-error-message");
+    const errorModalDetails = document.getElementById("ml-cms-error-details-list");
+    const errorModalClose = document.getElementById("ml-cms-error-close");
+    const errorModalDone = document.getElementById("ml-cms-error-done");
+
     const expectedHash = root.getAttribute("data-secret") || "";
     const isGitEnabled = root.getAttribute("data-git-enabled") === "true";
     let activeTargetElement: HTMLElement | null = null;
+    let lastErrorData: { title: string; message: string; details?: string[] } | null = null;
+
+    function notify(message: string, type: 'info' | 'success' | 'error' = 'info', details?: string[]) {
+      if (!notificationZone || !notificationText) return;
+
+      notificationZone.className = `ml-admin-notification-zone ml-notification--${type}`;
+      notificationText.textContent = message;
+
+      if (notificationIcon) {
+        notificationIcon.className = `ml-icon ml-icon--xs ${
+          type === 'error'
+            ? 'ml-icon-alert-fill'
+            : type === 'success'
+            ? 'ml-icon-checkbox-circle-fill'
+            : 'ml-icon-information-line'
+        }`;
+      }
+
+      if (type === 'error') {
+        lastErrorData = { title: "Échec de l'opération", message, details };
+        if (notificationDetailsBtn) notificationDetailsBtn.classList.remove('hidden');
+        if (notificationDismissBtn) notificationDismissBtn.classList.remove('hidden');
+      } else if (type === 'success') {
+        lastErrorData = null;
+        if (notificationDetailsBtn) notificationDetailsBtn.classList.add('hidden');
+        if (notificationDismissBtn) notificationDismissBtn.classList.remove('hidden');
+      } else {
+        lastErrorData = null;
+        if (notificationDetailsBtn) notificationDetailsBtn.classList.add('hidden');
+        if (notificationDismissBtn) notificationDismissBtn.classList.add('hidden');
+      }
+
+      notificationZone.classList.remove('hidden');
+    }
+
+    function setSaveLoading(loading: boolean) {
+      if (!saveBtn) return;
+      (saveBtn as HTMLButtonElement).disabled = loading;
+      if (loading) {
+        saveBtn.innerHTML = `<i class="ml-icon-refresh-line ml-spin ml-icon--xs"></i><span>Enregistrement...</span>`;
+      } else {
+        saveBtn.innerHTML = `<i class="ml-icon-save-line ml-icon--xs"></i><span>Enregistrer</span>`;
+      }
+    }
+
+    function setPublishLoading(loading: boolean) {
+      if (!publishBtn) return;
+      (publishBtn as HTMLButtonElement).disabled = loading;
+      if (loading) {
+        publishBtn.innerHTML = `<i class="ml-icon-refresh-line ml-spin ml-icon--xs"></i><span>Publication...</span>`;
+      } else {
+        publishBtn.innerHTML = `<i class="ml-icon-upload-cloud-line ml-icon--xs"></i><span>Publier</span>`;
+      }
+    }
+
+    function openErrorModal() {
+      if (!errorModal || !lastErrorData) return;
+      if (errorModalTitle) errorModalTitle.textContent = lastErrorData.title;
+      if (errorModalMsg) errorModalMsg.textContent = lastErrorData.message;
+
+      if (errorModalDetails) {
+        if (lastErrorData.details && lastErrorData.details.length > 0) {
+          errorModalDetails.textContent = lastErrorData.details.join('\n');
+          errorModalDetails.classList.remove('hidden');
+        } else {
+          errorModalDetails.classList.add('hidden');
+        }
+      }
+
+      errorModal.classList.remove('hidden');
+    }
+
+    function closeErrorModal() {
+      errorModal?.classList.add('hidden');
+    }
 
     function updateToolbarButtonsState() {
       const drafts = cmsDraftStore.get();
@@ -525,11 +807,13 @@ const gitEnabled = Astro.props.gitEnabled !== undefined
       }
 
       if (hasDrafts) {
-        notify(`${Object.keys(drafts).length} modification(s) non enregistrée(s)`);
+        const count = Object.keys(drafts).length;
+        const s = count > 1 ? 's' : '';
+        notify(`${count} modification${s} non enregistrée${s}`, 'info');
       } else if (hasUnpublished && isGitEnabled) {
-        notify("Modifications enregistrées. Prêt pour publication.");
-      } else {
-        if (notificationText) notificationText.classList.add("hidden");
+        notify("Modifications enregistrées. Prêt pour publication.", 'info');
+      } else if (!lastErrorData) {
+        notificationZone?.classList.add("hidden");
       }
     }
 
@@ -615,12 +899,6 @@ const gitEnabled = Astro.props.gitEnabled !== undefined
       updateToolbarButtonsState();
     }
 
-    function notify(message: string) {
-      if (!notificationText) return;
-      notificationText.textContent = message;
-      notificationText.classList.remove("hidden");
-    }
-
     function setEditingMode(active: boolean) {
       document.body.classList.toggle("cms-mode-editing", active);
       document.documentElement.setAttribute("data-cms-editing", String(active));
@@ -649,6 +927,7 @@ const gitEnabled = Astro.props.gitEnabled !== undefined
 
       if (isAuthenticated) {
         bar?.classList.remove("hidden");
+        document.body.classList.add("ml-admin-logged-in");
         saveBtn?.classList.remove("hidden");
         if (isGitEnabled) {
           publishBtn?.classList.remove("hidden");
@@ -658,6 +937,7 @@ const gitEnabled = Astro.props.gitEnabled !== undefined
         setEditingMode(false);
       } else {
         bar?.classList.add("hidden");
+        document.body.classList.remove("ml-admin-logged-in");
         saveBtn?.classList.add("hidden");
         publishBtn?.classList.add("hidden");
         setEditingMode(false);
@@ -705,7 +985,7 @@ const gitEnabled = Astro.props.gitEnabled !== undefined
 
         if (lockRes.status === 423) {
           const lockData = await lockRes.json();
-          notify(`⚠️ Élément actuellement en cours d'édition par ${lockData.holderName || "un autre administrateur"}.`);
+          notify(`⚠️ Élément actuellement en cours d'édition par ${lockData.holderName || "un autre administrateur"}.`, 'info');
           return;
         }
       } catch (err: any) {
@@ -792,8 +1072,8 @@ const gitEnabled = Astro.props.gitEnabled !== undefined
       if (Object.keys(drafts).length === 0) return;
 
       const token = getAdminCookieToken();
-      notify("Enregistrement en cours...");
-      if (saveBtn) (saveBtn as HTMLButtonElement).disabled = true;
+      setSaveLoading(true);
+      notify("Enregistrement en cours...", 'info');
 
       try {
         const response = await fetch("/api/cms/save", {
@@ -806,22 +1086,25 @@ const gitEnabled = Astro.props.gitEnabled !== undefined
         });
 
         const resData = await response.json();
+        setSaveLoading(false);
+
         if (response.ok && resData.success) {
           clearDrafts();
           localStorage.setItem(STORAGE_KEY_UNPUBLISHED, "true");
           updateToolbarButtonsState();
-          notify("Modifications enregistrées avec succès !");
+          notify("Modifications enregistrées avec succès !", 'success');
           setTimeout(() => {
-            if (notificationText && localStorage.getItem(STORAGE_KEY_UNPUBLISHED) !== "true") {
-              notificationText.classList.add("hidden");
+            if (localStorage.getItem(STORAGE_KEY_UNPUBLISHED) === "true") {
+              notify("Modifications enregistrées. Prêt pour publication.", 'info');
             }
           }, 3000);
         } else {
-          notify(`Erreur: ${resData.message || "Échec de la sauvegarde."}`);
+          notify(`Erreur: ${resData.message || "Échec de la sauvegarde."}`, 'error', resData.errors);
           updateToolbarButtonsState();
         }
       } catch (err: any) {
-        notify(`Erreur réseau: ${err.message || "Impossible de contacter le serveur."}`);
+        setSaveLoading(false);
+        notify(`Erreur réseau: ${err.message || "Impossible de contacter le serveur."}`, 'error', [err.message]);
         updateToolbarButtonsState();
       }
 
@@ -833,8 +1116,8 @@ const gitEnabled = Astro.props.gitEnabled !== undefined
       if (Object.keys(drafts).length > 0 || localStorage.getItem(STORAGE_KEY_UNPUBLISHED) !== "true") return;
 
       const token = getAdminCookieToken();
-      notify("Publication sur GitHub en cours...");
-      if (publishBtn) (publishBtn as HTMLButtonElement).disabled = true;
+      setPublishLoading(true);
+      notify("Publication sur GitHub en cours...", 'info');
 
       try {
         const response = await fetch("/api/cms/publish", {
@@ -846,29 +1129,44 @@ const gitEnabled = Astro.props.gitEnabled !== undefined
         });
 
         const resData = await response.json();
+        setPublishLoading(false);
+
         if (response.ok && resData.success) {
           localStorage.removeItem(STORAGE_KEY_UNPUBLISHED);
           updateToolbarButtonsState();
-          notify(resData.message || "Modifications publiées sur GitHub avec succès !");
+          notify(resData.message || "Modifications publiées sur GitHub avec succès !", 'success');
           setTimeout(() => {
-            if (notificationText) notificationText.classList.add("hidden");
+            notificationZone?.classList.add("hidden");
           }, 4000);
         } else {
-          notify(`Erreur publication: ${resData.message || "Échec de la publication."}`);
+          notify(resData.message || "Échec de la publication sur GitHub.", 'error', resData.errors);
           updateToolbarButtonsState();
         }
       } catch (err: any) {
-        notify(`Erreur réseau: ${err.message || "Impossible de contacter le serveur."}`);
+        setPublishLoading(false);
+        notify(`Erreur réseau: ${err.message || "Impossible de contacter le serveur."}`, 'error', [err.message]);
         updateToolbarButtonsState();
       }
     });
 
     notificationText?.addEventListener("click", () => {
+      if (lastErrorData) {
+        openErrorModal();
+        return;
+      }
       const drafts = cmsDraftStore.get();
       if (Object.keys(drafts).length > 0) {
         openDraftsModal();
       }
     });
+
+    notificationDetailsBtn?.addEventListener("click", openErrorModal);
+    notificationDismissBtn?.addEventListener("click", () => {
+      notificationZone?.classList.add("hidden");
+    });
+
+    errorModalClose?.addEventListener("click", closeErrorModal);
+    errorModalDone?.addEventListener("click", closeErrorModal);
 
     draftsModalClose?.addEventListener("click", closeDraftsModal);
     draftsModalDone?.addEventListener("click", closeDraftsModal);
