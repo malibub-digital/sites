@@ -1429,7 +1429,6 @@ const gitEnabled =
         setPublishLoading(false);
 
         if (response.ok && resData.success) {
-          clearSavedChanges();
           localStorage.removeItem(STORAGE_KEY_UNPUBLISHED);
           updateToolbarButtonsState();
           notify(
@@ -1507,10 +1506,6 @@ const gitEnabled =
     popoverSave?.addEventListener("click", applyChange);
 
     document.addEventListener("click", handleElementClick);
-
-    if (localStorage.getItem(STORAGE_KEY_UNPUBLISHED) !== "true") {
-      clearSavedChanges();
-    }
 
     checkAuthState();
     syncDraftsWithDOM();
