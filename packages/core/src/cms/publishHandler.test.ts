@@ -65,4 +65,33 @@ describe('processCmsPublishRequest API Handler', () => {
     expect(data.success).toBe(false);
     expect(data.message).toContain('CMS_GIT_BRANCH');
   });
+
+  it('correctly resolves repository root when projectRoot is nested template folder', async () => {
+    const templateSubdir = path.join(TEST_DIR, 'template');
+    fs.mkdirSync(templateSubdir, { recursive: true });
+    fs.writeFileSync(path.join(templateSubdir, 'site.config.json'), JSON.stringify({ name: 'test' }), 'utf-8');
+
+    const req = new Request('http://localhost/api/cms/publish', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${validToken}`,
+      },
+    });
+
+    const res = await processCmsPublishRequest(req, {
+      projectRoot: templateSubdir,
+      gitEnabled: true,
+      gitBranch: 'main',
+      gitToken: 'fake_token',
+      gitOwner: 'test_owner',
+      gitRepo: 'test_repo',
+    });
+
+    expect(res.status).toBe(500);
+    const data = await res.json();
+    expect(data.success).toBe(false);
+    expect(data.message).toContain('GitHubProvider');
+  });
 });
+

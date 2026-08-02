@@ -74,6 +74,19 @@ function findModifiedContentFiles(dir: string, baseDir: string = dir): GitFileCh
   return changes;
 }
 
+function findRepoRoot(startDir: string): string {
+  let current = path.resolve(startDir);
+  while (current !== path.parse(current).root) {
+    if (fs.existsSync(path.join(current, '.git')) || fs.existsSync(path.join(current, 'template', 'site.config.json'))) {
+      return current;
+    }
+    const parent = path.dirname(current);
+    if (parent === current) break;
+    current = parent;
+  }
+  return startDir;
+}
+
 export async function processCmsPublishRequest(
   request: Request,
   options: CmsPublishOptions = {}
@@ -152,15 +165,16 @@ export async function processCmsPublishRequest(
   const providerType = options.gitProvider || process.env.GIT_PROVIDER || (import.meta as any).env?.GIT_PROVIDER || 'github';
 
   try {
-    const targetProjectRoot = fs.existsSync(path.join(projectRoot, 'template', 'site.config.json'))
-      ? path.join(projectRoot, 'template')
-      : projectRoot;
+    const repoRoot = findRepoRoot(projectRoot);
+    const targetProjectRoot = fs.existsSync(path.join(repoRoot, 'template', 'site.config.json'))
+      ? path.join(repoRoot, 'template')
+      : repoRoot;
 
     const srcDir = path.join(targetProjectRoot, 'src', 'content');
     const templateSrcDir = path.join(targetProjectRoot, 'template', 'src', 'content');
     const contentDir = fs.existsSync(srcDir) ? srcDir : (fs.existsSync(templateSrcDir) ? templateSrcDir : targetProjectRoot);
 
-    const modifiedFiles = findModifiedContentFiles(contentDir, projectRoot);
+    const modifiedFiles = findModifiedContentFiles(contentDir, repoRoot);
 
     if (modifiedFiles.length === 0) {
       return new Response(

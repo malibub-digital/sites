@@ -605,8 +605,10 @@ const gitEnabled = Astro.props.gitEnabled !== undefined
 
         if (path && drafts[path] !== undefined) {
           el.textContent = drafts[path];
+          el.setAttribute("data-cms-has-draft", "true");
         } else {
           el.textContent = original;
+          el.removeAttribute("data-cms-has-draft");
         }
       });
 
@@ -664,6 +666,7 @@ const gitEnabled = Astro.props.gitEnabled !== undefined
 
     async function closePopover() {
       if (activeTargetElement) {
+        activeTargetElement.removeAttribute("data-cms-active");
         const bindKey = activeTargetElement.getAttribute("data-cms-bind");
         if (bindKey) {
           const token = getAdminCookieToken();
@@ -684,6 +687,9 @@ const gitEnabled = Astro.props.gitEnabled !== undefined
     }
 
     async function openPopover(el: HTMLElement, event: MouseEvent) {
+      if (activeTargetElement) {
+        activeTargetElement.removeAttribute("data-cms-active");
+      }
       const bindKey = el.getAttribute("data-cms-bind") || "element";
       const token = getAdminCookieToken();
 
@@ -707,6 +713,7 @@ const gitEnabled = Astro.props.gitEnabled !== undefined
       }
 
       activeTargetElement = el;
+      activeTargetElement.setAttribute("data-cms-active", "true");
       const drafts = cmsDraftStore.get();
       const hasDraft = bindKey in drafts;
 

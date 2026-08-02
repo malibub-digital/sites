@@ -20,8 +20,13 @@ const {
     { label: "Thèmes & Couleurs", href: "/themes" },
     { label: "Contact", href: "/contact" },
   ],
-  currentPath = "/",
+  currentPath = Astro.props.currentPath || Astro.url.pathname,
 } = Astro.props;
+
+const normalizePath = (path: string) =>
+  path.length > 1 && path.endsWith('/') ? path.slice(0, -1) : path;
+
+const cleanCurrentPath = normalizePath(currentPath);
 ---
 
 <header
@@ -121,9 +126,11 @@ const {
 
       {
         navItems.map((item) => {
+          const cleanItemHref = normalizePath(item.href);
           const isActive =
-            currentPath === item.href ||
-            (item.href !== "/" && currentPath.startsWith(item.href));
+            cleanItemHref === '/'
+              ? cleanCurrentPath === '/'
+              : cleanCurrentPath === cleanItemHref || cleanCurrentPath.startsWith(cleanItemHref + '/');
           return (
             <a
               href={item.href}

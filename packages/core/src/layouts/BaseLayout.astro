@@ -49,15 +49,55 @@ const {
 
   <style is:global>
     body.cms-mode-editing [data-cms-bind] {
-      outline: 2px dashed #0284c7;
-      outline-offset: 3px;
-      border-radius: 4px;
+      position: relative;
+      outline: 1.5px dashed rgba(2, 132, 199, 0.4);
+      outline-offset: 2px;
+      border-radius: 6px;
       cursor: pointer;
-      transition: outline-color 0.2s ease, background-color 0.2s ease;
+      transition: outline 0.15s ease-in-out, background-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
     }
     body.cms-mode-editing [data-cms-bind]:hover {
       outline: 2px solid #0284c7;
+      outline-offset: 2px;
       background-color: rgba(2, 132, 199, 0.08);
+      box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+    }
+    body.cms-mode-editing [data-cms-bind]:hover::after {
+      content: '✏️ Éditer';
+      position: absolute;
+      top: -22px;
+      right: 0;
+      background: #0f172a;
+      color: #38bdf8;
+      font-size: 0.6875rem;
+      font-weight: 600;
+      font-family: system-ui, -apple-system, sans-serif;
+      padding: 2px 6px;
+      border-radius: 4px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+      pointer-events: none;
+      z-index: 100;
+      white-space: nowrap;
+      line-height: 1.2;
+    }
+    body.cms-mode-editing [data-cms-bind][data-cms-active="true"] {
+      outline: 2px solid #0284c7;
+      outline-offset: 2px;
+      background-color: rgba(2, 132, 199, 0.12);
+      box-shadow: 0 0 0 4px rgba(2, 132, 199, 0.25);
+    }
+    body.cms-mode-editing [data-cms-bind][data-cms-has-draft="true"] {
+      outline: 2px dashed #f59e0b;
+      outline-offset: 2px;
+      background-color: rgba(245, 158, 11, 0.06);
+    }
+    body.cms-mode-editing [data-cms-bind][data-cms-has-draft="true"]:hover {
+      outline: 2px solid #d97706;
+      background-color: rgba(245, 158, 11, 0.12);
+      box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2);
+    }
+    body.cms-mode-editing .brand-text {
+      gap: 6px;
     }
   </style>
 </body>
