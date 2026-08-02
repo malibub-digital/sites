@@ -143,53 +143,59 @@ const gitEnabled =
 
   <div
     id="ml-cms-edit-popover"
-    class="ml-cms-popover hidden"
+    class="ml-cms-modal-overlay hidden"
     role="dialog"
     aria-modal="true"
     aria-labelledby="ml-cms-popover-title"
   >
-    <div class="ml-cms-popover-header">
-      <span class="ml-cms-popover-badge" id="ml-cms-popover-bind-key"
-        >field</span
-      >
-      <h3 id="ml-cms-popover-title" class="ml-cms-popover-heading">
-        Éditer l'élément
-      </h3>
-      <button
-        type="button"
-        id="ml-cms-popover-close"
-        class="ml-cms-popover-close-btn"
-        aria-label="Fermer">&times;</button
-      >
-    </div>
-    <div class="ml-cms-popover-body">
-      <div class="ml-form-group">
-        <label for="ml-cms-popover-input" class="ml-form-label"
-          >Contenu textuel</label
+    <div class="ml-cms-modal-content">
+      <div class="ml-cms-modal-header">
+        <div style="display:flex; align-items:center; gap:0.5rem;">
+          <i class="ml-icon-edit-line ml-icon--xs" style="color: #0284c7;"></i>
+          <h3 id="ml-cms-popover-title" class="ml-cms-modal-heading">
+            Éditer le contenu
+          </h3>
+        </div>
+        <span class="ml-cms-popover-badge" id="ml-cms-popover-bind-key"
+          >field</span
         >
-        <textarea
-          id="ml-cms-popover-input"
-          class="ml-form-input ml-cms-textarea"
-          rows="3"></textarea>
+        <button
+          type="button"
+          id="ml-cms-popover-close"
+          class="ml-cms-popover-close-btn"
+          aria-label="Fermer">&times;</button
+        >
       </div>
-    </div>
-    <div class="ml-cms-popover-footer">
-      <button
-        type="button"
-        id="ml-cms-popover-reset"
-        class="ml-btn ml-btn--danger ml-btn--sm hidden"
-        title="Rétablir la valeur initiale">Rétablir initial</button
-      >
-      <button
-        type="button"
-        id="ml-cms-popover-cancel"
-        class="ml-btn ml-btn--secondary ml-btn--sm">Annuler</button
-      >
-      <button
-        type="button"
-        id="ml-cms-popover-save"
-        class="ml-btn ml-btn--primary ml-btn--sm">Appliquer</button
-      >
+      <div class="ml-cms-modal-body">
+        <div class="ml-form-group">
+          <label for="ml-cms-popover-input" class="ml-form-label"
+            >Texte / Valeur de l'élément</label
+          >
+          <textarea
+            id="ml-cms-popover-input"
+            class="ml-form-input ml-cms-textarea"
+            rows="4"
+            style="width: 100%; font-family: inherit; font-size: 0.95rem; line-height: 1.5;"></textarea>
+        </div>
+      </div>
+      <div class="ml-cms-modal-footer">
+        <button
+          type="button"
+          id="ml-cms-popover-reset"
+          class="ml-btn ml-btn--danger ml-btn--sm hidden"
+          title="Rétablir la valeur initiale">Rétablir initial</button
+        >
+        <button
+          type="button"
+          id="ml-cms-popover-cancel"
+          class="ml-btn ml-btn--secondary ml-btn--sm">Annuler</button
+        >
+        <button
+          type="button"
+          id="ml-cms-popover-save"
+          class="ml-btn ml-btn--primary ml-btn--sm">Appliquer</button
+        >
+      </div>
     </div>
   </div>
 
@@ -1558,18 +1564,8 @@ const gitEnabled =
 
       if (popover) {
         popover.classList.remove("hidden");
-        const rect = el.getBoundingClientRect();
-        const popoverWidth = 360;
-        let left = rect.left + window.scrollX;
-        let top = rect.bottom + window.scrollY + 8;
-
-        if (left + popoverWidth > window.innerWidth - 16) {
-          left = Math.max(16, window.innerWidth - popoverWidth - 16);
-        }
-
-        popover.style.left = `${left}px`;
-        popover.style.top = `${top}px`;
         popoverInput?.focus();
+        popoverInput?.select();
       }
     }
 
