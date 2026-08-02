@@ -81,6 +81,10 @@ export async function processCmsSaveRequest(
   }
 
   const projectRoot = options.projectRoot || process.cwd();
+  const targetProjectRoot = fs.existsSync(path.join(projectRoot, 'template', 'site.config.json'))
+    ? path.join(projectRoot, 'template')
+    : projectRoot;
+
   const updatedFilesSet = new Set<string>();
   const errors: string[] = [];
 
@@ -101,7 +105,7 @@ export async function processCmsSaveRequest(
   }
 
   if (Object.keys(siteConfigDrafts).length > 0) {
-    const siteConfigPath = path.join(projectRoot, 'site.config.json');
+    const siteConfigPath = path.join(targetProjectRoot, 'site.config.json');
     try {
       if (fs.existsSync(siteConfigPath)) {
         const rawContent = fs.readFileSync(siteConfigPath, 'utf-8');

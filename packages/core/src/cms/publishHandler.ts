@@ -64,7 +64,7 @@ function findModifiedContentFiles(dir: string, baseDir: string = dir): GitFileCh
         changes.push(...findModifiedContentFiles(fullPath, baseDir));
       }
     } else if (entry.isFile()) {
-      if (entry.name.endsWith('.json') || entry.name.endsWith('.md') || entry.name.endsWith('.mdx')) {
+      if ((entry.name.endsWith('.json') || entry.name.endsWith('.md') || entry.name.endsWith('.mdx')) && entry.name !== 'package.json' && entry.name !== 'package-lock.json') {
         const relPath = path.relative(baseDir, fullPath).replace(/\\/g, '/');
         const content = fs.readFileSync(fullPath, 'utf-8');
         changes.push({ path: relPath, content });
@@ -152,9 +152,13 @@ export async function processCmsPublishRequest(
   const providerType = options.gitProvider || process.env.GIT_PROVIDER || (import.meta as any).env?.GIT_PROVIDER || 'github';
 
   try {
-    const srcDir = path.join(projectRoot, 'src', 'content');
-    const templateSrcDir = path.join(projectRoot, 'template', 'src', 'content');
-    const contentDir = fs.existsSync(srcDir) ? srcDir : (fs.existsSync(templateSrcDir) ? templateSrcDir : projectRoot);
+    const targetProjectRoot = fs.existsSync(path.join(projectRoot, 'template', 'site.config.json'))
+      ? path.join(projectRoot, 'template')
+      : projectRoot;
+
+    const srcDir = path.join(targetProjectRoot, 'src', 'content');
+    const templateSrcDir = path.join(targetProjectRoot, 'template', 'src', 'content');
+    const contentDir = fs.existsSync(srcDir) ? srcDir : (fs.existsSync(templateSrcDir) ? templateSrcDir : targetProjectRoot);
 
     const modifiedFiles = findModifiedContentFiles(contentDir, projectRoot);
 
