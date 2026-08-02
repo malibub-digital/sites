@@ -33,6 +33,10 @@
     {
       "question": "Comment les modifications sont-elles enregistrées ?",
       "answer": "Les modifications sont enregistrées localement sur le disque puis publiées sur le dépôt Git de l'institution, déclenchant automatiquement le déploiement continu Dokploy."
+    },
+    {
+      "question": "Nouvelle question posée ?",
+      "answer": "Explication et réponse de l'administration."
     }
   ],
   "meta": {}
