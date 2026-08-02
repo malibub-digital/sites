@@ -12,6 +12,9 @@
     "./utils/*": "./src/utils/*",
     "./cms/*": "./src/cms/*"
   },
+  "scripts": {
+    "test": "npx vitest run"
+  },
   "dependencies": {
     "@malihub/dsml-core": "file:../../../dsml/packages/core",
     "@nanostores/persistent": "^1.3.5",
