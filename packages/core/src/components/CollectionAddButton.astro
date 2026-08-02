@@ -70,11 +70,50 @@ const {
         if (collectionInput) collectionInput.value = path;
         modal?.classList.remove('hidden');
       } else {
-        let defaultData: any;
+        let defaultData: any = { question: "Nouvelle question posée ?", answer: "Saisissez la réponse de l'administration." };
         if (rawData) {
           try { defaultData = JSON.parse(rawData); } catch {}
         }
         addArrayItem(path, defaultData);
+
+        // Instantly append new item into the DOM for immediate inline editing
+        const collectionContainer = btn.closest('[data-cms-collection]') || document.querySelector(`[data-cms-collection="${path}"]`);
+        if (collectionContainer) {
+          const listWrapper = collectionContainer.querySelector('.space-y-4') || collectionContainer;
+          const existingItems = collectionContainer.querySelectorAll('[data-cms-item-index]');
+          const newIndex = existingItems.length;
+
+          const newItem = document.createElement('div');
+          newItem.className = "bg-white p-6 border border-[var(--ml-color-neutral-200)] rounded-2xl shadow-sm hover:shadow-md transition-shadow relative group";
+          newItem.setAttribute('data-cms-item-index', String(newIndex));
+
+          const questionText = defaultData.question || defaultData.title || `Nouvel élément #${newIndex + 1}`;
+          const answerText = defaultData.answer || defaultData.description || defaultData.summary || "Saisissez le contenu ici.";
+
+          newItem.innerHTML = `
+            <div class="flex items-start justify-between gap-4 mb-2.5">
+              <h3 class="text-base font-extrabold text-[var(--ml-color-neutral-900)] font-title m-0 flex-1" data-cms-bind="${path}.[${newIndex}].question">
+                ${questionText}
+              </h3>
+              <div class="ml-cms-item-controls-toolbar" data-cms-item-toolbar style="display: inline-flex !important;">
+                <button type="button" class="ml-cms-item-btn ml-cms-item-up" title="Monter" data-action="up" data-collection-path="${path}" data-index="${newIndex}">
+                  <i class="ml-icon-arrow-up-line ml-icon--xs"></i>
+                </button>
+                <button type="button" class="ml-cms-item-btn ml-cms-item-down" title="Descendre" data-action="down" data-collection-path="${path}" data-index="${newIndex}" disabled>
+                  <i class="ml-icon-arrow-down-line ml-icon--xs"></i>
+                </button>
+                <button type="button" class="ml-cms-item-btn ml-cms-item-delete" title="Supprimer" data-action="delete-array" data-collection-path="${path}" data-index="${newIndex}">
+                  <i class="ml-icon-delete-bin-line ml-icon--xs"></i>
+                </button>
+              </div>
+            </div>
+            <p class="text-[var(--ml-color-neutral-600)] text-sm leading-relaxed m-0" data-cms-bind="${path}.[${newIndex}].answer">
+              ${answerText}
+            </p>
+          `;
+
+          listWrapper.appendChild(newItem);
+        }
       }
     });
   }
