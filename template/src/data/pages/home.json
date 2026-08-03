@@ -1,0 +1,21 @@
+{
+  "hero": {
+    "title": "Bienvenue sur Sites Faciles Mali",
+    "subtitle": "Démarches en ligne, informations officielles et services publics numériques à portée de clic.",
+    "badge": "Service Officiel",
+    "primaryAction": {
+      "label": "Accéder aux démarches",
+      "href": "/services"
+    },
+    "secondaryAction": {
+      "label": "Nous contacter",
+      "href": "/contact"
+    }
+  },
+  "quickLinks": [
+    { "label": "🟢 Vert Officiel", "href": "/themes" },
+    { "label": "🟧 Orange Mandingue", "href": "/themes" },
+    { "label": "🔵 Bleu Fleuve", "href": "/themes" },
+    { "label": "✨ Motifs & Tous (9) →", "href": "/themes" }
+  ]
+}

@@ -15,6 +15,7 @@ const faqList = siteConfig.faq || [];
     title={siteConfig.title}
     institution={siteConfig.institution}
     logoUrl={siteConfig.logoUrl}
+    navItems={siteConfig.navigation?.links}
   />
 
   <main id="main-content" class="py-12 bg-[var(--ml-color-bogolan-kaolin)]/50 min-h-screen">
@@ -72,9 +73,7 @@ const faqList = siteConfig.faq || [];
   <Footer
     slot="footer"
     institution={siteConfig.institution}
-    email={siteConfig.contact.email}
-    phone={siteConfig.contact.phone}
-    address={siteConfig.contact.address}
-    hours={siteConfig.contact.hours}
+    contact={siteConfig.contact}
+    footerLinks={siteConfig.footerLinks}
   />
 </BaseLayout>

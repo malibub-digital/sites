@@ -1,5 +1,23 @@
 import { z } from 'zod';
 
+const navLinkSchema = z.object({
+  label: z.string(),
+  href: z.string(),
+});
+
+const footerColumnSchema = z.object({
+  colTitle: z.string(),
+  links: z.array(navLinkSchema),
+});
+
+const emergencyNoticeSchema = z.object({
+  enabled: z.boolean().default(false),
+  type: z.enum(['info', 'warning', 'danger']).default('info'),
+  message: z.string().default(''),
+  ctaLabel: z.string().optional(),
+  ctaHref: z.string().optional(),
+});
+
 export const siteConfigSchema = z.object({
   title: z.string(),
   tagline: z.string().optional(),
@@ -15,7 +33,12 @@ export const siteConfigSchema = z.object({
   socialLinks: z.array(z.object({
     platform: z.string(),
     url: z.string().url()
-  })).optional()
+  })).optional(),
+  navigation: z.object({
+    links: z.array(navLinkSchema),
+  }).optional(),
+  footerLinks: z.array(footerColumnSchema).optional(),
+  emergencyNotice: emergencyNoticeSchema.optional(),
 });
 
 export const serviceSchema = z.object({
@@ -95,11 +118,13 @@ export const cmsLockPayloadSchema = z.object({
 });
 
 export type SiteConfig = z.infer<typeof siteConfigSchema>;
+export type NavLink = z.infer<typeof navLinkSchema>;
+export type FooterColumn = z.infer<typeof footerColumnSchema>;
+export type EmergencyNotice = z.infer<typeof emergencyNoticeSchema>;
 export type Service = z.infer<typeof serviceSchema>;
 export type News = z.infer<typeof newsSchema>;
 export type Faq = z.infer<typeof faqSchema>;
 export type CmsSaveOperation = z.infer<typeof cmsSaveOperationSchema>;
 export type CmsSavePayload = z.infer<typeof cmsSavePayloadSchema>;
 export type CmsLockPayload = z.infer<typeof cmsLockPayloadSchema>;
-
 

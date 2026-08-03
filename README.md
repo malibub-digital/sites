@@ -6,7 +6,48 @@ Projet de moteur de sites web institutionnels et démarches publiques pour le Ma
 
 Le projet inclut un moteur d'édition visuelle en temps réel permettant aux agents autorisés de modifier le contenu des pages directement depuis leur navigateur.
 
+### Architecture de stockage du contenu
+
+Le moteur CMS route chaque sauvegarde vers le bon fichier selon le préfixe `data-cms-bind` :
+
+| Préfixe | Fichier cible | Contenu |
+| :--- | :--- | :--- |
+| `siteConfig.*` | `site.config.json` | Config globale (institution, nav, footer, alerte) |
+| `src/data/pages/<p>.json::champ` | JSON arbitraire | Contenu de page (Hero, sections) |
+| `src/content/**/*.md::champ` | Markdown + gray-matter | Articles, fiches démarches |
+
+### Composants éditables (Chantier 3)
+
+| Composant | Éléments éditables | Collections mutables |
+| :--- | :--- | :--- |
+| `Header` | Institution, titre du site | Liens de navigation (`siteConfig.navigation.links`) |
+| `Footer` | Adresse, email, téléphone | Colonnes de liens (`siteConfig.footerLinks[i].links`) |
+| `Hero` | Titre, sous-titre, badge, CTA | Pastilles d'accès rapide (`home.json::quickLinks`) |
+| `ServiceCard` | Titre, résumé, coût, délai, catégorie | — (prop `cmsSlug` requis) |
+| `EmergencyBanner` | Message, libellé CTA | — |
+
+### Composant `EmergencyBanner`
+
+Bandeau sticky configurable via `siteConfig.emergencyNotice` dans `site.config.json` :
+
+```json
+{
+  "emergencyNotice": {
+    "enabled": true,
+    "type": "warning",
+    "message": "Le consulat sera fermé du 10 au 15 août.",
+    "ctaLabel": "Voir les permanences",
+    "ctaHref": "/actualites"
+  }
+}
+```
+
+- `type` : `"info"` (bleu) · `"warning"` (ambre) · `"danger"` (rouge)
+- Rendu conditionnel côté serveur : si `enabled: false`, aucun HTML n'est généré
+- En mode édition, `message` et `ctaLabel` sont éditables inline
+
 ---
+
 
 ## 2. Guide de Configuration Pas à Pas (ex: GitHub + Dokploy)
 

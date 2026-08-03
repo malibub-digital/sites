@@ -116,6 +116,7 @@ const themes = [
     title={siteConfig.title}
     institution={siteConfig.institution}
     logoUrl={siteConfig.logoUrl}
+    navItems={siteConfig.navigation?.links}
     currentPath="/themes"
   />
 
@@ -250,9 +251,7 @@ const themes = [
   <Footer
     slot="footer"
     institution={siteConfig.institution}
-    email={siteConfig.contact.email}
-    phone={siteConfig.contact.phone}
-    address={siteConfig.contact.address}
-    hours={siteConfig.contact.hours}
+    contact={siteConfig.contact}
+    footerLinks={siteConfig.footerLinks}
   />
 </BaseLayout>

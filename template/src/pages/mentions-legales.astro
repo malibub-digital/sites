@@ -11,6 +11,7 @@ import siteConfig from '../../site.config.json';
     title={siteConfig.title}
     institution={siteConfig.institution}
     logoUrl={siteConfig.logoUrl}
+    navItems={siteConfig.navigation?.links}
   />
 
   <main id="main-content" class="py-12 bg-stone-50 min-h-screen">
@@ -44,9 +45,7 @@ import siteConfig from '../../site.config.json';
   <Footer
     slot="footer"
     institution={siteConfig.institution}
-    email={siteConfig.contact.email}
-    phone={siteConfig.contact.phone}
-    address={siteConfig.contact.address}
-    hours={siteConfig.contact.hours}
+    contact={siteConfig.contact}
+    footerLinks={siteConfig.footerLinks}
   />
 </BaseLayout>

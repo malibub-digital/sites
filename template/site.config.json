@@ -20,6 +20,51 @@
       "url": "https://twitter.com/sitesfacilesml"
     }
   ],
+  "navigation": {
+    "links": [
+      { "label": "Accueil", "href": "/" },
+      { "label": "Démarches & Services", "href": "/services" },
+      { "label": "Actualités", "href": "/actualites" },
+      { "label": "FAQ", "href": "/faq" },
+      { "label": "Contact", "href": "/contact" }
+    ]
+  },
+  "footerLinks": [
+    {
+      "colTitle": "Services",
+      "links": [
+        { "label": "Carte consulaire", "href": "/services/carte-consulaire" },
+        { "label": "Passeport biométrique", "href": "/services/passeport" },
+        { "label": "État civil & Actes", "href": "/services/etat-civil" },
+        { "label": "Insertion APEJ", "href": "/services/emploi-apej" }
+      ]
+    },
+    {
+      "colTitle": "Navigation",
+      "links": [
+        { "label": "Accueil", "href": "/" },
+        { "label": "Toutes les démarches", "href": "/services" },
+        { "label": "Actualités & Communiqués", "href": "/actualites" },
+        { "label": "Foire aux questions", "href": "/faq" },
+        { "label": "Contact & Horaires", "href": "/contact" }
+      ]
+    },
+    {
+      "colTitle": "Informations",
+      "links": [
+        { "label": "Mentions légales", "href": "/mentions-legales" },
+        { "label": "Accessibilité : partiellement conforme", "href": "/accessibilite" },
+        { "label": "Assistance & Support", "href": "/contact" }
+      ]
+    }
+  ],
+  "emergencyNotice": {
+    "enabled": false,
+    "type": "info",
+    "message": "Information importante en cours de diffusion.",
+    "ctaLabel": "En savoir plus",
+    "ctaHref": "/actualites"
+  },
   "header": "RÉPUBLIQUE DU MALI  Sites Faciles Mali",
   "faq": [
     {

@@ -8,9 +8,13 @@ interface Props {
   href: string;
   badgeText?: string;
   variant?: 'standard' | 'featured' | 'accent' | 'indigo' | 'mandingue' | 'ambre' | 'soleil';
+  cmsSlug?: string;
 }
 
-const { title, summary, category, cost = 'Gratuit', processingTime, href, badgeText, variant = 'standard' } = Astro.props;
+const { title, summary, category, cost = 'Gratuit', processingTime, href, badgeText, variant = 'standard', cmsSlug } = Astro.props;
+const cmsBase = cmsSlug ? `src/content/services/${cmsSlug}.md` : null;
+const b = (field: string) => cmsBase ? `${cmsBase}::${field}` : undefined;
+
 
 const cardStyles = {
   standard: 'bg-white border-[var(--ml-color-neutral-200)] hover:border-[var(--ml-color-green-300)] shadow-sm hover:shadow-md',
@@ -33,10 +37,10 @@ const badgeStyles = {
 };
 ---
 
-<a href={href} class={`ml-card group block relative no-underline rounded-2xl transition-all duration-200 p-6 flex flex-col justify-between ${cardStyles[variant]}`} data-cms-bind="service.card">
+<a href={href} class={`ml-card group block relative no-underline rounded-2xl transition-all duration-200 p-6 flex flex-col justify-between ${cardStyles[variant]}`}>
   <div>
     <div class="flex items-center justify-between mb-4">
-      <span class="text-xs font-semibold text-[var(--ml-color-green-800)] bg-[var(--ml-color-green-100)]/60 px-3 py-1 rounded-full border border-[var(--ml-color-green-200)]/50">
+      <span class="text-xs font-semibold text-[var(--ml-color-green-800)] bg-[var(--ml-color-green-100)]/60 px-3 py-1 rounded-full border border-[var(--ml-color-green-200)]/50" data-cms-bind={b('category')}>
         {category}
       </span>
       {badgeText && (
@@ -45,18 +49,18 @@ const badgeStyles = {
         </span>
       )}
     </div>
-    <h3 class="text-lg font-extrabold text-[var(--ml-color-neutral-900)] group-hover:text-[var(--ml-color-green-700)] transition-colors mb-2 font-title leading-snug" data-cms-bind="service.title">
+    <h3 class="text-lg font-extrabold text-[var(--ml-color-neutral-900)] group-hover:text-[var(--ml-color-green-700)] transition-colors mb-2 font-title leading-snug" data-cms-bind={b('title')}>
       {title}
     </h3>
-    <p class="text-xs md:text-sm text-[var(--ml-color-neutral-600)] leading-relaxed mb-5" data-cms-bind="service.summary">
+    <p class="text-xs md:text-sm text-[var(--ml-color-neutral-600)] leading-relaxed mb-5" data-cms-bind={b('summary')}>
       {summary}
     </p>
   </div>
 
   <div>
     <div class="border-t border-[var(--ml-color-neutral-200)]/70 pt-4 flex items-center justify-between text-xs text-[var(--ml-color-neutral-500)] mb-3">
-      <span>Tarif: <strong class="text-[var(--ml-color-neutral-800)] font-semibold">{cost}</strong></span>
-      {processingTime && <span>Délai: <strong class="text-[var(--ml-color-neutral-800)] font-semibold">{processingTime}</strong></span>}
+      <span>Tarif: <strong class="text-[var(--ml-color-neutral-800)] font-semibold" data-cms-bind={b('cost')}>{cost}</strong></span>
+      {processingTime && <span>Délai: <strong class="text-[var(--ml-color-neutral-800)] font-semibold" data-cms-bind={b('processingTime')}>{processingTime}</strong></span>}
     </div>
     <div class="text-xs font-bold text-[var(--ml-color-green-700)] group-hover:text-[var(--ml-color-green-800)] inline-flex items-center gap-1">
       <span>Accéder au service</span>
@@ -64,3 +68,4 @@ const badgeStyles = {
     </div>
   </div>
 </a>
+

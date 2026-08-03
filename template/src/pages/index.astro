@@ -5,6 +5,7 @@ import Footer from '@malihub/sites-core/components/Footer.astro';
 import Hero from '@malihub/sites-core/components/Hero.astro';
 import ServiceCard from '@malihub/sites-core/components/ServiceCard.astro';
 import siteConfig from '../../site.config.json';
+import homeData from '../data/pages/home.json';
 
 const services = [
   {
@@ -107,21 +108,25 @@ const faqPreview = [
 ];
 ---
 
-<BaseLayout title={siteConfig.title} description={siteConfig.description}>
+<BaseLayout title={siteConfig.title} description={siteConfig.description} emergencyNotice={siteConfig.emergencyNotice}>
   <Header
     slot="header"
     title={siteConfig.title}
     institution={siteConfig.institution}
     logoUrl={siteConfig.logoUrl}
+    navItems={siteConfig.navigation?.links}
+    navItems={siteConfig.navigation?.links}
   />
 
   <Hero
-    title="Sites Faciles Mali"
-    subtitle="Plateforme modèle et kit de démarrage pour le déploiement rapide de sites web institutionnels maliens conformes au DSML."
-    badge="République du Mali — Standard DSML"
-    primaryAction={{ label: 'Découvrir les Démarches Modèles', href: '/services' }}
-    secondaryAction={{ label: 'Consulter la FAQ', href: '/faq' }}
+    title={homeData.hero.title}
+    subtitle={homeData.hero.subtitle}
+    badge={homeData.hero.badge}
+    primaryAction={homeData.hero.primaryAction}
+    secondaryAction={homeData.hero.secondaryAction}
+    quickLinks={homeData.quickLinks}
   />
+
 
   <section id="services" class="py-16 bg-[var(--ml-color-river-50)]/50 border-b border-[var(--ml-color-neutral-200)]">
     <div class="ml-container max-w-6xl mx-auto px-4">
@@ -238,12 +243,7 @@ const faqPreview = [
   <Footer
     slot="footer"
     institution={siteConfig.institution}
-    email={siteConfig.contact.email}
-    phone={siteConfig.contact.phone}
-    address={siteConfig.contact.address}
-    hours={siteConfig.contact.hours}
-  />
-</BaseLayout>s={siteConfig.contact.address}
-    hours={siteConfig.contact.hours}
+    contact={siteConfig.contact}
+    footerLinks={siteConfig.footerLinks}
   />
 </BaseLayout>

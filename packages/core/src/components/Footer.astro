@@ -1,25 +1,33 @@
 ---
+import CollectionAddButton from './CollectionAddButton.astro';
+import CollectionItemControls from './CollectionItemControls.astro';
+import type { FooterColumn } from '../schemas/index.js';
+
 interface Props {
   institution?: string;
-  email?: string;
-  phone?: string;
-  address?: string;
-  hours?: string;
+  contact?: {
+    email: string;
+    phone: string;
+    address: string;
+    hours?: string;
+  };
+  footerLinks?: FooterColumn[];
 }
 
 const {
   institution = 'RÉPUBLIQUE DU MALI',
-  email = 'contact@sitesfaciles.gouv.ml',
-  phone = '+223 20 22 00 00',
-  address = 'Cité Administrative, Bâtiment Numérique, Bamako, République du Mali',
-  hours = 'Du Lundi au Vendredi de 8h00 à 16h00'
+  contact = {
+    email: 'contact@sitesfaciles.gouv.ml',
+    phone: '+223 20 22 00 00',
+    address: 'Cité Administrative, Bâtiment Numérique, Bamako, République du Mali',
+  },
+  footerLinks = [],
 } = Astro.props;
 ---
 
 <footer class="ml-footer" aria-label="Pied de page">
   <div class="ml-container">
     <div class="footer-top">
-      <!-- Bloc de Marque + Coordonnées -->
       <div class="footer-brand">
         <div class="brand-block">
           <div class="ml-flag" aria-hidden="true">
@@ -28,45 +36,43 @@ const {
             <div class="red"></div>
           </div>
           <div class="brand-text">
-            <div class="brand-title">{institution}</div>
+            <div class="brand-title" data-cms-bind="siteConfig.institution">{institution}</div>
             <div class="brand-motto">Un Peuple – Un But – Une Foi</div>
           </div>
         </div>
-        <div class="footer-coords" data-cms-bind="siteConfig.footerAddress">
+        <div class="footer-coords">
           <strong>Sites Faciles Mali</strong><br />
-          {address}<br />
-          <span>Email : <a href={`mailto:${email}`}>{email}</a></span><br />
-          <span>Tél : {phone}</span>
+          <span data-cms-bind="siteConfig.contact.address">{contact.address}</span><br />
+          <span>Email : <a href={`mailto:${contact.email}`} data-cms-bind="siteConfig.contact.email">{contact.email}</a></span><br />
+          <span>Tél : <span data-cms-bind="siteConfig.contact.phone">{contact.phone}</span></span>
         </div>
       </div>
 
-      <!-- Colonnes de liens -->
       <div class="footer-links-container">
-        <nav class="footer-col" aria-label="Démarches populaires">
-          <div class="footer-col-title">Services</div>
-          <a href="/services/carte-consulaire">Carte consulaire</a>
-          <a href="/services/passeport">Passeport biométrique</a>
-          <a href="/services/etat-civil">État civil & Actes</a>
-          <a href="/services/emploi-apej">Insertion APEJ</a>
-        </nav>
-        <nav class="footer-col" aria-label="Navigation du site">
-          <div class="footer-col-title">Navigation</div>
-          <a href="/">Accueil</a>
-          <a href="/services">Toutes les démarches</a>
-          <a href="/actualites">Actualités & Communiqués</a>
-          <a href="/faq">Foire aux questions</a>
-          <a href="/contact">Contact & Horaires</a>
-        </nav>
-        <nav class="footer-col" aria-label="Informations légales et accessibilité">
-          <div class="footer-col-title">Informations</div>
-          <a href="/mentions-legales">Mentions légales</a>
-          <a href="/accessibilite">Accessibilité : partiellement conforme</a>
-          <a href="/contact">Assistance & Support</a>
-        </nav>
+        {footerLinks.map((col, colIndex) => (
+          <nav class="footer-col" aria-label={col.colTitle} data-cms-collection={`siteConfig.footerLinks.[${colIndex}].links`}>
+            <div class="footer-col-title" data-cms-bind={`siteConfig.footerLinks.[${colIndex}].colTitle`}>{col.colTitle}</div>
+            {col.links.map((link, linkIndex) => (
+              <div class="footer-link-item" data-cms-item-index={linkIndex}>
+                <a href={link.href} data-cms-bind={`siteConfig.footerLinks.[${colIndex}].links.[${linkIndex}].label`}>{link.label}</a>
+                <CollectionItemControls
+                  collectionPath={`siteConfig.footerLinks.[${colIndex}].links`}
+                  index={linkIndex}
+                  isFirst={linkIndex === 0}
+                  isLast={linkIndex === col.links.length - 1}
+                />
+              </div>
+            ))}
+            <CollectionAddButton
+              collectionPath={`siteConfig.footerLinks.[${colIndex}].links`}
+              label="Ajouter un lien"
+              defaultData={{ label: "Nouveau lien", href: "/" }}
+            />
+          </nav>
+        ))}
       </div>
     </div>
 
-    <!-- Ligne légale globale conforme DSML -->
     <div class="footer-bottom">
       <div class="footer-bottom-links">
         <a href="/mentions-legales">Mentions légales</a>
@@ -78,3 +84,14 @@ const {
     </div>
   </div>
 </footer>
+
+<style>
+  .footer-link-item {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+  }
+  .footer-link-item > a {
+    flex: 1;
+  }
+</style>
