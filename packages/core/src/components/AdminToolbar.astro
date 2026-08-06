@@ -167,15 +167,34 @@ const gitEnabled =
         >
       </div>
       <div class="ml-cms-modal-body">
-        <div class="ml-form-group">
-          <label for="ml-cms-popover-input" class="ml-form-label"
+        <div class="ml-form-group" id="ml-cms-popover-text-group">
+          <label for="ml-cms-popover-text-input" class="ml-form-label" id="ml-cms-popover-text-label"
             >Texte / Valeur de l'élément</label
           >
+          <input
+            type="text"
+            id="ml-cms-popover-text-input"
+            class="ml-form-input ml-cms-input"
+            style="width: 100%; font-family: inherit; font-size: 0.95rem;"
+          />
           <textarea
-            id="ml-cms-popover-input"
-            class="ml-form-input ml-cms-textarea"
+            id="ml-cms-popover-textarea-input"
+            class="ml-form-input ml-cms-textarea hidden"
             rows="4"
             style="width: 100%; font-family: inherit; font-size: 0.95rem; line-height: 1.5;"></textarea>
+        </div>
+
+        <div class="ml-form-group hidden" id="ml-cms-popover-href-group" style="margin-top: 0.75rem;">
+          <label for="ml-cms-popover-href-input" class="ml-form-label"
+            >Lien de la page (URL / Path)</label
+          >
+          <input
+            type="text"
+            id="ml-cms-popover-href-input"
+            class="ml-form-input ml-cms-input"
+            placeholder="Ex: /services/carte-consulaire ou https://..."
+            style="width: 100%; font-family: inherit; font-size: 0.95rem;"
+          />
         </div>
       </div>
       <div class="ml-cms-modal-footer">
@@ -382,159 +401,6 @@ const gitEnabled =
 </div>
 
 <style>
-  .ml-admin-bar {
-    position: sticky;
-    top: 0;
-    z-index: 9999;
-    background: #0f172a;
-    color: #f8fafc;
-    font-family: inherit;
-    font-size: 0.875rem;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-    border-bottom: 2px solid #0284c7;
-  }
-  .ml-admin-bar-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0.375rem 1rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-  }
-  /* Optional Horizontal Scroll for Admin Toolbar (Mobile/Responsive) */
-  .ml-admin-bar-scrollable .ml-admin-bar-container,
-  .ml-admin-bar-container.ml-admin-bar-scrollable {
-    overflow-x: auto;
-    overflow-y: hidden;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-  }
-  .ml-admin-bar-scrollable .ml-admin-bar-container::-webkit-scrollbar,
-  .ml-admin-bar-container.ml-admin-bar-scrollable::-webkit-scrollbar {
-    display: none;
-  }
-  .ml-admin-left {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-  }
-  .ml-admin-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.375rem;
-    padding: 0.2rem 0.5rem;
-    border-radius: 9999px;
-    font-weight: 600;
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-  .ml-badge-admin {
-    background: rgba(14, 165, 233, 0.15);
-    color: #38bdf8;
-  }
-  .ml-status-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
-  @keyframes ml-pulse {
-    0% {
-      transform: scale(0.95);
-      box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
-    }
-    70% {
-      transform: scale(1.1);
-      box-shadow: 0 0 0 6px rgba(34, 197, 94, 0);
-    }
-    100% {
-      transform: scale(0.95);
-      box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
-    }
-  }
-  .ml-dot-green {
-    background-color: #22c55e;
-    animation: ml-pulse 2s infinite;
-  }
-  @keyframes ml-spin {
-    from {
-      transform: rotate(0deg);
-    }
-    to {
-      transform: rotate(360deg);
-    }
-  }
-  .ml-spin {
-    animation: ml-spin 1s linear infinite;
-  }
-  .ml-admin-notification-zone {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    padding: 0.25rem 0.6rem;
-    border-radius: 6px;
-    font-size: 0.75rem;
-    font-weight: 500;
-    transition: all 0.2s ease;
-  }
-  .ml-notification--info {
-    background: rgba(56, 189, 248, 0.12);
-    color: #38bdf8;
-    border: 1px solid rgba(56, 189, 248, 0.25);
-  }
-  .ml-notification--success {
-    background: rgba(34, 197, 94, 0.15);
-    color: #4ade80;
-    border: 1px solid rgba(34, 197, 94, 0.3);
-  }
-  .ml-notification--error {
-    background: rgba(244, 63, 94, 0.18);
-    color: #fb7185;
-    border: 1px solid rgba(244, 63, 94, 0.35);
-  }
-  .ml-admin-notification-btn {
-    background: transparent;
-    border: none;
-    color: inherit;
-    font-size: 0.75rem;
-    font-weight: 600;
-    cursor: pointer;
-    text-decoration: underline;
-    padding: 0;
-    font-family: inherit;
-  }
-  .ml-admin-notification-btn:hover {
-    opacity: 0.85;
-  }
-  .ml-admin-notification-action-btn {
-    background: rgba(255, 255, 255, 0.15);
-    border: 1px solid currentColor;
-    color: inherit;
-    font-size: 0.7rem;
-    font-weight: 600;
-    border-radius: 4px;
-    padding: 0.1rem 0.4rem;
-    cursor: pointer;
-    font-family: inherit;
-  }
-  .ml-admin-notification-action-btn:hover {
-    background: rgba(255, 255, 255, 0.25);
-  }
-  .ml-admin-notification-close-btn {
-    background: transparent;
-    border: none;
-    color: inherit;
-    font-size: 1rem;
-    cursor: pointer;
-    line-height: 1;
-    padding: 0 0.2rem;
-    opacity: 0.75;
-  }
-  .ml-admin-notification-close-btn:hover {
-    opacity: 1;
-  }
   .ml-cms-modal-header-error {
     background: #fff1f2;
     border-bottom: 1px solid #fecdd3;
@@ -631,22 +497,49 @@ const gitEnabled =
   .ml-form-group {
     display: flex;
     flex-direction: column;
-    gap: 0.35rem;
+    gap: 0.5rem;
   }
   .ml-form-label {
-    font-size: 0.75rem;
+    font-size: 0.8rem;
     font-weight: 600;
-    color: #475569;
+    color: #334155;
+  }
+  .ml-cms-input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0.625rem 0.875rem;
+    font-size: 0.95rem;
+    color: #0f172a;
+    background-color: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    outline: none;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    margin-top: 0.25rem;
+    line-height: 1.5;
+  }
+  .ml-cms-input:focus {
+    border-color: #0284c7;
+    box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
   }
   .ml-cms-textarea {
     width: 100%;
     box-sizing: border-box;
-    padding: 0.5rem;
-    font-size: 0.875rem;
+    padding: 0.625rem 0.875rem;
+    font-size: 0.95rem;
+    color: #0f172a;
+    background-color: #ffffff;
     border: 1px solid #cbd5e1;
-    border-radius: 6px;
+    border-radius: 8px;
     resize: vertical;
-    outline-color: #0284c7;
+    outline: none;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    margin-top: 0.25rem;
+    line-height: 1.5;
+  }
+  .ml-cms-textarea:focus {
+    border-color: #0284c7;
+    box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
   }
   .ml-cms-popover-footer {
     display: flex;
@@ -817,20 +710,6 @@ const gitEnabled =
   }
 
   @media (max-width: 767px) {
-    .ml-admin-bar {
-      position: fixed;
-      top: auto;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      border-bottom: none;
-      border-top: 2px solid #0284c7;
-      box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.4);
-      background: rgba(15, 23, 42, 0.96);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      padding-bottom: env(safe-area-inset-bottom, 0px);
-    }
     .ml-admin-bar-container {
       padding: 0.4rem 0.5rem;
       gap: 0.35rem;
@@ -932,11 +811,6 @@ const gitEnabled =
   :global(:root[data-cms-editing="true"]) {
     scroll-padding-top: 0;
   }
-  @media (max-width: 767px) {
-    :global(body.ml-admin-logged-in) {
-      padding-bottom: calc(58px + env(safe-area-inset-bottom, 0px)) !important;
-    }
-  }
 </style>
 
 <script>
@@ -988,9 +862,16 @@ const gitEnabled =
 
     const popover = document.getElementById("ml-cms-edit-popover");
     const popoverBindKey = document.getElementById("ml-cms-popover-bind-key");
-    const popoverInput = document.getElementById(
-      "ml-cms-popover-input",
+    const popoverTextInput = document.getElementById(
+      "ml-cms-popover-text-input",
+    ) as HTMLInputElement | null;
+    const popoverTextareaInput = document.getElementById(
+      "ml-cms-popover-textarea-input",
     ) as HTMLTextAreaElement | null;
+    const popoverHrefGroup = document.getElementById("ml-cms-popover-href-group");
+    const popoverHrefInput = document.getElementById(
+      "ml-cms-popover-href-input",
+    ) as HTMLInputElement | null;
     const popoverClose = document.getElementById("ml-cms-popover-close");
     const popoverCancel = document.getElementById("ml-cms-popover-cancel");
     const popoverReset = document.getElementById("ml-cms-popover-reset");
@@ -1241,11 +1122,28 @@ const gitEnabled =
       draftsModal?.classList.add("hidden");
     }
 
+    function isMultilineField(el: HTMLElement, bindKey: string): boolean {
+      const typeAttr = el.getAttribute("data-cms-type");
+      if (typeAttr === "multiline" || typeAttr === "textarea") return true;
+      if (typeAttr === "input" || typeAttr === "text") return false;
+
+      const currentVal = el.textContent?.trim() || "";
+      if (currentVal.includes("\n")) return true;
+
+      const lowerKey = bindKey.toLowerCase();
+      const multilineKeywords = ["content", "body", "description", "summary", "answer", "markdown", "message"];
+      return multilineKeywords.some((kw) => lowerKey.includes(kw));
+    }
+
     function cacheOriginalValues() {
       const elements = document.querySelectorAll("[data-cms-bind]");
       elements.forEach((el) => {
         if (!el.hasAttribute("data-cms-original")) {
           el.setAttribute("data-cms-original", el.textContent?.trim() || "");
+        }
+        const hrefPath = el.getAttribute("data-cms-bind-href");
+        if (hrefPath && !el.hasAttribute("data-cms-original-href")) {
+          el.setAttribute("data-cms-original-href", el.getAttribute("href") || "");
         }
       });
     }
@@ -1316,6 +1214,18 @@ const gitEnabled =
           el.textContent = original;
           el.removeAttribute("data-cms-has-draft");
           el.removeAttribute("data-cms-has-saved");
+        }
+
+        const hrefPath = el.getAttribute("data-cms-bind-href");
+        if (hrefPath) {
+          const originalHref = el.getAttribute("data-cms-original-href") || el.getAttribute("href") || "";
+          if (drafts[hrefPath] !== undefined) {
+            el.setAttribute("href", drafts[hrefPath]);
+          } else if (saved[hrefPath] !== undefined) {
+            el.setAttribute("href", saved[hrefPath]);
+          } else {
+            el.setAttribute("href", originalHref);
+          }
         }
       });
 
@@ -1406,6 +1316,7 @@ const gitEnabled =
         activeTargetElement.removeAttribute("data-cms-active");
       }
       const bindKey = el.getAttribute("data-cms-bind") || "element";
+      const hrefBindKey = el.getAttribute("data-cms-bind-href");
       const token = getAdminCookieToken();
 
       try {
@@ -1434,11 +1345,31 @@ const gitEnabled =
       activeTargetElement.setAttribute("data-cms-active", "true");
       const drafts = cmsDraftStore.get();
       const saved = cmsSavedStore.get();
-      const hasDraft = bindKey in drafts;
-      const hasSaved = bindKey in saved;
+      const hasDraft = bindKey in drafts || (hrefBindKey ? hrefBindKey in drafts : false);
+      const hasSaved = bindKey in saved || (hrefBindKey ? hrefBindKey in saved : false);
 
-      if (popoverBindKey) popoverBindKey.textContent = bindKey;
-      if (popoverInput) popoverInput.value = el.textContent?.trim() || "";
+      if (popoverBindKey) popoverBindKey.textContent = hrefBindKey ? `${bindKey} (+href)` : bindKey;
+
+      const currentValue = el.textContent?.trim() || "";
+      const isMulti = isMultilineField(el, bindKey);
+
+      if (isMulti) {
+        popoverTextInput?.classList.add("hidden");
+        popoverTextareaInput?.classList.remove("hidden");
+        if (popoverTextareaInput) popoverTextareaInput.value = currentValue;
+      } else {
+        popoverTextareaInput?.classList.add("hidden");
+        popoverTextInput?.classList.remove("hidden");
+        if (popoverTextInput) popoverTextInput.value = currentValue;
+      }
+
+      if (hrefBindKey && popoverHrefGroup) {
+        popoverHrefGroup.classList.remove("hidden");
+        const currentHref = drafts[hrefBindKey] ?? saved[hrefBindKey] ?? el.getAttribute("href") ?? "";
+        if (popoverHrefInput) popoverHrefInput.value = currentHref;
+      } else if (popoverHrefGroup) {
+        popoverHrefGroup.classList.add("hidden");
+      }
 
       if (hasDraft || hasSaved) {
         popoverReset?.classList.remove("hidden");
@@ -1448,8 +1379,8 @@ const gitEnabled =
 
       if (popover) {
         popover.classList.remove("hidden");
-        popoverInput?.focus();
-        popoverInput?.select();
+        const targetInput = isMulti ? popoverTextareaInput : popoverTextInput;
+        targetInput?.focus();
       }
     }
 
@@ -1478,19 +1409,28 @@ const gitEnabled =
     function resetElement() {
       if (!activeTargetElement) return;
       const bindPath = activeTargetElement.getAttribute("data-cms-bind");
+      const hrefBindPath = activeTargetElement.getAttribute("data-cms-bind-href");
+
       if (bindPath) {
         removeDraft(bindPath);
         removeSaved(bindPath);
+      }
+      if (hrefBindPath) {
+        removeDraft(hrefBindPath);
+        removeSaved(hrefBindPath);
       }
       closePopover();
     }
 
     function applyChange() {
-      if (!activeTargetElement || !popoverInput) return;
-      const newValue = popoverInput.value.trim();
+      if (!activeTargetElement) return;
       const bindPath = activeTargetElement.getAttribute("data-cms-bind");
-      const originalValue =
-        activeTargetElement.getAttribute("data-cms-original") || "";
+      const hrefBindPath = activeTargetElement.getAttribute("data-cms-bind-href");
+      const isMulti = isMultilineField(activeTargetElement, bindPath || "");
+
+      const activeTextInput = isMulti ? popoverTextareaInput : popoverTextInput;
+      const newValue = activeTextInput?.value.trim() ?? "";
+      const originalValue = activeTargetElement.getAttribute("data-cms-original") || "";
 
       if (bindPath) {
         if (newValue === originalValue) {
@@ -1498,6 +1438,20 @@ const gitEnabled =
           removeSaved(bindPath);
         } else {
           updateDraft(bindPath, newValue);
+        }
+      }
+
+      if (hrefBindPath && popoverHrefInput) {
+        const newHrefValue = popoverHrefInput.value.trim();
+        const originalHrefValue =
+          activeTargetElement.getAttribute("data-cms-original-href") ||
+          activeTargetElement.getAttribute("href") ||
+          "";
+        if (newHrefValue === originalHrefValue) {
+          removeDraft(hrefBindPath);
+          removeSaved(hrefBindPath);
+        } else {
+          updateDraft(hrefBindPath, newHrefValue);
         }
       }
 
@@ -1725,6 +1679,43 @@ const gitEnabled =
     popoverClose?.addEventListener("click", closePopover);
     popoverCancel?.addEventListener("click", closePopover);
     popoverSave?.addEventListener("click", applyChange);
+
+    popoverTextInput?.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        applyChange();
+      }
+    });
+    popoverHrefInput?.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        applyChange();
+      }
+    });
+    popoverTextareaInput?.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
+        e.preventDefault();
+        applyChange();
+      }
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        if (popover && !popover.classList.contains("hidden")) {
+          closePopover();
+        } else if (createContentModal && !createContentModal.classList.contains("hidden")) {
+          closeCreateContentModal();
+        } else if (confirmDeleteModal && !confirmDeleteModal.classList.contains("hidden")) {
+          closeConfirmDeleteModal();
+        } else if (draftsModal && !draftsModal.classList.contains("hidden")) {
+          closeDraftsModal();
+        } else if (resetModal && !resetModal.classList.contains("hidden")) {
+          closeResetModal();
+        } else if (errorModal && !errorModal.classList.contains("hidden")) {
+          closeErrorModal();
+        }
+      }
+    });
 
     document.addEventListener("click", handleElementClick);
 

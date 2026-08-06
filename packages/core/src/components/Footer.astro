@@ -54,7 +54,11 @@ const {
             <div class="footer-col-title" data-cms-bind={`siteConfig.footerLinks.[${colIndex}].colTitle`}>{col.colTitle}</div>
             {col.links.map((link, linkIndex) => (
               <div class="footer-link-item" data-cms-item-index={linkIndex}>
-                <a href={link.href} data-cms-bind={`siteConfig.footerLinks.[${colIndex}].links.[${linkIndex}].label`}>{link.label}</a>
+                <a
+                  href={link.href}
+                  data-cms-bind={`siteConfig.footerLinks.[${colIndex}].links.[${linkIndex}].label`}
+                  data-cms-bind-href={`siteConfig.footerLinks.[${colIndex}].links.[${linkIndex}].href`}
+                >{link.label}</a>
                 <CollectionItemControls
                   collectionPath={`siteConfig.footerLinks.[${colIndex}].links`}
                   index={linkIndex}

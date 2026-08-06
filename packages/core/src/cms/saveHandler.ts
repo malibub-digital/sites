@@ -250,7 +250,8 @@ export async function processCmsSaveRequest(
 }
 
 function applyArrayOperation(obj: any, propPath: string, op: any) {
-  const parts = propPath.split('.');
+  const normalizedPath = propPath.replace(/\[(\d+)\]/g, '.$1');
+  const parts = normalizedPath.split('.').filter(Boolean);
   let current = obj;
   for (let i = 0; i < parts.length - 1; i++) {
     const part = parts[i];
@@ -281,7 +282,8 @@ function applyArrayOperation(obj: any, propPath: string, op: any) {
 }
 
 function setDeepProperty(obj: any, propPath: string, value: any) {
-  const parts = propPath.split('.');
+  const normalizedPath = propPath.replace(/\[(\d+)\]/g, '.$1');
+  const parts = normalizedPath.split('.').filter(Boolean);
   let current = obj;
   for (let i = 0; i < parts.length - 1; i++) {
     const part = parts[i];

@@ -1,6 +1,4 @@
 ---
-import CollectionAddButton from './CollectionAddButton.astro';
-import CollectionItemControls from './CollectionItemControls.astro';
 import type { NavLink } from '../schemas/index.js';
 
 interface Props {
@@ -32,7 +30,7 @@ const cleanCurrentPath = normalizePath(currentPath);
 ---
 
 <header
-  class="ml-header ml-header-sticky"
+  class="ml-header ml-header-sticky ml-header-shrinkable"
   id="site-header"
 >
   <div class="ml-container">
@@ -101,7 +99,7 @@ const cleanCurrentPath = normalizePath(currentPath);
       </div>
     </div>
 
-    <nav class="ml-header-nav" id="header-nav" aria-label="Menu principal" data-cms-collection="siteConfig.navigation.links">
+    <nav class="ml-header-nav" id="header-nav" aria-label="Menu principal">
       <div class="ml-header-nav-header">
         <span class="font-bold text-sm text-[var(--ml-color-neutral-800)]"
           >Navigation</span
@@ -134,32 +132,16 @@ const cleanCurrentPath = normalizePath(currentPath);
               ? cleanCurrentPath === '/'
               : cleanCurrentPath === cleanItemHref || cleanCurrentPath.startsWith(cleanItemHref + '/');
           return (
-            <div class="ml-nav-item-wrapper" data-cms-item-index={index}>
-              <a
-                href={item.href}
-                class={`ml-nav-item ${isActive ? "active" : ""}`}
-                aria-current={isActive ? "page" : undefined}
-                data-cms-bind={`siteConfig.navigation.links.[${index}].label`}
-              >
-                {item.label}
-              </a>
-              <CollectionItemControls
-                collectionPath="siteConfig.navigation.links"
-                index={index}
-                isFirst={index === 0}
-                isLast={index === navItems.length - 1}
-              />
-            </div>
+            <a
+              href={item.href}
+              class={`ml-nav-item ${isActive ? "active" : ""}`}
+              aria-current={isActive ? "page" : undefined}
+            >
+              {item.label}
+            </a>
           );
         })
       }
-
-      <CollectionAddButton
-        collectionPath="siteConfig.navigation.links"
-        label="Ajouter un lien de navigation"
-        defaultData={{ label: "Nouveau lien", href: "/" }}
-        class="nav-add-btn"
-      />
     </nav>
   </div>
 </header>
@@ -284,13 +266,31 @@ const cleanCurrentPath = normalizePath(currentPath);
     mobileLogout?.addEventListener("click", handleLogout);
   }
 
+  function setupHeaderShrink() {
+    const header = document.getElementById("site-header");
+    if (!header) return;
+
+    function onScroll() {
+      if (window.scrollY > 30) {
+        header?.classList.add("ml-scrolled");
+      } else {
+        header?.classList.remove("ml-scrolled");
+      }
+    }
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+  }
+
   setupHeaderBurger();
   updateHeaderAuth();
   setupAuthEvents();
+  setupHeaderShrink();
 
   document.addEventListener("astro:after-swap", () => {
     setupHeaderBurger();
     updateHeaderAuth();
     setupAuthEvents();
+    setupHeaderShrink();
   });
 </script>

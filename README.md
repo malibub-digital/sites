@@ -20,11 +20,16 @@ Le moteur CMS route chaque sauvegarde vers le bon fichier selon le préfixe `dat
 
 | Composant | Éléments éditables | Collections mutables |
 | :--- | :--- | :--- |
-| `Header` | Institution, titre du site | Liens de navigation (`siteConfig.navigation.links`) |
-| `Footer` | Adresse, email, téléphone | Colonnes de liens (`siteConfig.footerLinks[i].links`) |
+| `Header` | Institution, titre du site | Navigation gérée par le code/développeur |
+| `Footer` | Adresse, email, téléphone, libellés et URL de liens (`data-cms-bind-href`) | Colonnes de liens (`siteConfig.footerLinks[i].links`) |
 | `Hero` | Titre, sous-titre, badge, CTA | Pastilles d'accès rapide (`home.json::quickLinks`) |
 | `ServiceCard` | Titre, résumé, coût, délai, catégorie | — (prop `cmsSlug` requis) |
 | `EmergencyBanner` | Message, libellé CTA | — |
+
+### Édition de Liens & Type de Champ
+
+- **Lien de page (`data-cms-bind-href`)** : Permet d'éditer l'URL cible (`href`) en plus du libellé du texte lors du clic sur un lien éditables (ex: liens du Footer).
+- **Format de saisie adaptatif** : L'éditeur affiche un simple `<input type="text">` pour les champs d'une seule ligne (titres, libellés, emails, téléphones, URL) et un `<textarea>` pour les contenus multi-lignes. Possibilité de forcer le type via `data-cms-type="text"` ou `data-cms-type="multiline"`.
 
 ### Composant `EmergencyBanner`
 
