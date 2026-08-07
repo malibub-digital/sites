@@ -17,5 +17,20 @@
     { "label": "🧩 Composants UI", "href": "/composants#boutons" },
     { "label": "📝 Formulaires DSML", "href": "/composants#formulaires" },
     { "label": "📄 Exemple de Démarches →", "href": "/services" }
-  ]
+  ],
+  "whyUs": {
+    "badge": "Faciliter la Création Web Publique",
+    "title": "Pourquoi Utiliser Sites Faciles ?",
+    "subtitle": "Sites Faciles combine la puissance du Design System Mali (DSML) avec un moteur d'édition visuelle en temps réel pour déployer des sites conformes sans effort."
+  },
+  "servicesSection": {
+    "badge": "Portail des Démarches",
+    "title": "Démarches Administratives et Consulaires Phares",
+    "subtitle": "Accédez rapidement aux procédures officielles les plus demandées par les citoyens et les résidents."
+  },
+  "newsSection": {
+    "badge": "Actualités & Communiqués",
+    "title": "Dernières Informations Officielles",
+    "subtitle": "Restez informé des annonces, événements et arrêtés récents publiés par l'institution."
+  }
 }

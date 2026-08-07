@@ -3,6 +3,7 @@ import BaseLayout from '@malihub/sites-core/layouts/BaseLayout.astro';
 import Header from '@malihub/sites-core/components/Header.astro';
 import Footer from '@malihub/sites-core/components/Footer.astro';
 import siteConfig from '../../site.config.json';
+import contactData from '../data/pages/contact.json';
 ---
 
 <BaseLayout title={`Contact & Horaires — ${siteConfig.title}`} description="Adresse, coordonnées de contact, horaires d'ouverture et formulaires de contact.">
@@ -23,8 +24,8 @@ import siteConfig from '../../site.config.json';
       </nav>
 
       <div class="mb-10">
-        <h1 class="text-3xl md:text-4xl font-black text-[var(--ml-color-neutral-900)] font-title">Contact & Localisation</h1>
-        <p class="text-[var(--ml-color-neutral-600)] mt-2">Retrouvez toutes les coordonnées et nos créneaux d'accueil du public.</p>
+        <h1 class="text-3xl md:text-4xl font-black text-[var(--ml-color-neutral-900)] font-title" data-cms-bind="src/data/pages/contact.json::title">{contactData.title}</h1>
+        <p class="text-[var(--ml-color-neutral-600)] mt-2" data-cms-bind="src/data/pages/contact.json::subtitle">{contactData.subtitle}</p>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -33,19 +34,19 @@ import siteConfig from '../../site.config.json';
           <ul class="space-y-5 text-[var(--ml-color-neutral-700)] text-sm list-none p-0">
             <li class="flex items-start gap-3">
               <span class="font-bold text-[var(--ml-color-green-800)] min-w-[80px]">Adresse :</span>
-              <span>{siteConfig.contact.address}</span>
+              <span data-cms-bind="siteConfig.contact.address">{siteConfig.contact.address}</span>
             </li>
             <li class="flex items-center gap-3">
               <span class="font-bold text-[var(--ml-color-green-800)] min-w-[80px]">Téléphone :</span>
-              <span>{siteConfig.contact.phone}</span>
+              <span data-cms-bind="siteConfig.contact.phone">{siteConfig.contact.phone}</span>
             </li>
             <li class="flex items-center gap-3">
               <span class="font-bold text-[var(--ml-color-green-800)] min-w-[80px]">Courriel :</span>
-              <a href={`mailto:${siteConfig.contact.email}`} class="text-[var(--ml-color-green-700)] hover:underline font-semibold">{siteConfig.contact.email}</a>
+              <a href={`mailto:${siteConfig.contact.email}`} class="text-[var(--ml-color-green-700)] hover:underline font-semibold" data-cms-bind="siteConfig.contact.email">{siteConfig.contact.email}</a>
             </li>
             <li class="flex items-start gap-3">
               <span class="font-bold text-[var(--ml-color-green-800)] min-w-[80px]">Horaires :</span>
-              <span>{siteConfig.contact.hours}</span>
+              <span data-cms-bind="src/data/pages/contact.json::openingHours">{contactData.openingHours}</span>
             </li>
           </ul>
         </div>

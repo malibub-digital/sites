@@ -80,12 +80,12 @@ const newsPreview = [
   <section class="py-16 bg-white border-b border-[var(--ml-color-neutral-200)]">
     <div class="ml-container max-w-6xl mx-auto px-4">
       <div class="text-center mb-12 max-w-3xl mx-auto">
-        <span class="text-xs font-bold uppercase tracking-wider text-[var(--ml-color-mandingue-700)] bg-[var(--ml-color-mandingue-50)] px-3.5 py-1 rounded-full mb-3 inline-block border border-[var(--ml-color-mandingue-100)]">
-          Faciliter la Création Web Publique
+        <span class="text-xs font-bold uppercase tracking-wider text-[var(--ml-color-mandingue-700)] bg-[var(--ml-color-mandingue-50)] px-3.5 py-1 rounded-full mb-3 inline-block border border-[var(--ml-color-mandingue-100)]" data-cms-bind="src/data/pages/home.json::whyUs.badge">
+          {homeData.whyUs.badge}
         </span>
-        <h2 class="text-3xl font-black text-[var(--ml-color-neutral-900)] font-title">Pourquoi Utiliser Sites Faciles ?</h2>
-        <p class="text-[var(--ml-color-neutral-600)] mt-2 text-sm leading-relaxed">
-          Sites Faciles combine la puissance du Design System Mali (DSML) avec un moteur d'édition visuelle en temps réel pour déployer des sites conformes sans effort.
+        <h2 class="text-3xl font-black text-[var(--ml-color-neutral-900)] font-title" data-cms-bind="src/data/pages/home.json::whyUs.title">{homeData.whyUs.title}</h2>
+        <p class="text-[var(--ml-color-neutral-600)] mt-2 text-sm leading-relaxed" data-cms-bind="src/data/pages/home.json::whyUs.subtitle">
+          {homeData.whyUs.subtitle}
         </p>
       </div>
 
@@ -202,11 +202,11 @@ const newsPreview = [
   <section id="services" class="py-16 bg-white border-b border-[var(--ml-color-neutral-200)]">
     <div class="ml-container max-w-6xl mx-auto px-4">
       <div class="text-center mb-12 max-w-2xl mx-auto">
-        <span class="text-xs font-bold uppercase tracking-wider text-[var(--ml-color-river-700)] bg-[var(--ml-color-river-100)] px-3.5 py-1 rounded-full mb-3 inline-block border border-[var(--ml-color-river-200)]">
-          Modèles de Pages Démo
+        <span class="text-xs font-bold uppercase tracking-wider text-[var(--ml-color-river-700)] bg-[var(--ml-color-river-100)] px-3.5 py-1 rounded-full mb-3 inline-block border border-[var(--ml-color-river-200)]" data-cms-bind="src/data/pages/home.json::servicesSection.badge">
+          {homeData.servicesSection.badge}
         </span>
-        <h2 class="text-3xl font-black text-[var(--ml-color-neutral-900)] font-title">Catalogue de Démarches Modèle</h2>
-        <p class="text-[var(--ml-color-neutral-600)] mt-2 text-sm">Exemples réels de fiches de démarches créées avec les cartes et les tokens du DSML.</p>
+        <h2 class="text-3xl font-black text-[var(--ml-color-neutral-900)] font-title" data-cms-bind="src/data/pages/home.json::servicesSection.title">{homeData.servicesSection.title}</h2>
+        <p class="text-[var(--ml-color-neutral-600)] mt-2 text-sm" data-cms-bind="src/data/pages/home.json::servicesSection.subtitle">{homeData.servicesSection.subtitle}</p>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -229,14 +229,14 @@ const newsPreview = [
     <div class="ml-container max-w-6xl mx-auto px-4">
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
         <div>
-          <span class="text-xs font-bold uppercase tracking-wider text-[var(--ml-color-mandingue-700)] bg-[var(--ml-color-mandingue-50)] px-3 py-1 rounded-full mb-3 inline-block border border-[var(--ml-color-mandingue-100)]">
-            Communication Institutionnelle
+          <span class="text-xs font-bold uppercase tracking-wider text-[var(--ml-color-mandingue-700)] bg-[var(--ml-color-mandingue-50)] px-3 py-1 rounded-full mb-3 inline-block border border-[var(--ml-color-mandingue-100)]" data-cms-bind="src/data/pages/home.json::newsSection.badge">
+            {homeData.newsSection.badge}
           </span>
-          <h2 class="text-2xl md:text-3xl font-black text-[var(--ml-color-neutral-900)] font-title mb-4">
-            Modèles d'Actualités & Communiqués
+          <h2 class="text-2xl md:text-3xl font-black text-[var(--ml-color-neutral-900)] font-title mb-4" data-cms-bind="src/data/pages/home.json::newsSection.title">
+            {homeData.newsSection.title}
           </h2>
-          <p class="text-sm text-[var(--ml-color-neutral-600)] leading-relaxed mb-6">
-            Intégrez des fils d'actualités avec filtrage par thèmes, badges officiels et mise en page responsive pour informer rapidement vos usagers.
+          <p class="text-sm text-[var(--ml-color-neutral-600)] leading-relaxed mb-6" data-cms-bind="src/data/pages/home.json::newsSection.subtitle">
+            {homeData.newsSection.subtitle}
           </p>
           <a href="/actualites" class="inline-flex items-center gap-2 px-6 py-3 bg-[var(--ml-color-mandingue-orange)] hover:bg-[var(--ml-color-mandingue-700)] text-white font-bold rounded-xl transition-all shadow-sm no-underline text-xs">
             <span>Voir la démo Actualités</span>
