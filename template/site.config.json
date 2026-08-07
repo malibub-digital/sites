@@ -23,9 +23,10 @@
   "navigation": {
     "links": [
       { "label": "Accueil", "href": "/" },
-      { "label": "Composants DSML", "href": "/composants" },
-      { "label": "Exemple Démarches", "href": "/services" },
-      { "label": "Guide & Documentation", "href": "/guide" },
+      { "label": "Composants", "href": "/composants" },
+      { "label": "Démarches", "href": "/services" },
+      { "label": "Actualités", "href": "/actualites" },
+      { "label": "Documentation", "href": "/guide" },
       { "label": "FAQ", "href": "/faq" },
       { "label": "Contact", "href": "/contact" }
     ]

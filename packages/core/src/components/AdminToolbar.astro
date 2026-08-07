@@ -73,6 +73,16 @@ const gitEnabled =
             <span>Édition</span>
           </button>
         </div>
+
+        <button
+          type="button"
+          id="ml-admin-reset-btn"
+          class="ml-admin-reset-btn-discrete hidden"
+          title="Réinitialiser toutes les données locales pour afficher l'état exact du serveur"
+        >
+          <i class="ml-icon-refresh-line ml-icon--xs"></i>
+          <span>Réinitialiser</span>
+        </button>
       </div>
 
       <div
@@ -115,16 +125,6 @@ const gitEnabled =
         >
           <i class="ml-icon-save-line ml-icon--xs"></i>
           <span>Enregistrer</span>
-        </button>
-
-        <button
-          type="button"
-          id="ml-admin-reset-btn"
-          class="ml-btn ml-btn--secondary ml-btn--sm hidden"
-          title="Réinitialiser toutes les données locales pour afficher l'état exact du serveur"
-        >
-          <i class="ml-icon-refresh-line ml-icon--xs"></i>
-          <span>Réinitialiser</span>
         </button>
 
         <button
@@ -401,6 +401,28 @@ const gitEnabled =
 </div>
 
 <style>
+  .ml-admin-reset-btn-discrete {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.3rem 0.6rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: rgba(248, 113, 113, 0.85);
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.25);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .ml-admin-reset-btn-discrete:hover {
+    color: #fca5a5;
+    background: rgba(239, 68, 68, 0.25);
+    border-color: rgba(239, 68, 68, 0.5);
+  }
+
   .ml-cms-modal-header-error {
     background: #fff1f2;
     border-bottom: 1px solid #fecdd3;
