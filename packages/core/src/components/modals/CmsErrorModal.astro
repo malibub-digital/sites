@@ -3,30 +3,30 @@
 
 <div
   id="ml-cms-error-modal"
-  class="ml-cms-modal-overlay hidden"
+  class="ml-modal-overlay hidden"
   role="dialog"
   aria-modal="true"
   aria-labelledby="ml-cms-error-title"
 >
-  <div class="ml-cms-modal-content">
-    <div class="ml-cms-modal-header ml-cms-modal-header-error">
-      <h3 id="ml-cms-error-title" class="ml-cms-modal-heading ml-text-danger">
+  <div class="ml-modal-content">
+    <div class="ml-modal-header ml-modal-header-error">
+      <h3 id="ml-cms-error-title" class="ml-modal-heading ml-text-danger">
         Échec de la publication
       </h3>
       <button
         type="button"
         id="ml-cms-error-close"
-        class="ml-cms-popover-close-btn"
+        class="ml-modal-close-btn"
         aria-label="Fermer">&times;</button
       >
     </div>
-    <div class="ml-cms-modal-body">
-      <p class="ml-cms-modal-desc">
+    <div class="ml-modal-body">
+      <p class="ml-modal-desc">
         La sauvegarde ou la publication sur le serveur a échoué. Voici le détail des erreurs retournées :
       </p>
       <div id="ml-cms-error-list" class="ml-cms-error-list" style="max-height: 200px; overflow-y: auto; background: #fff1f2; border: 1px solid #fecdd3; border-radius: 8px; padding: 0.75rem; color: #9f1239; font-size: 0.85rem; font-family: monospace;"></div>
     </div>
-    <div class="ml-cms-modal-footer">
+    <div class="ml-modal-footer">
       <button
         type="button"
         id="ml-cms-error-done"

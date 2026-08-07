@@ -3,32 +3,32 @@
 
 <div
   id="ml-cms-image-modal"
-  class="ml-cms-modal-overlay hidden"
+  class="ml-modal-overlay hidden"
   role="dialog"
   aria-modal="true"
   aria-labelledby="ml-cms-image-title"
 >
-  <div class="ml-cms-modal-content">
-    <div class="ml-cms-modal-header">
+  <div class="ml-modal-content">
+    <div class="ml-modal-header">
       <div style="display:flex; align-items:center; gap:0.5rem;">
         <i class="ml-icon-image-line ml-icon--xs" style="color: #0284c7;"></i>
-        <h3 id="ml-cms-image-title" class="ml-cms-modal-heading">
+        <h3 id="ml-cms-image-title" class="ml-modal-heading">
           Changer l'image
         </h3>
       </div>
-      <span class="ml-cms-popover-badge" id="ml-cms-image-bind-key">image</span>
+      <span class="ml-modal-badge" id="ml-cms-image-bind-key">image</span>
       <button
         type="button"
         id="ml-cms-image-close"
-        class="ml-cms-popover-close-btn"
+        class="ml-modal-close-btn"
         aria-label="Fermer">&times;</button
       >
     </div>
-    <div class="ml-cms-modal-body">
+    <div class="ml-modal-body">
       <div class="ml-form-group">
         <label class="ml-form-label">Aperçu actuel</label>
-        <div class="ml-cms-image-preview-box" style="width: 100%; height: 160px; border: 1px dashed #cbd5e1; border-radius: 8px; display: flex; align-items: center; justify-content: center; background: #f8fafc; overflow: hidden; margin-bottom: 1rem;">
-          <img id="ml-cms-image-preview-img" src="" alt="Aperçu" style="max-width: 100%; max-height: 100%; object-fit: contain;" />
+        <div class="ml-image-preview-box">
+          <img id="ml-cms-image-preview-img" src="" alt="Aperçu" />
           <span id="ml-cms-image-preview-empty" class="text-xs text-slate-400">Aucune image</span>
         </div>
       </div>
@@ -58,7 +58,7 @@
         />
       </div>
     </div>
-    <div class="ml-cms-modal-footer">
+    <div class="ml-modal-footer">
       <button
         type="button"
         id="ml-cms-image-cancel"
