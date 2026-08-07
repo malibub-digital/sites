@@ -64,9 +64,11 @@ function findModifiedContentFiles(dir: string, baseDir: string = dir): GitFileCh
         changes.push(...findModifiedContentFiles(fullPath, baseDir));
       }
     } else if (entry.isFile()) {
-      if ((entry.name.endsWith('.json') || entry.name.endsWith('.md') || entry.name.endsWith('.mdx')) && entry.name !== 'package.json' && entry.name !== 'package-lock.json') {
+      const isTextContent = (entry.name.endsWith('.json') || entry.name.endsWith('.md') || entry.name.endsWith('.mdx')) && entry.name !== 'package.json' && entry.name !== 'package-lock.json';
+      const isMediaContent = /\.(png|jpg|jpeg|webp|gif|svg)$/i.test(entry.name);
+      if (isTextContent || isMediaContent) {
         const relPath = path.relative(baseDir, fullPath).replace(/\\/g, '/');
-        const content = fs.readFileSync(fullPath, 'utf-8');
+        const content = isMediaContent ? fs.readFileSync(fullPath).toString('base64') : fs.readFileSync(fullPath, 'utf-8');
         changes.push({ path: relPath, content });
       }
     }

@@ -1,5 +1,12 @@
 ---
 import { hashSha256 } from "../utils/auth.js";
+import CmsEditModal from "./modals/CmsEditModal.astro";
+import CmsImageModal from "./modals/CmsImageModal.astro";
+import CmsMarkdownModal from "./modals/CmsMarkdownModal.astro";
+import CmsDraftsModal from "./modals/CmsDraftsModal.astro";
+import CmsResetModal from "./modals/CmsResetModal.astro";
+import CmsErrorModal from "./modals/CmsErrorModal.astro";
+import CmsCreateContentModal from "./modals/CmsCreateContentModal.astro";
 
 interface Props {
   adminSecret?: string;
@@ -141,231 +148,14 @@ const gitEnabled =
     </div>
   </div>
 
-  <div
-    id="ml-cms-edit-popover"
-    class="ml-cms-modal-overlay hidden"
-    role="dialog"
-    aria-modal="true"
-    aria-labelledby="ml-cms-popover-title"
-  >
-    <div class="ml-cms-modal-content">
-      <div class="ml-cms-modal-header">
-        <div style="display:flex; align-items:center; gap:0.5rem;">
-          <i class="ml-icon-edit-line ml-icon--xs" style="color: #0284c7;"></i>
-          <h3 id="ml-cms-popover-title" class="ml-cms-modal-heading">
-            Éditer le contenu
-          </h3>
-        </div>
-        <span class="ml-cms-popover-badge" id="ml-cms-popover-bind-key"
-          >field</span
-        >
-        <button
-          type="button"
-          id="ml-cms-popover-close"
-          class="ml-cms-popover-close-btn"
-          aria-label="Fermer">&times;</button
-        >
-      </div>
-      <div class="ml-cms-modal-body">
-        <div class="ml-form-group" id="ml-cms-popover-text-group">
-          <label for="ml-cms-popover-text-input" class="ml-form-label" id="ml-cms-popover-text-label"
-            >Texte / Valeur de l'élément</label
-          >
-          <input
-            type="text"
-            id="ml-cms-popover-text-input"
-            class="ml-form-input ml-cms-input"
-            style="width: 100%; font-family: inherit; font-size: 0.95rem;"
-          />
-          <textarea
-            id="ml-cms-popover-textarea-input"
-            class="ml-form-input ml-cms-textarea hidden"
-            rows="4"
-            style="width: 100%; font-family: inherit; font-size: 0.95rem; line-height: 1.5;"></textarea>
-        </div>
+  <CmsEditModal />
+  <CmsImageModal />
+  <CmsMarkdownModal />
+  <CmsDraftsModal />
+  <CmsResetModal />
+  <CmsErrorModal />
+  <CmsCreateContentModal />
 
-        <div class="ml-form-group hidden" id="ml-cms-popover-href-group" style="margin-top: 0.75rem;">
-          <label for="ml-cms-popover-href-input" class="ml-form-label"
-            >Lien de la page (URL / Path)</label
-          >
-          <input
-            type="text"
-            id="ml-cms-popover-href-input"
-            class="ml-form-input ml-cms-input"
-            placeholder="Ex: /services/carte-consulaire ou https://..."
-            style="width: 100%; font-family: inherit; font-size: 0.95rem;"
-          />
-        </div>
-      </div>
-      <div class="ml-cms-modal-footer">
-        <button
-          type="button"
-          id="ml-cms-popover-reset"
-          class="ml-btn ml-btn--danger ml-btn--sm hidden"
-          title="Rétablir la valeur initiale">Rétablir initial</button
-        >
-        <button
-          type="button"
-          id="ml-cms-popover-cancel"
-          class="ml-btn ml-btn--secondary ml-btn--sm">Annuler</button
-        >
-        <button
-          type="button"
-          id="ml-cms-popover-save"
-          class="ml-btn ml-btn--primary ml-btn--sm">Appliquer</button
-        >
-      </div>
-    </div>
-  </div>
-
-  <div
-    id="ml-cms-drafts-modal"
-    class="ml-cms-modal-overlay hidden"
-    role="dialog"
-    aria-modal="true"
-    aria-labelledby="ml-cms-modal-title"
-  >
-    <div class="ml-cms-modal-content">
-      <div class="ml-cms-modal-header">
-        <h3 id="ml-cms-modal-title" class="ml-cms-modal-heading">
-          Modifications non enregistrées
-        </h3>
-        <button
-          type="button"
-          id="ml-cms-modal-close"
-          class="ml-cms-popover-close-btn"
-          aria-label="Fermer">&times;</button
-        >
-      </div>
-      <div class="ml-cms-modal-body">
-        <p class="ml-cms-modal-desc">
-          Voici la liste des modifications locales non encore enregistrées :
-        </p>
-        <div id="ml-cms-modal-list" class="ml-cms-drafts-list"></div>
-      </div>
-      <div class="ml-cms-modal-footer">
-        <button
-          type="button"
-          id="ml-cms-modal-clear-all"
-          class="ml-btn ml-btn--danger ml-btn--sm">Tout réinitialiser</button
-        >
-        <button
-          type="button"
-          id="ml-cms-modal-done"
-          class="ml-btn ml-btn--secondary ml-btn--sm">Fermer</button
-        >
-      </div>
-    </div>
-  </div>
-
-  <div
-    id="ml-cms-reset-modal"
-    class="ml-cms-modal-overlay hidden"
-    role="dialog"
-    aria-modal="true"
-    aria-labelledby="ml-cms-reset-title"
-  >
-    <div class="ml-cms-modal-content">
-      <div class="ml-cms-modal-header">
-        <h3 id="ml-cms-reset-title" class="ml-cms-modal-heading">
-          Réinitialiser le contenu local
-        </h3>
-        <button
-          type="button"
-          id="ml-cms-reset-close"
-          class="ml-cms-popover-close-btn"
-          aria-label="Fermer">&times;</button
-        >
-      </div>
-      <div class="ml-cms-modal-body">
-        <p class="ml-cms-modal-desc">
-          Voulez-vous retirer les modifications locales qui n'ont pas encore été
-          publiées, comme les brouillons et les enregistrements conservés dans
-          votre navigateur, pour réafficher l'état exact du serveur ?
-        </p>
-      </div>
-      <div class="ml-cms-modal-footer">
-        <button
-          type="button"
-          id="ml-cms-reset-cancel"
-          class="ml-btn ml-btn--secondary ml-btn--sm">Annuler</button
-        >
-        <button
-          type="button"
-          id="ml-cms-reset-confirm"
-          class="ml-btn ml-btn--danger ml-btn--sm">Réinitialiser</button
-        >
-      </div>
-    </div>
-  </div>
-
-  <div
-    id="ml-cms-error-modal"
-    class="ml-cms-modal-overlay hidden"
-    role="dialog"
-    aria-modal="true"
-    aria-labelledby="ml-cms-error-title"
-  >
-    <div class="ml-cms-modal-content">
-      <div class="ml-cms-modal-header ml-cms-modal-header-error">
-        <h3 id="ml-cms-error-title" class="ml-cms-modal-heading ml-text-danger">
-          Échec de la publication
-        </h3>
-        <button
-          type="button"
-          id="ml-cms-error-close"
-          class="ml-cms-popover-close-btn"
-          aria-label="Fermer">&times;</button
-        >
-      </div>
-      <div class="ml-cms-modal-body">
-        <div class="ml-cms-error-alert-box">
-          <i class="ml-icon-alert-fill ml-icon--sm"></i>
-          <p id="ml-cms-error-message" class="ml-cms-error-msg"></p>
-        </div>
-        <div
-          id="ml-cms-error-details-list"
-          class="ml-cms-error-details-list hidden"
-        >
-        </div>
-      </div>
-  <!-- Content Creation Modal -->
-  <div
-    id="ml-cms-create-content-modal"
-    class="ml-cms-modal-overlay hidden"
-    role="dialog"
-    aria-modal="true"
-  >
-    <div class="ml-cms-modal-content">
-      <div class="ml-cms-modal-header">
-        <h3 class="ml-cms-modal-heading" style="display:flex; align-items:center; gap:0.5rem;">
-          <i class="ml-icon-file-add-line ml-icon--xs"></i>
-          <span>Nouveau document / article</span>
-        </h3>
-        <button type="button" id="ml-cms-create-content-close" class="ml-cms-popover-close-btn">&times;</button>
-      </div>
-      <div class="ml-cms-modal-body">
-        <div class="ml-form-group mb-3">
-          <label for="ml-create-content-title" class="ml-form-label">Titre du document</label>
-          <input type="text" id="ml-create-content-title" class="ml-form-input ml-cms-textarea" style="height: auto;" placeholder="Ex: Communiqué sur les horaires d'été" />
-        </div>
-        <div class="ml-form-group mb-3">
-          <label for="ml-create-content-category" class="ml-form-label">Catégorie</label>
-          <input type="text" id="ml-create-content-category" class="ml-form-input ml-cms-textarea" style="height: auto;" placeholder="Ex: Communiqués" />
-        </div>
-        <input type="hidden" id="ml-create-content-collection" value="actualites" />
-      </div>
-      <div class="ml-cms-modal-footer">
-        <button type="button" id="ml-cms-create-content-cancel" class="ml-btn ml-btn--secondary ml-btn--sm">
-          Annuler
-        </button>
-        <button type="button" id="ml-cms-create-content-submit" class="ml-btn ml-btn--primary ml-btn--sm">
-          <i class="ml-icon-add-line ml-icon--xs"></i>
-          <span>Créer le document</span>
-        </button>
-      </div>
-    </div>
-  </div>
 
   <!-- Confirm Delete Modal -->
   <div
@@ -400,7 +190,7 @@ const gitEnabled =
   </div>
 </div>
 
-<style>
+<style is:global>
   .ml-admin-reset-btn-discrete {
     display: inline-flex;
     align-items: center;
@@ -1161,7 +951,14 @@ const gitEnabled =
       const elements = document.querySelectorAll("[data-cms-bind]");
       elements.forEach((el) => {
         if (!el.hasAttribute("data-cms-original")) {
-          el.setAttribute("data-cms-original", el.textContent?.trim() || "");
+          const cmsType = el.getAttribute("data-cms-type") || (el.tagName === "IMG" ? "image" : "text");
+          if (cmsType === "image" && (el instanceof HTMLImageElement || el.tagName === "IMG")) {
+            el.setAttribute("data-cms-original", (el as HTMLImageElement).src || el.getAttribute("src") || "");
+          } else if (cmsType === "markdown") {
+            el.setAttribute("data-cms-original", el.innerHTML || "");
+          } else {
+            el.setAttribute("data-cms-original", el.textContent?.trim() || "");
+          }
         }
         const hrefPath = el.getAttribute("data-cms-bind-href");
         if (hrefPath && !el.hasAttribute("data-cms-original-href")) {
@@ -1224,16 +1021,34 @@ const gitEnabled =
         const path = el.getAttribute("data-cms-bind");
         const original = el.getAttribute("data-cms-original") || "";
 
-        if (path && drafts[path] !== undefined) {
-          el.textContent = drafts[path];
-          el.setAttribute("data-cms-has-draft", "true");
-          el.removeAttribute("data-cms-has-saved");
-        } else if (path && saved[path] !== undefined) {
-          el.textContent = saved[path];
-          el.removeAttribute("data-cms-has-draft");
-          el.setAttribute("data-cms-has-saved", "true");
+        const cmsType = el.getAttribute("data-cms-type") || (el.tagName === "IMG" ? "image" : "text");
+        if (path && (drafts[path] !== undefined || saved[path] !== undefined)) {
+          const val = drafts[path] !== undefined ? drafts[path] : saved[path];
+          if (cmsType === "image" && (el instanceof HTMLImageElement || el.tagName === "IMG")) {
+            (el as HTMLImageElement).src = val;
+          } else if (cmsType === "markdown") {
+            el.innerHTML = val;
+          } else {
+            el.textContent = val;
+          }
+
+          if (drafts[path] !== undefined) {
+            el.setAttribute("data-cms-has-draft", "true");
+            el.removeAttribute("data-cms-has-saved");
+          } else {
+            el.removeAttribute("data-cms-has-draft");
+            el.setAttribute("data-cms-has-saved", "true");
+          }
         } else {
-          el.textContent = original;
+          if (cmsType === "image" && (el instanceof HTMLImageElement || el.tagName === "IMG")) {
+            const originalSrc = el.getAttribute("data-cms-original") || "";
+            if (originalSrc) (el as HTMLImageElement).src = originalSrc;
+          } else if (cmsType === "markdown") {
+            const originalHtml = el.getAttribute("data-cms-original") || "";
+            if (originalHtml) el.innerHTML = originalHtml;
+          } else {
+            el.textContent = original;
+          }
           el.removeAttribute("data-cms-has-draft");
           el.removeAttribute("data-cms-has-saved");
         }
@@ -1311,6 +1126,23 @@ const gitEnabled =
       }
     }
 
+    const imageModal = document.getElementById("ml-cms-image-modal");
+    const imageBindKey = document.getElementById("ml-cms-image-bind-key");
+    const imagePreviewImg = document.getElementById("ml-cms-image-preview-img") as HTMLImageElement | null;
+    const imagePreviewEmpty = document.getElementById("ml-cms-image-preview-empty");
+    const imageFileInput = document.getElementById("ml-cms-image-file-input") as HTMLInputElement | null;
+    const imageUrlInput = document.getElementById("ml-cms-image-url-input") as HTMLInputElement | null;
+    const imageClose = document.getElementById("ml-cms-image-close");
+    const imageCancel = document.getElementById("ml-cms-image-cancel");
+    const imageSave = document.getElementById("ml-cms-image-save");
+
+    const markdownModal = document.getElementById("ml-cms-markdown-modal");
+    const markdownBindKey = document.getElementById("ml-cms-markdown-bind-key");
+    const markdownClose = document.getElementById("ml-cms-markdown-close");
+    const markdownCancel = document.getElementById("ml-cms-markdown-cancel");
+    const markdownSave = document.getElementById("ml-cms-markdown-save");
+    const tiptapContainer = document.getElementById("ml-tiptap-editor-container");
+
     async function closePopover() {
       if (activeTargetElement) {
         activeTargetElement.removeAttribute("data-cms-active");
@@ -1330,6 +1162,8 @@ const gitEnabled =
         }
       }
       popover?.classList.add("hidden");
+      imageModal?.classList.add("hidden");
+      markdownModal?.classList.add("hidden");
       activeTargetElement = null;
     }
 
@@ -1339,6 +1173,8 @@ const gitEnabled =
       }
       const bindKey = el.getAttribute("data-cms-bind") || "element";
       const hrefBindKey = el.getAttribute("data-cms-bind-href");
+      const altBindKey = el.getAttribute("data-cms-bind-alt");
+      const cmsType = el.getAttribute("data-cms-type") || (el.tagName === "IMG" ? "image" : "text");
       const token = getAdminCookieToken();
 
       try {
@@ -1370,9 +1206,38 @@ const gitEnabled =
       const hasDraft = bindKey in drafts || (hrefBindKey ? hrefBindKey in drafts : false);
       const hasSaved = bindKey in saved || (hrefBindKey ? hrefBindKey in saved : false);
 
+      if (cmsType === "image") {
+        if (imageBindKey) imageBindKey.textContent = bindKey;
+        const currentSrc = drafts[bindKey] ?? saved[bindKey] ?? (el instanceof HTMLImageElement ? el.src : el.getAttribute("src") || "");
+        if (imageUrlInput) imageUrlInput.value = currentSrc;
+        if (imagePreviewImg) {
+          if (currentSrc) {
+            imagePreviewImg.src = currentSrc;
+            imagePreviewImg.style.display = "block";
+            if (imagePreviewEmpty) imagePreviewEmpty.style.display = "none";
+          } else {
+            imagePreviewImg.style.display = "none";
+            if (imagePreviewEmpty) imagePreviewEmpty.style.display = "block";
+          }
+        }
+        imageModal?.classList.remove("hidden");
+        return;
+      }
+
+      if (cmsType === "markdown") {
+        if (markdownBindKey) markdownBindKey.textContent = bindKey;
+        const currentValue = drafts[bindKey] ?? saved[bindKey] ?? el.innerHTML ?? "";
+        if (tiptapContainer) {
+          tiptapContainer.innerHTML = currentValue;
+          tiptapContainer.contentEditable = "true";
+        }
+        markdownModal?.classList.remove("hidden");
+        return;
+      }
+
       if (popoverBindKey) popoverBindKey.textContent = hrefBindKey ? `${bindKey} (+href)` : bindKey;
 
-      const currentValue = el.textContent?.trim() || "";
+      const currentValue = drafts[bindKey] ?? saved[bindKey] ?? el.textContent?.trim() ?? "";
       const isMulti = isMultilineField(el, bindKey);
 
       if (isMulti) {
@@ -1695,12 +1560,74 @@ const gitEnabled =
       closeDraftsModal();
     });
 
+    imageClose?.addEventListener("click", closePopover);
+    imageCancel?.addEventListener("click", closePopover);
+    imageSave?.addEventListener("click", async () => {
+      if (!activeTargetElement) return;
+      const bindPath = activeTargetElement.getAttribute("data-cms-bind");
+      if (!bindPath) return;
+
+      let finalUrl = imageUrlInput?.value.trim() || "";
+
+      if (imageFileInput && imageFileInput.files && imageFileInput.files.length > 0) {
+        const file = imageFileInput.files[0];
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("dir", "images");
+
+        const token = getAdminCookieToken();
+        notify("Téléversement de l'image...", "info");
+
+        try {
+          const res = await fetch("/api/cms/upload", {
+            method: "POST",
+            headers: {
+              ...(token ? { Authorization: `Bearer ${token}` } : {}),
+            },
+            body: formData,
+          });
+
+          const data = await res.json();
+          if (res.ok && data.success && data.url) {
+            finalUrl = data.url;
+            notify("Image téléversée avec succès !", "success");
+          } else {
+            notify(`Erreur d'upload: ${data.message || "Échec."}`, "error");
+            return;
+          }
+        } catch (err: any) {
+          notify(`Erreur réseau lors de l'upload: ${err.message}`, "error");
+          return;
+        }
+      }
+
+      if (finalUrl) {
+        updateDraft(bindPath, finalUrl);
+      }
+      closePopover();
+    });
+
+    markdownClose?.addEventListener("click", closePopover);
+    markdownCancel?.addEventListener("click", closePopover);
+    markdownSave?.addEventListener("click", () => {
+      if (!activeTargetElement) return;
+      const bindPath = activeTargetElement.getAttribute("data-cms-bind");
+      if (!bindPath) return;
+
+      const htmlContent = tiptapContainer?.innerHTML.trim() || "";
+      if (htmlContent) {
+        updateDraft(bindPath, htmlContent);
+      }
+      closePopover();
+    });
+
     popoverReset?.addEventListener("click", resetElement);
     modeEditBtn?.addEventListener("click", () => setEditingMode(true));
     modePreviewBtn?.addEventListener("click", () => setEditingMode(false));
     popoverClose?.addEventListener("click", closePopover);
     popoverCancel?.addEventListener("click", closePopover);
     popoverSave?.addEventListener("click", applyChange);
+
 
     popoverTextInput?.addEventListener("keydown", (e) => {
       if (e.key === "Enter") {

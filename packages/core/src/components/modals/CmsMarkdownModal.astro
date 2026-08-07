@@ -1,0 +1,103 @@
+---
+---
+
+<div
+  id="ml-cms-markdown-modal"
+  class="ml-cms-modal-overlay hidden"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="ml-cms-markdown-title"
+>
+  <div class="ml-cms-modal-content" style="max-width: 800px; width: 90vw;">
+    <div class="ml-cms-modal-header">
+      <div style="display:flex; align-items:center; gap:0.5rem;">
+        <i class="ml-icon-file-text-line ml-icon--xs" style="color: #0284c7;"></i>
+        <h3 id="ml-cms-markdown-title" class="ml-cms-modal-heading">
+          Éditeur de document Markdown (Tiptap)
+        </h3>
+      </div>
+      <span class="ml-cms-popover-badge" id="ml-cms-markdown-bind-key">body</span>
+      <button
+        type="button"
+        id="ml-cms-markdown-close"
+        class="ml-cms-popover-close-btn"
+        aria-label="Fermer">&times;</button
+      >
+    </div>
+    <div class="ml-cms-modal-body" style="padding: 1rem 1.25rem;">
+      <div class="ml-tiptap-toolbar" style="display: flex; flex-wrap: wrap; gap: 0.25rem; padding: 0.5rem; background: #f8fafc; border: 1px solid #cbd5e1; border-bottom: none; border-radius: 8px 8px 0 0;">
+        <button type="button" class="ml-tiptap-btn" data-action="bold" title="Gras"><b>B</b></button>
+        <button type="button" class="ml-tiptap-btn" data-action="italic" title="Italique"><i>I</i></button>
+        <button type="button" class="ml-tiptap-btn" data-action="strike" title="Biffé"><s>S</s></button>
+        <span style="border-right: 1px solid #cbd5e1; margin: 0 0.25rem;"></span>
+        <button type="button" class="ml-tiptap-btn" data-action="h1" title="Titre 1">H1</button>
+        <button type="button" class="ml-tiptap-btn" data-action="h2" title="Titre 2">H2</button>
+        <button type="button" class="ml-tiptap-btn" data-action="h3" title="Titre 3">H3</button>
+        <span style="border-right: 1px solid #cbd5e1; margin: 0 0.25rem;"></span>
+        <button type="button" class="ml-tiptap-btn" data-action="bulletList" title="Liste à puces">• Liste</button>
+        <button type="button" class="ml-tiptap-btn" data-action="orderedList" title="Liste numérotée">1. Liste</button>
+        <button type="button" class="ml-tiptap-btn" data-action="blockquote" title="Citation">«» Citation</button>
+        <span style="border-right: 1px solid #cbd5e1; margin: 0 0.25rem;"></span>
+        <button type="button" class="ml-tiptap-btn" data-action="undo" title="Annuler">↩</button>
+        <button type="button" class="ml-tiptap-btn" data-action="redo" title="Rétablir">↪</button>
+      </div>
+
+      <div
+        id="ml-tiptap-editor-container"
+        style="min-height: 250px; max-height: 450px; overflow-y: auto; border: 1px solid #cbd5e1; border-radius: 0 0 8px 8px; padding: 1rem; background: #ffffff; line-height: 1.6;"
+      ></div>
+    </div>
+    <div class="ml-cms-modal-footer">
+      <button
+        type="button"
+        id="ml-cms-markdown-cancel"
+        class="ml-btn ml-btn--secondary ml-btn--sm">Annuler</button
+      >
+      <button
+        type="button"
+        id="ml-cms-markdown-save"
+        class="ml-btn ml-btn--primary ml-btn--sm">Appliquer le texte Markdown</button
+      >
+    </div>
+  </div>
+</div>
+
+<style>
+  .ml-tiptap-btn {
+    padding: 0.25rem 0.5rem;
+    border: 1px solid #cbd5e1;
+    background: #ffffff;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    color: #334155;
+  }
+  .ml-tiptap-btn:hover {
+    background: #e2e8f0;
+  }
+  .ml-tiptap-btn.is-active {
+    background: #0284c7;
+    color: #ffffff;
+    border-color: #0284c7;
+  }
+  #ml-tiptap-editor-container p {
+    margin-bottom: 0.75rem;
+  }
+  #ml-tiptap-editor-container h1, #ml-tiptap-editor-container h2, #ml-tiptap-editor-container h3 {
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+    font-weight: 800;
+  }
+  #ml-tiptap-editor-container ul, #ml-tiptap-editor-container ol {
+    padding-left: 1.25rem;
+    margin-bottom: 0.75rem;
+  }
+  #ml-tiptap-editor-container blockquote {
+    border-left: 3px solid #0284c7;
+    padding-left: 0.75rem;
+    color: #475569;
+    font-style: italic;
+    margin: 0.75rem 0;
+  }
+</style>

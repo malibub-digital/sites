@@ -8,6 +8,8 @@ export { default as SideMenu } from './components/SideMenu.astro';
 export { default as AdminToolbar } from './components/AdminToolbar.astro';
 export { default as CollectionAddButton } from './components/CollectionAddButton.astro';
 export { default as CollectionItemControls } from './components/CollectionItemControls.astro';
+export { default as CmsImageField } from './components/CmsImageField.astro';
+export { default as CmsLinkField } from './components/CmsLinkField.astro';
 export { default as EmergencyBanner } from './components/EmergencyBanner.astro';
 
 export * from './utils/auth.js';
@@ -15,6 +17,7 @@ export * from './store/cms.js';
 export * from './cms/saveHandler.js';
 export * from './cms/lockHandler.js';
 export * from './cms/publishHandler.js';
+export * from './cms/uploadHandler.js';
 
 
 

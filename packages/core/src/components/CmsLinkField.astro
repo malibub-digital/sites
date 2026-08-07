@@ -1,0 +1,35 @@
+---
+interface Props {
+  bindText: string;
+  bindHref: string;
+  bindAlt?: string;
+  text: string;
+  href: string;
+  alt?: string;
+  class?: string;
+  target?: string;
+}
+
+const {
+  bindText,
+  bindHref,
+  bindAlt,
+  text,
+  href,
+  alt = '',
+  class: className = '',
+  target,
+} = Astro.props;
+---
+
+<a
+  href={href}
+  class={className}
+  target={target}
+  data-cms-bind={bindText}
+  data-cms-bind-href={bindHref}
+  data-cms-bind-alt={bindAlt}
+  data-cms-type="link"
+>
+  {text}
+</a>

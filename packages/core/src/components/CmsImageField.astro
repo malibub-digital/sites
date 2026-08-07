@@ -1,0 +1,60 @@
+---
+interface Props {
+  bind: string;
+  src: string;
+  alt?: string;
+  class?: string;
+  imgClass?: string;
+}
+
+const {
+  bind,
+  src,
+  alt = '',
+  class: className = '',
+  imgClass = 'w-full h-full object-cover',
+} = Astro.props;
+---
+
+<div class={`ml-cms-image-field-container relative group ${className}`} data-cms-image-container>
+  <img src={src} alt={alt} class={imgClass} data-cms-bind={bind} data-cms-type="image" />
+  <button
+    type="button"
+    class="ml-cms-image-overlay-btn"
+    data-cms-bind={bind}
+    data-cms-type="image"
+    title="Changer l'image"
+  >
+    <i class="ml-icon-image-line ml-icon--xs"></i>
+    <span>Changer l'image</span>
+  </button>
+</div>
+
+<style>
+  .ml-cms-image-overlay-btn {
+    display: none;
+    position: absolute;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.65);
+    color: #ffffff;
+    font-size: 0.8rem;
+    font-weight: 700;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border: none;
+    cursor: pointer;
+    backdrop-filter: blur(2px);
+    transition: opacity 0.2s ease;
+    opacity: 0;
+  }
+
+  :global(:root[data-cms-editing="true"]) .ml-cms-image-overlay-btn,
+  :global(body.cms-mode-editing) .ml-cms-image-overlay-btn {
+    display: flex !important;
+  }
+
+  .ml-cms-image-field-container:hover .ml-cms-image-overlay-btn {
+    opacity: 1;
+  }
+</style>

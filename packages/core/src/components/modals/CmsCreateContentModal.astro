@@ -1,0 +1,82 @@
+---
+---
+
+<div
+  id="ml-cms-create-content-modal"
+  class="ml-cms-modal-overlay hidden"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="ml-create-content-title"
+>
+  <div class="ml-cms-modal-content">
+    <div class="ml-cms-modal-header">
+      <h3 id="ml-create-content-title" class="ml-cms-modal-heading">
+        Créer un nouveau document
+      </h3>
+      <button
+        type="button"
+        id="ml-create-content-close"
+        class="ml-cms-popover-close-btn"
+        aria-label="Fermer">&times;</button
+      >
+    </div>
+    <div class="ml-cms-modal-body">
+      <input type="hidden" id="ml-create-content-collection" value="" />
+
+      <div class="ml-form-group mb-4">
+        <label for="ml-create-content-title-input" class="ml-form-label">Titre du document</label>
+        <input
+          type="text"
+          id="ml-create-content-title-input"
+          class="ml-form-input ml-cms-input"
+          placeholder="Ex: Permanence consulaire exceptionnelle"
+          style="width: 100%; font-family: inherit; font-size: 0.95rem;"
+        />
+      </div>
+
+      <div class="ml-form-group mb-4">
+        <label for="ml-create-content-slug-input" class="ml-form-label">Identifiant URL (Slug)</label>
+        <input
+          type="text"
+          id="ml-create-content-slug-input"
+          class="ml-form-input ml-cms-input"
+          placeholder="Ex: permanence-consulaire"
+          style="width: 100%; font-family: inherit; font-size: 0.9rem;"
+        />
+      </div>
+
+      <div class="ml-form-group mb-4">
+        <label for="ml-create-content-category-input" class="ml-form-label">Catégorie</label>
+        <input
+          type="text"
+          id="ml-create-content-category-input"
+          class="ml-form-input ml-cms-input"
+          placeholder="Ex: Consulat, Emploi, Communiqué..."
+          style="width: 100%; font-family: inherit; font-size: 0.9rem;"
+        />
+      </div>
+
+      <div class="ml-form-group">
+        <label for="ml-create-content-excerpt-input" class="ml-form-label">Résumé / Chapeau</label>
+        <textarea
+          id="ml-create-content-excerpt-input"
+          class="ml-form-input ml-cms-textarea"
+          rows="3"
+          placeholder="Description courte affichée sur la carte..."
+          style="width: 100%; font-family: inherit; font-size: 0.9rem; line-height: 1.5;"></textarea>
+      </div>
+    </div>
+    <div class="ml-cms-modal-footer">
+      <button
+        type="button"
+        id="ml-create-content-cancel"
+        class="ml-btn ml-btn--secondary ml-btn--sm">Annuler</button
+      >
+      <button
+        type="button"
+        id="ml-create-content-submit"
+        class="ml-btn ml-btn--primary ml-btn--sm">Créer le document</button
+      >
+    </div>
+  </div>
+</div>
