@@ -90,6 +90,9 @@ const faqList = siteConfig.faq || [];
 </BaseLayout>
 
 <style>
+  .ml-accordion-title::after {
+    content: none !important;
+  }
   .ml-accordion-content {
     display: none;
   }
@@ -104,7 +107,7 @@ const faqList = siteConfig.faq || [];
     document.querySelectorAll('.ml-accordion-title').forEach(btn => {
       btn.addEventListener('click', (e) => {
         // Ignorer le clic si la cible était un bouton du CollectionItemControls
-        if ((e.target as HTMLElement).closest('.ml-action-toolbar')) return;
+        if ((e.target as HTMLElement).closest('.ml-cms-item-controls-toolbar, .ml-action-toolbar')) return;
         
         const isExpanded = btn.getAttribute('aria-expanded') === 'true';
         btn.setAttribute('aria-expanded', !isExpanded ? 'true' : 'false');

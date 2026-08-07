@@ -70,7 +70,7 @@ const {
   )}
 </div>
 
-<style>
+<style is:global>
   .ml-cms-item-controls-toolbar {
     display: none;
     align-items: center;
@@ -78,8 +78,8 @@ const {
     flex-shrink: 0;
   }
 
-  :global(:root[data-cms-editing="true"]) .ml-cms-item-controls-toolbar,
-  :global(body.cms-mode-editing) .ml-cms-item-controls-toolbar {
+  :root[data-cms-editing="true"] .ml-cms-item-controls-toolbar,
+  body.cms-mode-editing .ml-cms-item-controls-toolbar {
     display: inline-flex !important;
   }
 
@@ -177,27 +177,33 @@ const {
 
       const action = btn.getAttribute('data-action');
       const path = btn.getAttribute('data-collection-path') || '';
-      const idx = parseInt(btn.getAttribute('data-index') || '0', 10);
       const slug = btn.getAttribute('data-slug') || '';
 
       const itemEl = btn.closest('[data-cms-item-index]') as HTMLElement | null;
       const container = itemEl?.closest('[data-cms-collection]') || itemEl?.parentElement;
 
+      if (!itemEl || !container) return;
+
+      const itemsList = Array.from(container.querySelectorAll(':scope > .space-y-4 > [data-cms-item-index], :scope > [data-cms-item-index]'));
+      const currentDomIdx = itemsList.indexOf(itemEl);
+
       if (action === 'up') {
-        if (idx > 0 && itemEl && itemEl.previousElementSibling) {
-          reorderArrayItem(path, idx, idx - 1);
-          itemEl.parentNode?.insertBefore(itemEl, itemEl.previousElementSibling);
-          if (container) reindexCollectionItems(container, path);
+        if (currentDomIdx > 0) {
+          const prevItem = itemsList[currentDomIdx - 1];
+          reorderArrayItem(path, currentDomIdx, currentDomIdx - 1);
+          itemEl.parentNode?.insertBefore(itemEl, prevItem);
+          reindexCollectionItems(container, path);
         }
       } else if (action === 'down') {
-        if (itemEl && itemEl.nextElementSibling) {
-          reorderArrayItem(path, idx, idx + 1);
-          itemEl.parentNode?.insertBefore(itemEl.nextElementSibling, itemEl);
-          if (container) reindexCollectionItems(container, path);
+        if (currentDomIdx >= 0 && currentDomIdx < itemsList.length - 1) {
+          const nextItem = itemsList[currentDomIdx + 1];
+          reorderArrayItem(path, currentDomIdx, currentDomIdx + 1);
+          itemEl.parentNode?.insertBefore(nextItem, itemEl);
+          reindexCollectionItems(container, path);
         }
       } else if (action === 'delete-array') {
-        deleteArrayItem(path, idx);
-        if (itemEl) {
+        if (currentDomIdx >= 0) {
+          deleteArrayItem(path, currentDomIdx);
           itemEl.style.opacity = '0.3';
           itemEl.style.textDecoration = 'line-through';
           itemEl.style.pointerEvents = 'none';

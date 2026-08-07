@@ -76,7 +76,6 @@ const {
         }
         addArrayItem(path, defaultData);
 
-        // Instantly append new item into the DOM for immediate inline editing
         const collectionContainer = btn.closest('[data-cms-collection]') || document.querySelector(`[data-cms-collection="${path}"]`);
         if (collectionContainer) {
           const listWrapper = collectionContainer.querySelector('.space-y-4') || collectionContainer;
@@ -84,19 +83,24 @@ const {
           const newIndex = existingItems.length;
 
           const newItem = document.createElement('div');
-          newItem.className = "bg-white p-6 border border-[var(--ml-color-neutral-200)] rounded-2xl shadow-sm hover:shadow-md transition-shadow relative group";
+          newItem.className = "ml-accordion bg-white !p-6 border border-[var(--ml-color-neutral-200)] rounded-2xl shadow-sm hover:shadow-md transition-all relative group";
+          newItem.style.cssText = "padding: 1.25rem 1.5rem !important; border-bottom: 1px solid var(--ml-color-neutral-200);";
           newItem.setAttribute('data-cms-item-index', String(newIndex));
 
           const questionText = defaultData.question || defaultData.title || `Nouvel élément #${newIndex + 1}`;
           const answerText = defaultData.answer || defaultData.description || defaultData.summary || "Saisissez le contenu ici.";
 
+          const isFirst = newIndex === 0;
+
           newItem.innerHTML = `
-            <div class="flex items-start justify-between gap-4 mb-2.5">
-              <h3 class="text-base font-extrabold text-[var(--ml-color-neutral-900)] font-title m-0 flex-1" data-cms-bind="${path}.[${newIndex}].question">
-                ${questionText}
-              </h3>
-              <div class="ml-cms-item-controls-toolbar" data-cms-item-toolbar style="display: inline-flex !important;">
-                <button type="button" class="ml-cms-item-btn ml-cms-item-up" title="Monter" data-action="up" data-collection-path="${path}" data-index="${newIndex}">
+            <div class="ml-accordion-header flex items-center justify-between gap-4">
+              <button type="button" class="ml-accordion-title text-base font-extrabold text-[var(--ml-color-neutral-900)] font-title m-0 flex-1 text-left cursor-pointer focus:outline-none" aria-expanded="true">
+                <span data-cms-bind="${path}.[${newIndex}].question">
+                  ${questionText}
+                </span>
+              </button>
+              <div class="ml-cms-item-controls-toolbar" data-cms-item-toolbar>
+                <button type="button" class="ml-cms-item-btn ml-cms-item-up" title="Monter" data-action="up" data-collection-path="${path}" data-index="${newIndex}" ${isFirst ? 'disabled' : ''}>
                   <i class="ml-icon-arrow-up-line ml-icon--xs"></i>
                 </button>
                 <button type="button" class="ml-cms-item-btn ml-cms-item-down" title="Descendre" data-action="down" data-collection-path="${path}" data-index="${newIndex}" disabled>
@@ -107,12 +111,21 @@ const {
                 </button>
               </div>
             </div>
-            <p class="text-[var(--ml-color-neutral-600)] text-sm leading-relaxed m-0" data-cms-bind="${path}.[${newIndex}].answer">
-              ${answerText}
-            </p>
+            <div class="ml-accordion-content pt-3 mt-3 border-t border-[var(--ml-color-neutral-100)]">
+              <p class="text-[var(--ml-color-neutral-600)] text-sm leading-relaxed m-0" data-cms-bind="${path}.[${newIndex}].answer">
+                ${answerText}
+              </p>
+            </div>
           `;
 
           listWrapper.appendChild(newItem);
+
+          // Update down button state of previous item since it's no longer the last item
+          if (newIndex > 0) {
+            const prevItem = existingItems[newIndex - 1];
+            const prevDownBtn = prevItem?.querySelector('.ml-cms-item-down') as HTMLButtonElement | null;
+            if (prevDownBtn) prevDownBtn.disabled = false;
+          }
         }
       }
     });
