@@ -3,51 +3,45 @@ import BaseLayout from '@malihub/sites-core/layouts/BaseLayout.astro';
 import Header from '@malihub/sites-core/components/Header.astro';
 import Footer from '@malihub/sites-core/components/Footer.astro';
 import siteConfig from '../../../site.config.json';
+import newsData from '../../data/pages/news.json';
+import fs from 'fs';
+import path from 'path';
+import matter from 'gray-matter';
 
-const newsItems = [
-  {
-    title: 'Mise en place de la permanence consulaire du week-end',
-    date: '28 Juillet 2026',
-    category: 'Consulat',
-    author: 'Service Communication',
-    excerpt: 'Pour répondre au flux élevé de demandes pendant la période estivale, une permanence exceptionnelle est ouverte chaque samedi matin de 9h à 12h pour la remise des passeports et cartes consulaires.',
-    slug: 'permanence-ete',
-    image: '/images/actualites/consulat.png',
-    cardVariant: 'featured' as const,
-    featured: true
-  },
-  {
-    title: 'Lancement du nouveau guichet d\'orientation professionnelle APEJ',
-    date: '15 Juillet 2026',
-    category: 'Emploi',
-    author: 'Direction APEJ',
-    excerpt: 'L\'APEJ renforce son dispositif d\'accueil et propose désormais des ateliers hebdomadaires de rédaction de CV, de préparation aux entretiens et d\'orientation vers les métiers du numérique.',
-    slug: 'guichet-apej',
-    image: '/images/actualites/apej.png',
-    cardVariant: 'indigo' as const,
-    featured: false
-  },
-  {
-    title: 'Campagne de distribution et de retrait des cartes consulaires',
-    date: '02 Juillet 2026',
-    category: 'Communiqué',
-    author: 'Consulat Général',
-    excerpt: 'Les usagers ayant effectué leur demande d\'immatriculation consulaire avant le 1er juin 2026 sont invités à se présenter au guichet pour le retrait de leur carte munis du récépissé original.',
-    slug: 'retrait-cartes',
-    cardVariant: 'accent' as const,
-    featured: false
-  },
-  {
-    title: 'Digitalisation des formulaires de demande en ligne',
-    date: '18 Juin 2026',
-    category: 'Innovation',
-    author: 'Équipe Numérique Mali',
-    excerpt: 'Découvrez la nouvelle plateforme de pré-demande en ligne permettant de gagner du temps lors de vos déplacements au guichet administratif.',
-    slug: 'digitalisation-formulaires',
-    cardVariant: 'standard' as const,
-    featured: false
-  }
-];
+interface NewsItem {
+  slug: string;
+  title: string;
+  date: string;
+  category: string;
+  author: string;
+  excerpt: string;
+  image?: string;
+  cardVariant: 'featured' | 'accent' | 'indigo' | 'standard';
+  featured: boolean;
+}
+
+const contentDir = path.join(process.cwd(), 'src', 'content', 'actualites');
+let newsItems: NewsItem[] = [];
+
+if (fs.existsSync(contentDir)) {
+  const files = fs.readdirSync(contentDir).filter((f) => f.endsWith('.md'));
+  newsItems = files.map((file) => {
+    const slug = file.replace(/\.md$/, '');
+    const raw = fs.readFileSync(path.join(contentDir, file), 'utf-8');
+    const parsed = matter(raw);
+    return {
+      slug,
+      title: parsed.data.title || slug,
+      date: parsed.data.date || '',
+      category: parsed.data.category || 'Général',
+      author: parsed.data.author || 'Rédaction',
+      excerpt: parsed.data.excerpt || '',
+      image: parsed.data.image,
+      cardVariant: parsed.data.cardVariant || 'standard',
+      featured: Boolean(parsed.data.featured)
+    };
+  });
+}
 
 const cardBgStyles = {
   featured: 'bg-gradient-to-br from-[var(--ml-color-green-50)] via-white to-white border-2 border-[var(--ml-color-green-500)] shadow-md hover:shadow-xl',
@@ -85,13 +79,15 @@ const badgeStyles = {
       <div class="relative rounded-3xl overflow-hidden mb-12 bg-gradient-to-r from-[var(--ml-color-river-800)] via-[var(--ml-color-indigo-700)] to-[var(--ml-color-indigo-900)] text-white p-8 md:p-12 shadow-xl border-2 border-[var(--ml-color-mandingue-orange)]/50">
         <div class="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-[var(--ml-color-mandingue-500)] via-transparent to-transparent pointer-events-none"></div>
         <div class="relative z-10 max-w-2xl">
-          <span class="inline-flex items-center gap-1.5 bg-white/15 text-[var(--ml-color-mandingue-100)] text-xs font-bold px-3.5 py-1 rounded-full uppercase tracking-wider mb-4 border border-white/20 backdrop-blur-md">
+          <span class="inline-flex items-center gap-1.5 bg-white/15 text-[var(--ml-color-mandingue-100)] text-xs font-bold px-3.5 py-1 rounded-full uppercase tracking-wider mb-4 border border-white/20 backdrop-blur-md" data-cms-bind="src/data/pages/news.json::header.badge">
             <span class="w-2 h-2 rounded-full bg-[var(--ml-color-mandingue-orange)] animate-pulse"></span>
-            Démonstration d'Actualités Officielles
+            {newsData.header.badge}
           </span>
-          <h1 class="text-3xl md:text-4xl font-black font-title tracking-tight text-[var(--ml-color-mandingue-100)] mb-3 drop-shadow-md">Actualités & Communiqués</h1>
-          <p class="text-sm md:text-base text-white/95 leading-relaxed font-medium">
-            Suivez en direct l'actualité des services publics, annonces consulaires, opportunités d'emploi et avis aux usagers.
+          <h1 class="text-3xl md:text-4xl font-black font-title tracking-tight text-[var(--ml-color-mandingue-100)] mb-3 drop-shadow-md" data-cms-bind="src/data/pages/news.json::header.title">
+            {newsData.header.title}
+          </h1>
+          <p class="text-sm md:text-base text-white/95 leading-relaxed font-medium" data-cms-bind="src/data/pages/news.json::header.subtitle">
+            {newsData.header.subtitle}
           </p>
         </div>
       </div>
@@ -107,56 +103,59 @@ const badgeStyles = {
 
       <!-- Mosaïque de cartes actualités DSML -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {newsItems.map((item) => (
-          <article class={`rounded-2xl overflow-hidden transition-all duration-300 flex flex-col justify-between hover:-translate-y-1.5 ${item.featured ? 'md:col-span-2 lg:col-span-2 flex-col md:flex-row' : ''} ${cardBgStyles[item.cardVariant]}`}>
-            {item.image && (
-              <div class={`overflow-hidden ${item.featured ? 'md:w-1/2 min-h-[260px]' : 'h-48'} relative`}>
-                <img src={item.image} alt={item.title} class="w-full h-full object-cover transition-transform duration-500 hover:scale-105" />
-                <span class={`absolute top-4 left-4 text-[11px] uppercase tracking-wider px-3 py-1 rounded-full ${badgeStyles[item.category as keyof typeof badgeStyles] || badgeStyles.Innovation}`}>
-                  {item.category}
-                </span>
-              </div>
-            )}
+        {newsItems.map((item) => {
+          const cmsBase = `src/content/actualites/${item.slug}.md`;
+          return (
+            <article class={`rounded-2xl overflow-hidden transition-all duration-300 flex flex-col justify-between hover:-translate-y-1.5 ${item.featured ? 'md:col-span-2 lg:col-span-2 flex-col md:flex-row' : ''} ${cardBgStyles[item.cardVariant]}`}>
+              {item.image && (
+                <div class={`overflow-hidden ${item.featured ? 'md:w-1/2 min-h-[260px]' : 'h-48'} relative`}>
+                  <img src={item.image} alt={item.title} class="w-full h-full object-cover transition-transform duration-500 hover:scale-105" data-cms-bind={`${cmsBase}::image`} />
+                  <span class={`absolute top-4 left-4 text-[11px] uppercase tracking-wider px-3 py-1 rounded-full ${badgeStyles[item.category as keyof typeof badgeStyles] || badgeStyles.Innovation}`} data-cms-bind={`${cmsBase}::category`}>
+                    {item.category}
+                  </span>
+                </div>
+              )}
 
-            <div class={`p-6 flex flex-col justify-between ${item.featured ? 'md:w-1/2' : 'flex-1'}`}>
-              <div>
-                {!item.image && (
-                  <div class="flex items-center justify-between mb-4">
-                    <span class={`text-[11px] uppercase tracking-wider px-3 py-1 rounded-full ${badgeStyles[item.category as keyof typeof badgeStyles] || badgeStyles.Innovation}`}>
-                      {item.category}
-                    </span>
-                    <time class="text-xs text-[var(--ml-color-neutral-500)]">{item.date}</time>
-                  </div>
-                )}
-                
-                {item.image && (
-                  <div class="flex items-center gap-2 text-xs text-[var(--ml-color-neutral-500)] mb-3">
-                    <time>{item.date}</time>
-                    <span>•</span>
-                    <span>Par {item.author}</span>
-                  </div>
-                )}
+              <div class={`p-6 flex flex-col justify-between ${item.featured ? 'md:w-1/2' : 'flex-1'}`}>
+                <div>
+                  {!item.image && (
+                    <div class="flex items-center justify-between mb-4">
+                      <span class={`text-[11px] uppercase tracking-wider px-3 py-1 rounded-full ${badgeStyles[item.category as keyof typeof badgeStyles] || badgeStyles.Innovation}`} data-cms-bind={`${cmsBase}::category`}>
+                        {item.category}
+                      </span>
+                      <time class="text-xs text-[var(--ml-color-neutral-500)]" data-cms-bind={`${cmsBase}::date`}>{item.date}</time>
+                    </div>
+                  )}
+                  
+                  {item.image && (
+                    <div class="flex items-center gap-2 text-xs text-[var(--ml-color-neutral-500)] mb-3">
+                      <time data-cms-bind={`${cmsBase}::date`}>{item.date}</time>
+                      <span>•</span>
+                      <span data-cms-bind={`${cmsBase}::author`}>Par {item.author}</span>
+                    </div>
+                  )}
 
-                <h2 class="text-lg md:text-xl font-extrabold text-[var(--ml-color-neutral-900)] font-title mb-3 leading-snug">
-                  <a href={`/actualites/${item.slug}`} class="hover:text-[var(--ml-color-green-700)] text-[var(--ml-color-neutral-900)] no-underline transition-colors">
-                    {item.title}
+                  <h2 class="text-lg md:text-xl font-extrabold text-[var(--ml-color-neutral-900)] font-title mb-3 leading-snug">
+                    <a href={`/actualites/${item.slug}`} class="hover:text-[var(--ml-color-green-700)] text-[var(--ml-color-neutral-900)] no-underline transition-colors" data-cms-bind={`${cmsBase}::title`}>
+                      {item.title}
+                    </a>
+                  </h2>
+
+                  <p class="text-xs md:text-sm text-[var(--ml-color-neutral-600)] leading-relaxed mb-6" data-cms-bind={`${cmsBase}::excerpt`}>
+                    {item.excerpt}
+                  </p>
+                </div>
+
+                <div class="pt-4 border-t border-[var(--ml-color-neutral-200)]/60 flex items-center justify-between">
+                  <a href={`/actualites/${item.slug}`} class="text-xs font-bold text-[var(--ml-color-green-700)] hover:text-[var(--ml-color-green-800)] inline-flex items-center gap-1.5 group no-underline">
+                    <span>Lire l'article</span>
+                    <span class="transition-transform group-hover:translate-x-1">&rarr;</span>
                   </a>
-                </h2>
-
-                <p class="text-xs md:text-sm text-[var(--ml-color-neutral-600)] leading-relaxed mb-6">
-                  {item.excerpt}
-                </p>
+                </div>
               </div>
-
-              <div class="pt-4 border-t border-[var(--ml-color-neutral-200)]/60 flex items-center justify-between">
-                <a href={`/actualites/${item.slug}`} class="text-xs font-bold text-[var(--ml-color-green-700)] hover:text-[var(--ml-color-green-800)] inline-flex items-center gap-1.5 group no-underline">
-                  <span>Lire l'article</span>
-                  <span class="transition-transform group-hover:translate-x-1">&rarr;</span>
-                </a>
-              </div>
-            </div>
-          </article>
-        ))}
+            </article>
+          );
+        })}
       </div>
     </div>
   </main>
