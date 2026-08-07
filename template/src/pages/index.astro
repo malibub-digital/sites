@@ -7,103 +7,53 @@ import ServiceCard from '@malihub/sites-core/components/ServiceCard.astro';
 import siteConfig from '../../site.config.json';
 import homeData from '../data/pages/home.json';
 
-const services = [
+const featuredServices = [
   {
     title: 'Carte d\'Immatriculation Consulaire',
-    summary: 'Demande, établissement et renouvellement de la carte d\'immatriculation consulaire pour les citoyens maliens résidant à l\'étranger.',
-    category: 'Identité & Consulat',
+    summary: 'Exemple de fiche de démarche pour les citoyens maliens résidant à l\'étranger.',
+    category: 'Identité & Consulat (Démo)',
     cost: '15 € / 10 000 FCFA',
     processingTime: '48 heures',
     href: '/services/carte-consulaire',
-    badgeText: 'Populaire',
+    badgeText: 'Exemple Populaire',
     variant: 'featured' as const
   },
   {
     title: 'Passeport Biométrique Malien',
-    summary: 'Procédure de prise d\'empreintes, dépôt de dossier et suivi de la délivrance du passeport biométrique officiel.',
-    category: 'Voyage & Identité',
+    summary: 'Modèle de procédure de prise d\'empreintes et pièces requises.',
+    category: 'Voyage & Identité (Démo)',
     cost: '85 000 FCFA',
     processingTime: '2 à 3 semaines',
     href: '/services/passeport',
-    badgeText: 'Essentiel',
+    badgeText: 'Modèle DSML',
     variant: 'accent' as const
   },
   {
     title: 'Accompagnement Emploi & Stage APEJ',
-    summary: 'Inscription au programme d\'insertion des jeunes diplômés, stages pratiques et financement de micro-projets d\'entrepreneuriat.',
-    category: 'Emploi & Jeunesse',
+    summary: 'Modèle d\'intégration pour les programmes de jeunesse et d\'emploi.',
+    category: 'Emploi & Jeunesse (Démo)',
     cost: 'Gratuit',
     processingTime: 'Immédiat en ligne',
     href: '/services/emploi-apej',
-    badgeText: 'Programme APEJ',
+    badgeText: 'Exemple APEJ',
     variant: 'indigo' as const
-  },
-  {
-    title: 'Actes d\'État Civil & Certificats',
-    summary: 'Transcription d\'actes de naissance, célébration de mariage, délivrance de certificat de nationalité et légalisation de documents.',
-    category: 'État Civil',
-    cost: 'Gratuit à 5 €',
-    processingTime: '24 à 48h',
-    href: '/services/etat-civil',
-    variant: 'standard' as const
-  },
-  {
-    title: 'Légalisation & Authentification de Documents',
-    summary: 'Certification conforme de documents administratifs, procurations et actes notariés.',
-    category: 'Administratif',
-    cost: '5 € / document',
-    processingTime: 'Sur place',
-    href: '/services/legalisation',
-    variant: 'standard' as const
-  },
-  {
-    title: 'Guichet Unique de Création d\'Entreprise',
-    summary: 'Accompagnement des jeunes entrepreneurs pour l\'immatriculation et les formalités de création de société au Mali.',
-    category: 'Entrepreneuriat',
-    cost: 'Variable',
-    processingTime: '72 heures',
-    href: '/services/creation-entreprise',
-    badgeText: 'Investir',
-    variant: 'accent' as const
   }
 ];
 
-const newsList = [
+const newsPreview = [
   {
     title: 'Mise en place de la permanence consulaire du week-end',
     date: '28 Juillet 2026',
-    category: 'Consulat',
-    excerpt: 'Pour répondre au flux élevé de demandes pendant la période estivale, une permanence est ouverte chaque samedi matin.',
-    href: '/actualites/permanence-ete'
+    category: 'Consulat (Démo)',
+    excerpt: 'Exemple d’actualité officielle intégrant le composant carte et les badgets de catégorie.',
+    href: '/actualites'
   },
   {
     title: 'Lancement du nouveau guichet d\'orientation professionnelle APEJ',
     date: '15 Juillet 2026',
-    category: 'Emploi',
-    excerpt: 'L\'APEJ renforce son dispositif d\'accueil et propose des ateliers hebdomadaires de rédaction de CV et préparation d\'entretiens.',
-    href: '/actualites/guichet-apej'
-  },
-  {
-    title: 'Campagne de distribution et de retrait des cartes consulaires',
-    date: '02 Juillet 2026',
-    category: 'Communiqué',
-    excerpt: 'Les usagers ayant effectué leur demande avant le 1er juin sont invités à retirer leurs documents munis du récépissé.',
-    href: '/actualites/retrait-cartes'
-  }
-];
-
-const faqPreview = [
-  {
-    question: 'Quelles sont les pièces à fournir pour la carte consulaire ?',
-    answer: 'Il faut fournir un extrait d\'acte de naissance, 2 photos d\'identité récentes, un justificatif de domicile et une pièce d\'identité.'
-  },
-  {
-    question: 'Comment prendre rendez-vous pour le passeport biométrique ?',
-    answer: 'La prise de rendez-vous s\'effectue directement en ligne sur la page dédiée ou en vous rendant sur le portail des démarches.'
-  },
-  {
-    question: 'Comment bénéficier des programmes de financement APEJ ?',
-    answer: 'Les candidats doivent s\'inscrire sur la plateforme de l\'APEJ et soumettre leur dossier de projet d\'entreprise lors des appels à candidatures.'
+    category: 'Emploi (Démo)',
+    excerpt: 'Exemple d’annonce pour les opportunités et événements des services publics.',
+    href: '/actualites'
   }
 ];
 ---
@@ -114,7 +64,6 @@ const faqPreview = [
     title={siteConfig.title}
     institution={siteConfig.institution}
     logoUrl={siteConfig.logoUrl}
-    navItems={siteConfig.navigation?.links}
     navItems={siteConfig.navigation?.links}
   />
 
@@ -127,115 +76,188 @@ const faqPreview = [
     quickLinks={homeData.quickLinks}
   />
 
-
-  <section id="services" class="py-16 bg-[var(--ml-color-river-50)]/50 border-b border-[var(--ml-color-neutral-200)]">
-    <div class="ml-container max-w-6xl mx-auto px-4">
-      <div class="text-center mb-12 max-w-2xl mx-auto">
-        <span class="text-xs font-bold uppercase tracking-wider text-[var(--ml-color-river-700)] bg-[var(--ml-color-river-100)] px-3.5 py-1 rounded-full mb-3 inline-block border border-[var(--ml-color-river-200)]">
-          Services publics maliens
-        </span>
-        <h2 class="text-3xl font-black text-[var(--ml-color-neutral-900)] font-title">Catalogue des Démarches Modèles</h2>
-        <p class="text-[var(--ml-color-neutral-600)] mt-2 text-sm">Exemples de fiches de services intégrant les cartes et visuels du DSML.</p>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {services.map((service) => (
-          <ServiceCard {...service} />
-        ))}
-      </div>
-    </div>
-  </section>
-
+  <!-- SECTION 1: VALEUR AJOUTÉE & POURQUOI SITES FACILES -->
   <section class="py-16 bg-white border-b border-[var(--ml-color-neutral-200)]">
     <div class="ml-container max-w-6xl mx-auto px-4">
-      <div class="text-center mb-10">
+      <div class="text-center mb-12 max-w-3xl mx-auto">
         <span class="text-xs font-bold uppercase tracking-wider text-[var(--ml-color-mandingue-700)] bg-[var(--ml-color-mandingue-50)] px-3.5 py-1 rounded-full mb-3 inline-block border border-[var(--ml-color-mandingue-100)]">
-          Nuancier & Variantes DSML
+          Faciliter la Création Web Publique
         </span>
-        <h2 class="text-2xl md:text-3xl font-extrabold text-[var(--ml-color-neutral-900)] font-title">Styles de Cartes Prémium</h2>
-        <p class="text-[var(--ml-color-neutral-600)] mt-2 text-sm max-w-xl mx-auto">Aperçu des finitions et palettes Orange Mandingue & Bleu Fleuve du Design System Mali.</p>
+        <h2 class="text-3xl font-black text-[var(--ml-color-neutral-900)] font-title">Pourquoi Utiliser Sites Faciles ?</h2>
+        <p class="text-[var(--ml-color-neutral-600)] mt-2 text-sm leading-relaxed">
+          Sites Faciles combine la puissance du Design System Mali (DSML) avec un moteur d'édition visuelle en temps réel pour déployer des sites conformes sans effort.
+        </p>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-        <div class="p-6 rounded-2xl bg-[var(--ml-color-mandingue-50)]/60 border border-[var(--ml-color-mandingue-200)] shadow-sm">
-          <span class="text-[11px] font-bold uppercase px-2.5 py-0.5 rounded-full bg-[var(--ml-color-mandingue-orange)] text-white mb-3 inline-block">Orange Mandingue</span>
-          <h3 class="text-base font-bold text-[var(--ml-color-neutral-900)] mb-1.5 font-title">Emploi & Jeunesse</h3>
-          <p class="text-xs text-[var(--ml-color-neutral-600)] leading-relaxed">Orientation et accompagnement des jeunes diplômés.</p>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="p-8 rounded-3xl bg-[var(--ml-color-river-50)]/60 border border-[var(--ml-color-river-200)] shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
+          <div>
+            <div class="w-12 h-12 rounded-2xl bg-[var(--ml-color-river-600)] text-white flex items-center justify-center mb-5 text-xl font-bold shadow-md">
+              🎨
+            </div>
+            <h3 class="text-lg font-extrabold text-[var(--ml-color-neutral-900)] font-title mb-2">Conformité DSML Garantie</h3>
+            <p class="text-xs text-[var(--ml-color-neutral-600)] leading-relaxed mb-4">
+              Profitez d'un nuancier officiel (Orange Mandingue, Vert République, Bleu Fleuve Niger), de typographies certifiées et d'icônes prêtes à l'emploi.
+            </p>
+          </div>
+          <a href="/composants" class="text-xs font-bold text-[var(--ml-color-river-700)] hover:underline inline-flex items-center gap-1 no-underline">
+            <span>Explorer les composants</span>
+            <span>&rarr;</span>
+          </a>
         </div>
 
-        <div class="p-6 rounded-2xl bg-[var(--ml-color-river-50)] border border-[var(--ml-color-river-200)] shadow-sm">
-          <span class="text-[11px] font-bold uppercase px-2.5 py-0.5 rounded-full bg-[var(--ml-color-river-600)] text-white mb-3 inline-block">Bleu Fleuve Niger</span>
-          <span class="text-xs font-bold uppercase px-2.5 py-0.5 rounded-full bg-[var(--ml-color-river-500)] text-white mb-3 inline-block">Fleuve Niger</span>
-          <h3 class="text-base font-bold text-[var(--ml-color-neutral-900)] mb-1.5 font-title">Eau & Infrastructures</h3>
-          <p class="text-xs text-[var(--ml-color-neutral-600)] leading-relaxed">Grands projets d'aménagement et accès à l'eau.</p>
+        <div class="p-8 rounded-3xl bg-[var(--ml-color-mandingue-50)]/60 border border-[var(--ml-color-mandingue-200)] shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
+          <div>
+            <div class="w-12 h-12 rounded-2xl bg-[var(--ml-color-mandingue-orange)] text-white flex items-center justify-center mb-5 text-xl font-bold shadow-md">
+              ✏️
+            </div>
+            <h3 class="text-lg font-extrabold text-[var(--ml-color-neutral-900)] font-title mb-2">CMS Inline en Temps Réel</h3>
+            <p class="text-xs text-[var(--ml-color-neutral-600)] leading-relaxed mb-4">
+              Modifiez directement les textes, liens et images sur la page comme un traitement de texte. Aucune formation technique requise.
+            </p>
+          </div>
+          <a href="/guide" class="text-xs font-bold text-[var(--ml-color-mandingue-700)] hover:underline inline-flex items-center gap-1 no-underline">
+            <span>Voir le mode d'emploi</span>
+            <span>&rarr;</span>
+          </a>
         </div>
 
-        <div class="p-6 rounded-2xl bg-[var(--ml-color-indigo-50)]/60 border border-[var(--ml-color-indigo-200)] shadow-sm">
-          <span class="text-[11px] font-bold uppercase px-2.5 py-0.5 rounded-full bg-[var(--ml-color-indigo-600)] text-white mb-3 inline-block">Indigo Ségou</span>
-          <h3 class="text-base font-bold text-[var(--ml-color-neutral-900)] mb-1.5 font-title">Culture & Patrimoine</h3>
-          <p class="text-xs text-[var(--ml-color-neutral-600)] leading-relaxed">Promotion des arts, traditions et savoir-faire.</p>
+        <div class="p-8 rounded-3xl bg-[var(--ml-color-indigo-50)]/60 border border-[var(--ml-color-indigo-200)] shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
+          <div>
+            <div class="w-12 h-12 rounded-2xl bg-[var(--ml-color-indigo-600)] text-white flex items-center justify-center mb-5 text-xl font-bold shadow-md">
+              🚀
+            </div>
+            <h3 class="text-lg font-extrabold text-[var(--ml-color-neutral-900)] font-title mb-2">Déploiement Continu Git</h3>
+            <p class="text-xs text-[var(--ml-color-neutral-600)] leading-relaxed mb-4">
+              Chaque validation génère automatiquement des commits Git sur GitHub / Dokploy pour un déploiement instantané en zéro-downtime.
+            </p>
+          </div>
+          <a href="/guide#institution" class="text-xs font-bold text-[var(--ml-color-indigo-700)] hover:underline inline-flex items-center gap-1 no-underline">
+            <span>Guide de déploiement</span>
+            <span>&rarr;</span>
+          </a>
         </div>
       </div>
     </div>
   </section>
 
+  <!-- SECTION 2: SHOWCASE DES COMPOSANTS DSML -->
   <section class="py-16 bg-[var(--ml-color-river-50)]/30 border-b border-[var(--ml-color-neutral-200)]">
     <div class="ml-container max-w-6xl mx-auto px-4">
       <div class="flex flex-wrap justify-between items-end mb-10 gap-4">
         <div>
-          <h2 class="text-2xl md:text-3xl font-black text-[var(--ml-color-neutral-900)] font-title m-0">Actualités & Communiqués</h2>
-          <p class="text-[var(--ml-color-neutral-600)] mt-1.5 m-0 text-sm">Informations officielles et avis aux usagers.</p>
+          <span class="text-xs font-bold uppercase tracking-wider text-[var(--ml-color-river-700)] bg-[var(--ml-color-river-100)] px-3.5 py-1 rounded-full mb-2 inline-block border border-[var(--ml-color-river-200)]">
+            Design System Mali
+          </span>
+          <h2 class="text-2xl md:text-3xl font-black text-[var(--ml-color-neutral-900)] font-title m-0">Aperçu de la Charte & des Composants</h2>
         </div>
-        <a href="/actualites" class="text-sm font-bold text-[var(--ml-color-river-700)] hover:underline inline-flex items-center gap-1 no-underline">
-          <span>Toutes les actualités</span>
+        <a href="/composants" class="text-sm font-bold text-[var(--ml-color-river-700)] hover:underline inline-flex items-center gap-1 no-underline">
+          <span>Voir toute la bibliothèque</span>
           <span>&rarr;</span>
         </a>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {newsList.map((item) => (
-          <article class="bg-white border border-[var(--ml-color-neutral-200)] rounded-2xl p-6 flex flex-col justify-between hover:shadow-md transition-shadow">
-            <div>
-              <div class="flex justify-between items-center text-xs text-[var(--ml-color-neutral-500)] mb-3">
-                <span class="bg-[var(--ml-color-mandingue-50)] text-[var(--ml-color-mandingue-900)] font-bold px-2.5 py-0.5 rounded-md border border-[var(--ml-color-mandingue-100)]">{item.category}</span>
-                <time>{item.date}</time>
-              </div>
-              <h3 class="text-base font-extrabold text-[var(--ml-color-neutral-900)] font-title mb-2 leading-snug">
-                <a href={item.href} class="hover:text-[var(--ml-color-river-700)] text-[var(--ml-color-neutral-900)] no-underline transition-colors">{item.title}</a>
-              </h3>
-              <p class="text-[var(--ml-color-neutral-600)] text-xs md:text-sm leading-relaxed mb-5">{item.excerpt}</p>
-            </div>
-            <a href={item.href} class="text-xs font-bold text-[var(--ml-color-mandingue-700)] hover:underline no-underline inline-flex items-center gap-1">
-              <span>Lire la suite</span>
-              <span>&rarr;</span>
-            </a>
-          </article>
-        ))}
+        <div class="p-6 rounded-2xl bg-white border border-[var(--ml-color-neutral-200)] shadow-sm">
+          <span class="text-[11px] font-bold uppercase px-2.5 py-0.5 rounded-full bg-[var(--ml-color-mandingue-orange)] text-white mb-3 inline-block">Palettes & Nuanciers</span>
+          <h3 class="text-base font-bold text-[var(--ml-color-neutral-900)] mb-2 font-title">Couleurs Officielles</h3>
+          <p class="text-xs text-[var(--ml-color-neutral-600)] leading-relaxed mb-4">Orange Mandingue, Vert République, Bleu Fleuve Niger, Indigo de Ségou, Ocre Bogolan.</p>
+          <div class="flex gap-2">
+            <span class="w-6 h-6 rounded-full bg-[var(--ml-color-mandingue-orange)] shadow-inner"></span>
+            <span class="w-6 h-6 rounded-full bg-[var(--ml-color-green-500)] shadow-inner"></span>
+            <span class="w-6 h-6 rounded-full bg-[var(--ml-color-river-500)] shadow-inner"></span>
+            <span class="w-6 h-6 rounded-full bg-[var(--ml-color-indigo-500)] shadow-inner"></span>
+            <span class="w-6 h-6 rounded-full bg-[var(--ml-color-bogolan-argile)] shadow-inner"></span>
+          </div>
+        </div>
+
+        <div class="p-6 rounded-2xl bg-white border border-[var(--ml-color-neutral-200)] shadow-sm">
+          <span class="text-[11px] font-bold uppercase px-2.5 py-0.5 rounded-full bg-[var(--ml-color-river-600)] text-white mb-3 inline-block">Boutons & Actions</span>
+          <h3 class="text-base font-bold text-[var(--ml-color-neutral-900)] mb-2 font-title">Éléments Interactifs</h3>
+          <p class="text-xs text-[var(--ml-color-neutral-600)] leading-relaxed mb-4">Boutons primaires, secondaires, badges d'état et éléments de navigation.</p>
+          <div class="flex flex-wrap gap-2">
+            <span class="px-3 py-1 bg-[var(--ml-color-mandingue-orange)] text-white text-xs font-bold rounded-lg shadow-sm">Bouton</span>
+            <span class="px-3 py-1 bg-[var(--ml-color-river-50)] text-[var(--ml-color-river-800)] text-xs font-bold rounded-lg border border-[var(--ml-color-river-200)]">Secondaire</span>
+            <span class="px-2.5 py-0.5 bg-emerald-100 text-emerald-800 text-[10px] font-bold rounded-full">Actif</span>
+          </div>
+        </div>
+
+        <div class="p-6 rounded-2xl bg-white border border-[var(--ml-color-neutral-200)] shadow-sm">
+          <span class="text-[11px] font-bold uppercase px-2.5 py-0.5 rounded-full bg-[var(--ml-color-indigo-600)] text-white mb-3 inline-block">Formulaires & Steppers</span>
+          <h3 class="text-base font-bold text-[var(--ml-color-neutral-900)] mb-2 font-title">Saisie Administrative</h3>
+          <p class="text-xs text-[var(--ml-color-neutral-600)] leading-relaxed mb-4">Steppers multi-étapes, sélecteurs, zones de téléversement et validation.</p>
+          <div class="flex items-center gap-2 text-xs font-bold text-[var(--ml-color-river-700)]">
+            <span class="w-5 h-5 rounded-full bg-[var(--ml-color-river-600)] text-white text-[10px] flex items-center justify-center">1</span>
+            <span class="h-0.5 bg-[var(--ml-color-river-300)] flex-1"></span>
+            <span class="w-5 h-5 rounded-full bg-[var(--ml-color-mandingue-orange)] text-white text-[10px] flex items-center justify-center">2</span>
+            <span class="h-0.5 bg-stone-200 flex-1"></span>
+            <span class="w-5 h-5 rounded-full bg-stone-200 text-stone-600 text-[10px] flex items-center justify-center">3</span>
+          </div>
+        </div>
       </div>
     </div>
   </section>
 
-  <section class="py-16 bg-white border-b border-[var(--ml-color-neutral-200)]">
-    <div class="ml-container max-w-4xl mx-auto px-4">
-      <div class="text-center mb-10">
-        <h2 class="text-2xl md:text-3xl font-black text-[var(--ml-color-neutral-900)] font-title">Foire Aux Questions (FAQ)</h2>
-        <p class="text-[var(--ml-color-neutral-600)] mt-1.5 text-sm">Réponses rapides aux interrogations récurrentes des citoyens et usagers.</p>
+  <!-- SECTION 3: EXEMPLES DE PAGES DE DÉMO -->
+  <section id="services" class="py-16 bg-white border-b border-[var(--ml-color-neutral-200)]">
+    <div class="ml-container max-w-6xl mx-auto px-4">
+      <div class="text-center mb-12 max-w-2xl mx-auto">
+        <span class="text-xs font-bold uppercase tracking-wider text-[var(--ml-color-river-700)] bg-[var(--ml-color-river-100)] px-3.5 py-1 rounded-full mb-3 inline-block border border-[var(--ml-color-river-200)]">
+          Modèles de Pages Démo
+        </span>
+        <h2 class="text-3xl font-black text-[var(--ml-color-neutral-900)] font-title">Catalogue de Démarches Modèle</h2>
+        <p class="text-[var(--ml-color-neutral-600)] mt-2 text-sm">Exemples réels de fiches de démarches créées avec les cartes et les tokens du DSML.</p>
       </div>
 
-      <div class="space-y-4">
-        {faqPreview.map((item) => (
-          <div class="bg-[var(--ml-color-river-50)]/40 p-6 border border-[var(--ml-color-neutral-200)]/80 rounded-2xl hover:bg-white transition-colors">
-            <h3 class="text-base font-bold text-[var(--ml-color-neutral-900)] font-title m-0 mb-2">{item.question}</h3>
-            <p class="text-[var(--ml-color-neutral-600)] text-sm m-0 leading-relaxed">{item.answer}</p>
-          </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {featuredServices.map((service) => (
+          <ServiceCard {...service} />
         ))}
       </div>
 
-      <div class="text-center mt-8">
-        <a href="/faq" class="inline-flex items-center gap-2 px-6 py-3 bg-[var(--ml-color-mandingue-orange)] hover:bg-[var(--ml-color-mandingue-700)] text-white font-bold rounded-xl transition-all shadow-sm no-underline text-sm">
-          <span>Consulter l'ensemble de la FAQ</span>
+      <div class="text-center mt-10">
+        <a href="/services" class="inline-flex items-center gap-2 px-6 py-3 bg-[var(--ml-color-river-700)] hover:bg-[var(--ml-color-river-800)] text-white font-bold rounded-xl transition-all shadow-sm no-underline text-sm">
+          <span>Consulter toutes les démarches exemples</span>
           <span>&rarr;</span>
         </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 4: ACTUALITÉS DÉMO & APPEL À L'ACTION -->
+  <section class="py-16 bg-[var(--ml-color-bogolan-kaolin)]/50 border-b border-[var(--ml-color-neutral-200)]">
+    <div class="ml-container max-w-6xl mx-auto px-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+        <div>
+          <span class="text-xs font-bold uppercase tracking-wider text-[var(--ml-color-mandingue-700)] bg-[var(--ml-color-mandingue-50)] px-3 py-1 rounded-full mb-3 inline-block border border-[var(--ml-color-mandingue-100)]">
+            Communication Institutionnelle
+          </span>
+          <h2 class="text-2xl md:text-3xl font-black text-[var(--ml-color-neutral-900)] font-title mb-4">
+            Modèles d'Actualités & Communiqués
+          </h2>
+          <p class="text-sm text-[var(--ml-color-neutral-600)] leading-relaxed mb-6">
+            Intégrez des fils d'actualités avec filtrage par thèmes, badges officiels et mise en page responsive pour informer rapidement vos usagers.
+          </p>
+          <a href="/actualites" class="inline-flex items-center gap-2 px-6 py-3 bg-[var(--ml-color-mandingue-orange)] hover:bg-[var(--ml-color-mandingue-700)] text-white font-bold rounded-xl transition-all shadow-sm no-underline text-xs">
+            <span>Voir la démo Actualités</span>
+            <span>&rarr;</span>
+          </a>
+        </div>
+
+        <div class="space-y-4">
+          {newsPreview.map((item) => (
+            <article class="bg-white border border-[var(--ml-color-neutral-200)] rounded-2xl p-6 hover:shadow-md transition-shadow">
+              <div class="flex justify-between items-center text-xs text-[var(--ml-color-neutral-500)] mb-2">
+                <span class="bg-[var(--ml-color-mandingue-50)] text-[var(--ml-color-mandingue-900)] font-bold px-2.5 py-0.5 rounded-md border border-[var(--ml-color-mandingue-100)]">{item.category}</span>
+                <time>{item.date}</time>
+              </div>
+              <h3 class="text-base font-extrabold text-[var(--ml-color-neutral-900)] font-title mb-2">
+                <a href={item.href} class="hover:text-[var(--ml-color-river-700)] text-[var(--ml-color-neutral-900)] no-underline">{item.title}</a>
+              </h3>
+              <p class="text-[var(--ml-color-neutral-600)] text-xs leading-relaxed">{item.excerpt}</p>
+            </article>
+          ))}
+        </div>
       </div>
     </div>
   </section>

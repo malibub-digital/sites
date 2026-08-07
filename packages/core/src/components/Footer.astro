@@ -1,7 +1,7 @@
 ---
-import CollectionAddButton from './CollectionAddButton.astro';
-import CollectionItemControls from './CollectionItemControls.astro';
-import type { FooterColumn } from '../schemas/index.js';
+import CollectionAddButton from "./CollectionAddButton.astro";
+import CollectionItemControls from "./CollectionItemControls.astro";
+import type { FooterColumn } from "../schemas/index.js";
 
 interface Props {
   institution?: string;
@@ -15,11 +15,11 @@ interface Props {
 }
 
 const {
-  institution = 'RÉPUBLIQUE DU MALI',
+  institution = "RÉPUBLIQUE DU MALI",
   contact = {
-    email: 'contact@sitesfaciles.gouv.ml',
-    phone: '+223 20 22 00 00',
-    address: 'Cité Administrative, Bâtiment Numérique, Bamako, République du Mali',
+    email: "contact@malihub.digital",
+    phone: "+223 20 22 00 00",
+    address: "Adresse à renseigner, Bamako, République du Mali",
   },
   footerLinks = [],
 } = Astro.props;
@@ -36,44 +36,70 @@ const {
             <div class="red"></div>
           </div>
           <div class="brand-text">
-            <div class="brand-title" data-cms-bind="siteConfig.institution">{institution}</div>
+            <div class="brand-title" data-cms-bind="siteConfig.institution">
+              {institution}
+            </div>
             <div class="brand-motto">Un Peuple – Un But – Une Foi</div>
           </div>
         </div>
         <div class="footer-coords">
           <strong>Sites Faciles Mali</strong><br />
-          <span data-cms-bind="siteConfig.contact.address">{contact.address}</span><br />
-          <span>Email : <a href={`mailto:${contact.email}`} data-cms-bind="siteConfig.contact.email">{contact.email}</a></span><br />
-          <span>Tél : <span data-cms-bind="siteConfig.contact.phone">{contact.phone}</span></span>
+          <span data-cms-bind="siteConfig.contact.address"
+            >{contact.address}</span
+          ><br />
+          <span
+            >Email : <a
+              href={`mailto:${contact.email}`}
+              data-cms-bind="siteConfig.contact.email">{contact.email}</a
+            ></span
+          ><br />
+          <span
+            >Tél : <span data-cms-bind="siteConfig.contact.phone"
+              >{contact.phone}</span
+            ></span
+          >
         </div>
       </div>
 
       <div class="footer-links-container">
-        {footerLinks.map((col, colIndex) => (
-          <nav class="footer-col" aria-label={col.colTitle} data-cms-collection={`siteConfig.footerLinks.[${colIndex}].links`}>
-            <div class="footer-col-title" data-cms-bind={`siteConfig.footerLinks.[${colIndex}].colTitle`}>{col.colTitle}</div>
-            {col.links.map((link, linkIndex) => (
-              <div class="footer-link-item" data-cms-item-index={linkIndex}>
-                <a
-                  href={link.href}
-                  data-cms-bind={`siteConfig.footerLinks.[${colIndex}].links.[${linkIndex}].label`}
-                  data-cms-bind-href={`siteConfig.footerLinks.[${colIndex}].links.[${linkIndex}].href`}
-                >{link.label}</a>
-                <CollectionItemControls
-                  collectionPath={`siteConfig.footerLinks.[${colIndex}].links`}
-                  index={linkIndex}
-                  isFirst={linkIndex === 0}
-                  isLast={linkIndex === col.links.length - 1}
-                />
+        {
+          footerLinks.map((col, colIndex) => (
+            <nav
+              class="footer-col"
+              aria-label={col.colTitle}
+              data-cms-collection={`siteConfig.footerLinks.[${colIndex}].links`}
+            >
+              <div
+                class="footer-col-title"
+                data-cms-bind={`siteConfig.footerLinks.[${colIndex}].colTitle`}
+              >
+                {col.colTitle}
               </div>
-            ))}
-            <CollectionAddButton
-              collectionPath={`siteConfig.footerLinks.[${colIndex}].links`}
-              label="Ajouter un lien"
-              defaultData={{ label: "Nouveau lien", href: "/" }}
-            />
-          </nav>
-        ))}
+              {col.links.map((link, linkIndex) => (
+                <div class="footer-link-item" data-cms-item-index={linkIndex}>
+                  <a
+                    href={link.href}
+                    data-cms-bind={`siteConfig.footerLinks.[${colIndex}].links.[${linkIndex}].label`}
+                    data-cms-bind-href={`siteConfig.footerLinks.[${colIndex}].links.[${linkIndex}].href`}
+                  >
+                    {link.label}
+                  </a>
+                  <CollectionItemControls
+                    collectionPath={`siteConfig.footerLinks.[${colIndex}].links`}
+                    index={linkIndex}
+                    isFirst={linkIndex === 0}
+                    isLast={linkIndex === col.links.length - 1}
+                  />
+                </div>
+              ))}
+              <CollectionAddButton
+                collectionPath={`siteConfig.footerLinks.[${colIndex}].links`}
+                label="Ajouter un lien"
+                defaultData={{ label: "Nouveau lien", href: "/" }}
+              />
+            </nav>
+          ))
+        }
       </div>
     </div>
 
@@ -83,7 +109,8 @@ const {
         <a href="/accessibilite">Accessibilité : partiellement conforme</a>
       </div>
       <div class="footer-credits">
-        © {new Date().getFullYear()} République du Mali — Propulsé par Sites Faciles Mali & DSML
+        © {new Date().getFullYear()} République du Mali — Propulsé par Sites Faciles
+        Mali & DSML
       </div>
     </div>
   </div>

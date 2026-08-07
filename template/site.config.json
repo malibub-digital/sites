@@ -1,13 +1,13 @@
 {
   "title": "Sites Faciles Mali",
-  "tagline": "Plateforme officielle de création de sites web institutionnels maliens",
-  "description": "Portail modèle et kit de démarrage réutilisable pour la publication rapide de sites web conformes au Design System Mali (DSML).",
+  "tagline": "Plateforme & Kit de démarrage pour la création de sites web conformes au DSML",
+  "description": "Portail d'exemples et kit de composants réutilisables permettant aux institutions et organismes publics de publier rapidement des sites web modernes et conformes au Design System Mali (DSML).",
   "institution": "RÉPUBLIQUE DU MALI",
   "logoUrl": "/images/logo-mali.svg",
   "contact": {
-    "email": "contact@sitesfaciles.gouv.ml",
+    "email": "[EMAIL_ADDRESS]",
     "phone": "+223 20 22 00 00",
-    "address": "Cité Administrative, Bâtiment Numérique, Bamako, République du Mali",
+    "address": "Adresse à renseigner, Bamako, République du Mali",
     "hours": "Du Lundi au Vendredi de 8h00 à 16h00"
   },
   "socialLinks": [
@@ -23,65 +23,65 @@
   "navigation": {
     "links": [
       { "label": "Accueil", "href": "/" },
-      { "label": "Démarches & Services", "href": "/services" },
-      { "label": "Actualités", "href": "/actualites" },
+      { "label": "Composants DSML", "href": "/composants" },
+      { "label": "Exemple Démarches", "href": "/services" },
+      { "label": "Guide & Documentation", "href": "/guide" },
       { "label": "FAQ", "href": "/faq" },
       { "label": "Contact", "href": "/contact" }
     ]
   },
   "footerLinks": [
     {
-      "colTitle": "Services",
+      "colTitle": "Plateforme",
       "links": [
-        { "label": "Carte consulaire", "href": "/services/carte-consulaire" },
-        { "label": "Passeport biométrique", "href": "/services/passeport" },
-        { "label": "État civil & Actes", "href": "/services/etat-civil" },
-        { "label": "Insertion APEJ", "href": "/services/emploi-apej" }
+        { "label": "Composants DSML", "href": "/composants" },
+        { "label": "Guide d'utilisation", "href": "/guide" },
+        { "label": "Foire Aux Questions", "href": "/faq" },
+        { "label": "Administration CMS", "href": "/admin" }
       ]
     },
     {
-      "colTitle": "Navigation",
+      "colTitle": "Démonstrations",
       "links": [
-        { "label": "Accueil", "href": "/" },
-        { "label": "Toutes les démarches", "href": "/services" },
+        { "label": "Catalogue de démarches", "href": "/services" },
         { "label": "Actualités & Communiqués", "href": "/actualites" },
-        { "label": "Foire aux questions", "href": "/faq" },
-        { "label": "Contact & Horaires", "href": "/contact" }
+        { "label": "Formulaires administratifs", "href": "/composants#formulaires" },
+        { "label": "Page de confirmation", "href": "/contact-succes" }
       ]
     },
     {
-      "colTitle": "Informations",
+      "colTitle": "Conformité & Support",
       "links": [
         { "label": "Mentions légales", "href": "/mentions-legales" },
         { "label": "Accessibilité : partiellement conforme", "href": "/accessibilite" },
-        { "label": "Assistance & Support", "href": "/contact" }
+        { "label": "Support & Assistance", "href": "/contact" }
       ]
     }
   ],
   "emergencyNotice": {
     "enabled": false,
     "type": "info",
-    "message": "Information importante en cours de diffusion.",
+    "message": "Bandeau d'information prioritaire désactivé par défaut. Activable depuis l'administration.",
     "ctaLabel": "En savoir plus",
-    "ctaHref": "/actualites"
+    "ctaHref": "/guide"
   },
   "header": "RÉPUBLIQUE DU MALI  Sites Faciles Mali",
   "faq": [
     {
-      "question": "Qu'est-ce que la plateforme Sites Faciles Mali ?",
-      "answer": "Sites Faciles Mali est un kit de démarrage et un socle technique unifié permettant aux institutions publiques maliennes de déployer des sites web accessibles, sécurisés et conformes au Design System Mali (DSML)."
+      "question": "Qu'est-ce que Sites Faciles Mali ?",
+      "answer": "Sites Faciles Mali est une solution clé en main combinant un kit de démarrage Astro et la charte graphique DSML. Il permet de déployer un site web institutionnel conforme, responsive et éditable directement depuis le navigateur sans compétences techniques avancées."
     },
     {
-      "question": "Comment éditer le contenu d'un site en ligne ?",
-      "answer": "Connectez-vous via l'espace d'administration (/admin). Une fois authentifié, activez le Mode Édition sur le bandeau supérieur pour modifier les textes inline ou ajouter/supprimer des éléments."
+      "question": "Comment éditer et personnaliser le contenu ?",
+      "answer": "Connectez-vous via l'Espace Administration (/admin). Activez ensuite le Mode Édition sur la barre supérieure pour modifier directement les textes sur la page (champs, titres, boutons) ou gérer les listes."
     },
     {
-      "question": "Nouvelle question posée ?",
-      "answer": "Explication et réponse de l'administration."
+      "question": "Comment fonctionne la publication et le déploiement ?",
+      "answer": "Les modifications effectuées sur le site sont enregistrées instantanément sous forme de commits dans le dépôt Git configuré (GitHub, GitLab, Dokploy), ce qui déclenche automatiquement le déploiement de la nouvelle version."
     },
     {
-      "question": "Comment les modifications sont-elles enregistrées ?",
-      "answer": "Les modifications sont enregistrées localement sur le disque puis publiées sur le dépôt Git de l'institution, déclenchant automatiquement le déploiement continu Dokploy."
+      "question": "Comment adapter Sites Faciles à un autre ministère ou organisme ?",
+      "answer": "Modifiez simplement le fichier site.config.json pour mettre à jour le nom de l'institution, le logo, le titre du site, la navigation et les liens de contact. L'ensemble de la charte graphique s'adapte automatiquement."
     }
   ],
   "meta": {}

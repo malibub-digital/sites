@@ -1,21 +1,21 @@
 {
   "hero": {
-    "title": "Bienvenue sur Sites Faciles Mali",
-    "subtitle": "Démarches en ligne, informations officielles et services publics numériques à portée de clic.",
-    "badge": "Service Officiel",
+    "title": "Créez des sites institutionnels conformes au DSML",
+    "subtitle": "Kit de démarrage, composants prêts à l'emploi et moteur CMS d'édition visuelle en temps réel pour le Mali.",
+    "badge": "Design System Mali (DSML)",
     "primaryAction": {
-      "label": "Accéder aux démarches",
-      "href": "/services"
+      "label": "Explorer les composants",
+      "href": "/composants"
     },
     "secondaryAction": {
-      "label": "Nous contacter",
-      "href": "/contact"
+      "label": "Guide & Prise en main",
+      "href": "/guide"
     }
   },
   "quickLinks": [
-    { "label": "🟢 Vert Officiel", "href": "/themes" },
-    { "label": "🟧 Orange Mandingue", "href": "/themes" },
-    { "label": "🔵 Bleu Fleuve", "href": "/themes" },
-    { "label": "✨ Motifs & Tous (9) →", "href": "/themes" }
+    { "label": "🎨 Palettes & Couleurs", "href": "/composants#palettes" },
+    { "label": "🧩 Composants UI", "href": "/composants#boutons" },
+    { "label": "📝 Formulaires DSML", "href": "/composants#formulaires" },
+    { "label": "📄 Exemple de Démarches →", "href": "/services" }
   ]
 }

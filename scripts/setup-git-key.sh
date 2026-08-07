@@ -16,7 +16,7 @@ if [ -f "$KEY_PATH" ]; then
 else
   echo "🔑 Génération d'une nouvelle clé SSH Ed25519 sans passphrase..."
   mkdir -p "${HOME}/.ssh"
-  ssh-keygen -t ed25519 -C "sites-faciles-cms@gouv.ml" -f "$KEY_PATH" -N ""
+  ssh-keygen -t ed25519 -C "sites-faciles-cms@malihub.digital" -f "$KEY_PATH" -N ""
   echo "✔ Clé SSH générée avec succès !"
 fi
 
