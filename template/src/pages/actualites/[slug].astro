@@ -2,6 +2,7 @@
 import BaseLayout from '@malihub/sites-core/layouts/BaseLayout.astro';
 import Header from '@malihub/sites-core/components/Header.astro';
 import Footer from '@malihub/sites-core/components/Footer.astro';
+import CmsImageField from '@malihub/sites-core/components/CmsImageField.astro';
 import siteConfig from '../../../site.config.json';
 import fs from 'fs';
 import path from 'path';
@@ -85,13 +86,16 @@ const cmsBase = `src/content/actualites/${targetSlug}.md`;
           {article.title}
         </h1>
 
-        {article.image && (
-          <div class="mb-8 rounded-2xl overflow-hidden max-h-[400px]">
-            <img src={article.image} alt={article.title} class="w-full h-full object-cover" data-cms-bind={`${cmsBase}::image`} />
-          </div>
-        )}
+        <div class="mb-8 rounded-2xl overflow-hidden max-h-[400px]">
+          <CmsImageField
+            bind={`${cmsBase}::image`}
+            src={article.image || '/images/actualites/hero.png'}
+            alt={article.title}
+            imgClass="w-full h-72 md:h-96 object-cover rounded-2xl"
+          />
+        </div>
 
-        <div class="prose max-w-none" set:html={article.content} data-cms-bind={`${cmsBase}::content`} />
+        <div class="prose max-w-none whitespace-pre-line leading-relaxed text-[var(--ml-color-neutral-800)]" set:html={article.content} data-cms-bind={`${cmsBase}::content`} data-cms-type="markdown" />
 
         <div class="mt-10 pt-6 border-t border-[var(--ml-color-neutral-200)] flex justify-between items-center">
           <a href="/actualites" class="text-xs font-bold text-[var(--ml-color-green-700)] hover:text-[var(--ml-color-green-800)] inline-flex items-center gap-2 no-underline">

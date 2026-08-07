@@ -772,12 +772,14 @@ const gitEnabled =
     const errorModalDone = document.getElementById("ml-cms-error-done");
 
     const createContentModal = document.getElementById("ml-cms-create-content-modal");
-    const createContentTitle = document.getElementById("ml-create-content-title") as HTMLInputElement | null;
-    const createContentCategory = document.getElementById("ml-create-content-category") as HTMLInputElement | null;
+    const createContentTitle = document.getElementById("ml-create-content-title-input") as HTMLInputElement | null;
+    const createContentSlug = document.getElementById("ml-create-content-slug-input") as HTMLInputElement | null;
+    const createContentCategory = document.getElementById("ml-create-content-category-input") as HTMLInputElement | null;
+    const createContentExcerpt = document.getElementById("ml-create-content-excerpt-input") as HTMLTextAreaElement | null;
     const createContentCollection = document.getElementById("ml-create-content-collection") as HTMLInputElement | null;
-    const createContentClose = document.getElementById("ml-cms-create-content-close");
-    const createContentCancel = document.getElementById("ml-cms-create-content-cancel");
-    const createContentSubmit = document.getElementById("ml-cms-create-content-submit");
+    const createContentClose = document.getElementById("ml-create-content-close");
+    const createContentCancel = document.getElementById("ml-create-content-cancel");
+    const createContentSubmit = document.getElementById("ml-create-content-submit");
 
     const confirmDeleteModal = document.getElementById("ml-cms-confirm-delete-modal");
     const confirmDeleteText = document.getElementById("ml-cms-confirm-delete-text");
@@ -890,7 +892,9 @@ const gitEnabled =
     function openCreateContentModal(collectionName: string) {
       if (createContentCollection) createContentCollection.value = collectionName;
       if (createContentTitle) createContentTitle.value = "";
+      if (createContentSlug) createContentSlug.value = "";
       if (createContentCategory) createContentCategory.value = "";
+      if (createContentExcerpt) createContentExcerpt.value = "";
       createContentModal?.classList.remove("hidden");
     }
 
@@ -1498,24 +1502,112 @@ const gitEnabled =
     createContentSubmit?.addEventListener("click", () => {
       const collection = createContentCollection?.value || "actualites";
       const title = createContentTitle?.value.trim() || "Nouveau document";
+      const customSlug = createContentSlug?.value.trim();
       const category = createContentCategory?.value.trim() || "Général";
-      const slug = title
+      const excerpt = createContentExcerpt?.value.trim() || "";
+      const generatedSlug = title
         .toLowerCase()
         .normalize("NFD")
         .replace(/[\u0300-\u036f]/g, "")
         .replace(/[^a-z0-9]+/g, "-")
         .replace(/(^-|-$)/g, "");
 
+      const slug = customSlug || generatedSlug || "nouveau-document";
+
       addOperation({
         type: "CREATE_CONTENT_FILE",
         collection,
-        slug: slug || "nouveau-document",
-        frontmatter: { title, category, date: new Date().toISOString().split("T")[0] },
-        content: `# ${title}\n\nSaisissez le contenu du document ici.`,
+        slug,
+        frontmatter: {
+          title,
+          date: new Date().toISOString().split("T")[0],
+          category,
+          author: "Rédaction",
+          excerpt,
+          cardVariant: "standard",
+          featured: false,
+        },
+        content: `# ${title}\n\n${excerpt ? excerpt + '\n\n' : ''}Saisissez le contenu du document ici.`,
       });
 
+      const cmsBase = `src/content/actualites/${slug}.md`;
+      const dateStr = new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+
+      // Inverser dynamiquement l'ajout d'élément dans src/data/pages/news.json::items si présent sur la page
+      const newsCollectionPath = 'src/data/pages/news.json::items';
+      const collectionContainer = document.querySelector(`[data-cms-collection="${newsCollectionPath}"]`);
+      if (collectionContainer) {
+        addOperation({
+          type: "ADD_ARRAY_ITEM",
+          arrayPath: newsCollectionPath,
+          defaultData: { slug },
+        });
+
+        const existingItems = collectionContainer.querySelectorAll('[data-cms-item-index]');
+        const newIndex = existingItems.length;
+
+        const newArticle = document.createElement('article');
+        newArticle.className = "rounded-2xl overflow-hidden transition-all duration-300 flex flex-col justify-between hover:-translate-y-1.5 relative group bg-white border border-[var(--ml-color-neutral-200)] hover:border-[var(--ml-color-green-300)] shadow-sm hover:shadow-md";
+        newArticle.setAttribute('data-cms-item-index', String(newIndex));
+        newArticle.setAttribute('data-cms-file', cmsBase);
+
+        newArticle.innerHTML = `
+          <div class="p-6 flex flex-col justify-between flex-1">
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-3">
+                <span class="text-[11px] uppercase tracking-wider px-3 py-1 rounded-full bg-[var(--ml-color-green-100)] text-[var(--ml-color-green-800)] font-bold" data-cms-bind="${cmsBase}::category">
+                  ${category}
+                </span>
+                <div class="ml-cms-item-controls-toolbar" data-cms-item-toolbar>
+                  <button type="button" class="ml-cms-item-btn ml-cms-item-up" title="Monter" data-action="up" data-collection-path="${newsCollectionPath}" data-index="${newIndex}">
+                    <i class="ml-icon-arrow-up-line ml-icon--xs"></i>
+                  </button>
+                  <button type="button" class="ml-cms-item-btn ml-cms-item-down" title="Descendre" data-action="down" data-collection-path="${newsCollectionPath}" data-index="${newIndex}" disabled>
+                    <i class="ml-icon-arrow-down-line ml-icon--xs"></i>
+                  </button>
+                  <button type="button" class="ml-cms-item-btn ml-cms-item-delete" title="Supprimer" data-action="delete-array" data-collection-path="${newsCollectionPath}" data-index="${newIndex}">
+                    <i class="ml-icon-delete-bin-line ml-icon--xs"></i>
+                  </button>
+                </div>
+              </div>
+              
+              <div class="flex items-center gap-2 text-xs text-[var(--ml-color-neutral-500)] mb-3">
+                <time data-cms-bind="${cmsBase}::date">${dateStr}</time>
+                <span>•</span>
+                <span data-cms-bind="${cmsBase}::author">Par Rédaction</span>
+              </div>
+
+              <h2 class="text-lg md:text-xl font-extrabold text-[var(--ml-color-neutral-900)] font-title mb-3 leading-snug">
+                <a href="/actualites/${slug}" class="hover:text-[var(--ml-color-green-700)] text-[var(--ml-color-neutral-900)] no-underline transition-colors" data-cms-bind="${cmsBase}::title">
+                  ${title}
+                </a>
+              </h2>
+
+              <p class="text-xs md:text-sm text-[var(--ml-color-neutral-600)] leading-relaxed mb-6" data-cms-bind="${cmsBase}::excerpt">
+                ${excerpt || "Saisissez la description de cet article."}
+              </p>
+            </div>
+
+            <div class="pt-4 border-t border-[var(--ml-color-neutral-200)]/60 flex items-center justify-between">
+              <a href="/actualites/${slug}" class="text-xs font-bold text-[var(--ml-color-green-700)] hover:text-[var(--ml-color-green-800)] inline-flex items-center gap-1.5 group no-underline">
+                <span>Lire l'article</span>
+                <span class="transition-transform group-hover:translate-x-1">&rarr;</span>
+              </a>
+            </div>
+          </div>
+        `;
+
+        collectionContainer.appendChild(newArticle);
+
+        if (newIndex > 0) {
+          const prevItem = existingItems[newIndex - 1];
+          const prevDownBtn = prevItem?.querySelector('.ml-cms-item-down') as HTMLButtonElement | null;
+          if (prevDownBtn) prevDownBtn.disabled = false;
+        }
+      }
+
       closeCreateContentModal();
-      notify(`Document "${title}" prêt à être créé. N'oubliez pas d'enregistrer.`, "info");
+      notify(`Article "${title}" créé ! Cliquez sur "Enregistrer" pour valider la création du fichier sur le serveur.`, "info");
     });
 
     confirmDeleteClose?.addEventListener("click", closeConfirmDeleteModal);
@@ -1639,6 +1731,26 @@ const gitEnabled =
         updateDraft(bindPath, htmlContent);
       }
       closePopover();
+    });
+
+    document.querySelectorAll(".ml-tiptap-btn").forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        e.preventDefault();
+        const action = btn.getAttribute("data-action");
+        if (!action || !tiptapContainer) return;
+        tiptapContainer.focus();
+        if (action === "bold") document.execCommand("bold");
+        else if (action === "italic") document.execCommand("italic");
+        else if (action === "strike") document.execCommand("strikeThrough");
+        else if (action === "h1") document.execCommand("formatBlock", false, "<h1>");
+        else if (action === "h2") document.execCommand("formatBlock", false, "<h2>");
+        else if (action === "h3") document.execCommand("formatBlock", false, "<h3>");
+        else if (action === "bulletList") document.execCommand("insertUnorderedList");
+        else if (action === "orderedList") document.execCommand("insertOrderedList");
+        else if (action === "blockquote") document.execCommand("formatBlock", false, "<blockquote>");
+        else if (action === "undo") document.execCommand("undo");
+        else if (action === "redo") document.execCommand("redo");
+      });
     });
 
     popoverReset?.addEventListener("click", resetElement);
