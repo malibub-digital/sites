@@ -1,11 +1,14 @@
 ---
-title: "Campagne de distribution et de retrait des cartes consulaires"
-date: "02 Juillet 2026"
-category: "Communiqué"
-author: "Consulat Général"
-excerpt: "Les usagers ayant effectué leur demande d'immatriculation consulaire avant le 1er juin 2026 sont invités à se présenter au guichet pour le retrait de leur carte munis du récépissé original."
-image: "/images/actualites/hero.png"
-cardVariant: "accent"
+title: Campagne de test
+date: 02 Juillet 2026
+category: Communiqué
+author: Consulat Général
+excerpt: >-
+  Les usagers ayant effectué leur demande d'immatriculation consulaire avant le
+  1er juin 2026 sont invités à se présenter au guichet pour le retrait de leur
+  carte munis du récépissé original.
+image: 'https://www.worldhistory.org/uploads/images/10144.jpg?v=1777831765-0'
+cardVariant: accent
 featured: false
 ---
 
