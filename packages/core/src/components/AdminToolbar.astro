@@ -1303,10 +1303,12 @@ const gitEnabled =
       ) as HTMLElement | null;
       if (!target) return;
 
+      const cmsType = target.getAttribute("data-cms-type") || (target.tagName === "IMG" ? "image" : "text");
       if (
+        cmsType !== "markdown" &&
         target.children.length > 0 &&
         Array.from(target.children).some(
-          (child) => !child.classList.contains("ml-tricolor-bar"),
+          (child) => !child.classList.contains("ml-tricolor-bar") && !child.classList.contains("ml-cms-image-overlay-btn"),
         )
       ) {
         return;
@@ -1784,15 +1786,26 @@ const gitEnabled =
       if (e.key === "Escape") {
         if (popover && !popover.classList.contains("hidden")) {
           closePopover();
-        } else if (createContentModal && !createContentModal.classList.contains("hidden")) {
+        }
+        if (imageModal && !imageModal.classList.contains("hidden")) {
+          closePopover();
+        }
+        if (markdownModal && !markdownModal.classList.contains("hidden")) {
+          closePopover();
+        }
+        if (createContentModal && !createContentModal.classList.contains("hidden")) {
           closeCreateContentModal();
-        } else if (confirmDeleteModal && !confirmDeleteModal.classList.contains("hidden")) {
+        }
+        if (confirmDeleteModal && !confirmDeleteModal.classList.contains("hidden")) {
           closeConfirmDeleteModal();
-        } else if (draftsModal && !draftsModal.classList.contains("hidden")) {
+        }
+        if (draftsModal && !draftsModal.classList.contains("hidden")) {
           closeDraftsModal();
-        } else if (resetModal && !resetModal.classList.contains("hidden")) {
+        }
+        if (resetModal && !resetModal.classList.contains("hidden")) {
           closeResetModal();
-        } else if (errorModal && !errorModal.classList.contains("hidden")) {
+        }
+        if (errorModal && !errorModal.classList.contains("hidden")) {
           closeErrorModal();
         }
       }
