@@ -1,7 +1,7 @@
 {
   "hero": {
-    "title": "Créez des sites institutionnels conformes au DSML",
-    "subtitle": "Kit de démarrage, composants prêts à l'emploi et moteur CMS d'édition visuelle en temps réel pour le Mali.",
+    "title": "Créez des sites institutionnels conformes à la charte graphique de l'État",
+    "subtitle": "Kit de démarrage, composants prêts à l'emploi et moteur d'édition visuelle en temps réel pour toutes les administrations du Mali.",
     "badge": "Design System Mali (DSML)",
     "primaryAction": {
       "label": "Explorer les composants",
@@ -15,13 +15,13 @@
   "quickLinks": [
     { "label": "🎨 Palettes & Couleurs", "href": "/composants#palettes" },
     { "label": "🧩 Composants UI", "href": "/composants#boutons" },
-    { "label": "📝 Formulaires DSML", "href": "/composants#formulaires" },
+    { "label": "📝 Formulaires administratifs", "href": "/composants#formulaires" },
     { "label": "📄 Exemple de Démarches →", "href": "/services" }
   ],
   "whyUs": {
     "badge": "Faciliter la Création Web Publique",
     "title": "Pourquoi Utiliser Sites Faciles ?",
-    "subtitle": "Sites Faciles combine la puissance du Design System Mali (DSML) avec un moteur d'édition visuelle en temps réel pour déployer des sites conformes sans effort."
+    "subtitle": "Sites Faciles combine le charte officielle de l'État (Design System Mali — DSML) avec un moteur d'édition visuelle en temps réel pour déployer des sites conformes sans effort."
   },
   "servicesSection": {
     "badge": "Portail des Démarches",

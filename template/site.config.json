@@ -1,7 +1,7 @@
 {
   "title": "Sites Faciles Mali",
-  "tagline": "Plateforme & Kit de démarrage pour la création de sites web conformes au DSML",
-  "description": "Portail d'exemples et kit de composants réutilisables permettant aux institutions et organismes publics de publier rapidement des sites web modernes et conformes au Design System Mali (DSML).",
+  "tagline": "Plateforme & Kit de démarrage pour la création de sites web conformes au Design System Mali (DSML)",
+  "description": "Portail d'exemples et kit de composants réutilisables permettant aux institutions et organismes publics de publier rapidement des sites web modernes et conformes au charte graphique officielle de l'État malien (Design System Mali - DSML).",
   "institution": "RÉPUBLIQUE DU MALI",
   "logoUrl": "/images/logo-mali.svg",
   "contact": {
