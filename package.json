@@ -8,6 +8,11 @@
   ],
   "scripts": {
     "dev": "npm run dev --workspace=template",
-    "build": "npm run build --workspaces --if-present"
+    "build:llms": "node scripts/generate-llms.js",
+    "build": "npm run build:llms && npm run build --workspaces --if-present",
+    "publish:core": "npm publish --access public --workspace=packages/core",
+    "release": "node scripts/release.js"
   }
 }
+
+

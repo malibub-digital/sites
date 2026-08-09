@@ -147,7 +147,7 @@ import siteConfig from "../../site.config.json";
           </ol>
         </section>
 
-        <!-- 3. Configuration d'une nouvelle institution -->
+        <!-- 3. Configuration & Guide Développeur -->
         <section
           class="bg-white p-8 rounded-3xl border border-[var(--ml-color-neutral-200)] shadow-sm"
         >
@@ -159,34 +159,135 @@ import siteConfig from "../../site.config.json";
             <h2
               class="text-xl font-extrabold text-[var(--ml-color-neutral-900)] font-title m-0"
             >
-              Déployer pour une nouvelle Institution
+              Guide Développeur & Méthodes d'Installation
+            </h2>
+          </div>
+          <p
+            class="text-sm text-[var(--ml-color-neutral-700)] leading-relaxed mb-6"
+          >
+            Pour créer un nouveau portail institutionnel ou intégrer <strong>Sites Faciles Mali</strong>, trois approches adaptées à votre flux de travail sont disponibles :
+          </p>
+
+          <div class="space-y-6">
+            <!-- Méthode 1 -->
+            <div class="border border-[var(--ml-color-neutral-200)] rounded-2xl p-5 bg-[var(--ml-color-neutral-50)]">
+              <h3 class="text-sm font-extrabold text-[var(--ml-color-neutral-900)] mb-2 font-title">
+                Méthode 1 — Cloner / Copier le dépôt complet monorépo
+              </h3>
+              <p class="text-xs text-[var(--ml-color-neutral-700)] mb-3">
+                Pour développer le moteur, modifier les composants cœurs de <code>@malihub/sites-core</code> ou disposer d'un environnement monorépo complet.
+              </p>
+              <div class="bg-[var(--ml-color-neutral-900)] text-white p-4 rounded-xl text-xs font-mono overflow-x-auto">
+                <div class="text-[var(--ml-color-gold-400)] mb-1"># Cloner et installer</div>
+                <div>git clone https://github.com/malibub-digital/sites.git mon-site</div>
+                <div>cd mon-site && npm install</div>
+                <div>npm run dev</div>
+              </div>
+            </div>
+
+            <!-- Méthode 2 -->
+            <div class="border border-[var(--ml-color-neutral-200)] rounded-2xl p-5 bg-[var(--ml-color-neutral-50)]">
+              <h3 class="text-sm font-extrabold text-[var(--ml-color-neutral-900)] mb-2 font-title">
+                Méthode 2 — Copier le dossier <code>template</code> d'amorçage
+              </h3>
+              <p class="text-xs text-[var(--ml-color-neutral-700)] mb-3">
+                Pour démarrer un projet autonome avec toutes les pages d'exemple, les fiches démarches et la configuration CMS préinstallées.
+              </p>
+              <div class="bg-[var(--ml-color-neutral-900)] text-white p-4 rounded-xl text-xs font-mono overflow-x-auto">
+                <div class="text-[var(--ml-color-gold-400)] mb-1"># Copier le template & installer</div>
+                <div>cp -r sites/template mon-nouveau-site</div>
+                <div>cd mon-nouveau-site && npm install</div>
+                <div>npm run dev</div>
+              </div>
+            </div>
+
+            <!-- Méthode 3 -->
+            <div class="border border-[var(--ml-color-neutral-200)] rounded-2xl p-5 bg-[var(--ml-color-neutral-50)]">
+              <h3 class="text-sm font-extrabold text-[var(--ml-color-neutral-900)] mb-2 font-title">
+                Méthode 3 — Installer le package <code>@malihub/sites-core</code> via NPM
+              </h3>
+              <p class="text-xs text-[var(--ml-color-neutral-700)] mb-3">
+                Pour ajouter le moteur CMS et les composants certifiés DSML dans une application Astro existante.
+              </p>
+              <div class="bg-[var(--ml-color-neutral-900)] text-white p-4 rounded-xl text-xs font-mono overflow-x-auto mb-3">
+                <div>npm install @malihub/sites-core @malihub/dsml-core</div>
+              </div>
+              <div class="bg-[var(--ml-color-neutral-900)] text-white p-4 rounded-xl text-xs font-mono overflow-x-auto">
+                <div class="text-[var(--ml-color-mandingue-100)]">---</div>
+                <div class="text-[var(--ml-color-gold-400)]">import &#123; BaseLayout, Header, Footer, Hero, ServiceCard &#125; from '@malihub/sites-core';</div>
+                <div class="text-[var(--ml-color-gold-400)]">import siteConfig from '../site.config.json';</div>
+                <div class="text-[var(--ml-color-mandingue-100)]">---</div>
+                <div class="mt-1">&lt;BaseLayout title=&#123;siteConfig.title&#125;&gt;</div>
+                <div class="pl-4">&lt;Header slot="header" title=&#123;siteConfig.title&#125; institution=&#123;siteConfig.institution&#125; /&gt;</div>
+                <div class="pl-4">&lt;main id="main-content" class="py-12"&gt;</div>
+                <div class="pl-8">&lt;Hero title="Bienvenue" subtitle="Portail Officiel" /&gt;</div>
+                <div class="pl-4">&lt;/main&gt;</div>
+                <div class="pl-4">&lt;Footer slot="footer" institution=&#123;siteConfig.institution&#125; contact=&#123;siteConfig.contact&#125; /&gt;</div>
+                <div>&lt;/BaseLayout&gt;</div>
+              </div>
+            </div>
+
+            <!-- Composants inclus -->
+            <div>
+              <h4 class="text-xs font-bold text-[var(--ml-color-neutral-900)] uppercase tracking-wider mb-2">
+                Composants Cœurs Disponibles dans <code>@malihub/sites-core</code> :
+              </h4>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                <div class="p-2.5 bg-[var(--ml-color-green-50)] rounded-lg border border-[var(--ml-color-green-200)]">
+                  <code>BaseLayout</code> — Layout HTML5 universel DSML + SEO + CMS
+                </div>
+                <div class="p-2.5 bg-[var(--ml-color-green-50)] rounded-lg border border-[var(--ml-color-green-200)]">
+                  <code>Header</code> — En-tête républicain & navigation
+                </div>
+                <div class="p-2.5 bg-[var(--ml-color-green-50)] rounded-lg border border-[var(--ml-color-green-200)]">
+                  <code>Footer</code> — Pied de page institutionnel & liens
+                </div>
+                <div class="p-2.5 bg-[var(--ml-color-green-50)] rounded-lg border border-[var(--ml-color-green-200)]">
+                  <code>Hero</code> — Bannière d'accueil & accès rapide
+                </div>
+                <div class="p-2.5 bg-[var(--ml-color-green-50)] rounded-lg border border-[var(--ml-color-green-200)]">
+                  <code>ServiceCard</code> — Carte de démarche réutilisable
+                </div>
+                <div class="p-2.5 bg-[var(--ml-color-green-50)] rounded-lg border border-[var(--ml-color-green-200)]">
+                  <code>EmergencyBanner</code> — Alerte urgente sticky
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 4. Protocole d'Assistance IA (LLM) -->
+        <section
+          class="bg-white p-8 rounded-3xl border border-[var(--ml-color-neutral-200)] shadow-sm"
+        >
+          <div class="flex items-center gap-3 mb-4">
+            <span
+              class="w-8 h-8 rounded-full bg-[var(--ml-color-indigo-50)] text-[var(--ml-color-indigo-700)] flex items-center justify-center font-bold text-sm border border-[var(--ml-color-indigo-200)]"
+              >4</span
+            >
+            <h2
+              class="text-xl font-extrabold text-[var(--ml-color-neutral-900)] font-title m-0"
+            >
+              Protocole pour Assistants de Code & LLM
             </h2>
           </div>
           <p
             class="text-sm text-[var(--ml-color-neutral-700)] leading-relaxed mb-4"
           >
-            Pour réutiliser ce template pour un ministère, un gouvernorat ou une
-            agence publique :
+            Le projet fournit des directives et des inventaires standards pour alimenter vos assistants de code (Cursor, Windsurf, Copilot, Antigravity...) :
           </p>
-          <div
-            class="bg-[var(--ml-color-neutral-900)] text-white p-4 rounded-xl text-xs overflow-x-auto font-mono mb-4"
+          <ul class="space-y-2 text-xs text-[var(--ml-color-neutral-700)] list-disc pl-5 mb-4">
+            <li><strong>Fichier <code>AI_RULES.md</code> :</strong> Règles d'architecture, découpage des bindings <code>data-cms-bind</code> et configurations d'IDE.</li>
+            <li><strong>Fichier <code>/llms.txt</code> :</strong> Guide standardisé exposé publiquement à la racine du domaine pour tout agent ou LLM externe.</li>
+          </ul>
+          <a
+            href="/llms.txt"
+            target="_blank"
+            class="inline-flex items-center gap-2 text-xs font-bold text-[var(--ml-color-indigo-700)] hover:underline"
           >
-            <div>// Éditer site.config.json</div>
-            <div>&#123;</div>
-            <div class="pl-4">
-              "title": "Ministère de la Transition Numérique",
-            </div>
-            <div class="pl-4">"institution": "RÉPUBLIQUE DU MALI",</div>
-            <div class="pl-4">"logoUrl": "/images/logo-mali.svg",</div>
-            <div class="pl-4">
-              "contact": &#123; "email": "contact@malihub.digital" &#125;
-            </div>
-            <div>&#125;</div>
-          </div>
-          <p class="text-xs text-[var(--ml-color-neutral-600)]">
-            Toutes les pages du site, les menus de navigation et le pied de page
-            s'adapteront automatiquement.
-          </p>
+            <span>Consulter le fichier /llms.txt en direct</span>
+            <span>&rarr;</span>
+          </a>
         </section>
 
         <!-- Call to Action -->
