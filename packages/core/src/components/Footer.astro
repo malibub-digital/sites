@@ -5,6 +5,7 @@ import type { FooterColumn } from "../schemas/index.js";
 
 interface Props {
   institution?: string;
+  partnerLogos?: Array<{ src: string; alt: string; label?: string }>;
   contact?: {
     email: string;
     phone: string;
@@ -16,6 +17,7 @@ interface Props {
 
 const {
   institution = "RÉPUBLIQUE DU MALI",
+  partnerLogos,
   contact = {
     email: "contact@malihub.digital",
     phone: "+223 20 22 00 00",
@@ -29,12 +31,22 @@ const {
   <div class="ml-container">
     <div class="footer-top">
       <div class="footer-brand">
-        <div class="brand-block">
-          <div class="ml-flag" aria-hidden="true">
-            <div class="green"></div>
-            <div class="yellow"></div>
-            <div class="red"></div>
-          </div>
+        <div class="brand-block flex-wrap items-center">
+          {partnerLogos && partnerLogos.length > 0 ? (
+            <div class="flex items-center gap-4 mb-3">
+              {partnerLogos.map((logo) => (
+                <div class="bg-white px-3 py-2 rounded-xl border border-stone-200 shadow-sm flex items-center justify-center">
+                  <img src={logo.src} alt={logo.alt} class="h-9 w-auto object-contain" />
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div class="ml-flag" aria-hidden="true">
+              <div class="green"></div>
+              <div class="yellow"></div>
+              <div class="red"></div>
+            </div>
+          )}
           <div class="brand-text">
             <div class="brand-title" data-cms-bind="siteConfig.institution">
               {institution}
