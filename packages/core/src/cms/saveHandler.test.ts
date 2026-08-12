@@ -126,7 +126,7 @@ describe('processCmsSaveRequest API Handler', () => {
 
     const body = await res.json();
     expect(body.success).toBe(true);
-    expect(body.message).toContain('mis à jour localement');
+    expect(body.message).toContain('updated locally');
   });
 
   it('executes array operations (add, delete, reorder) on site.config.json', async () => {

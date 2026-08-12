@@ -1,2 +1,2 @@
-export { processCmsSaveRequest } from '@git-headless-cms/core';
-export type { CmsSaveOptions, CmsSaveResult } from '@git-headless-cms/core';
+export { processCmsSaveRequest } from '@malihub/git-headless-cms-core';
+export type { CmsSaveOptions, CmsSaveResult } from '@malihub/git-headless-cms-core';

@@ -12,6 +12,7 @@
   "dependencies": {
     "@astrojs/node": "^6.1.0",
     "@malihub/dsml-core": "file:../../dsml/packages/core",
+    "@malihub/git-headless-cms-astro": "file:../../git-headless-cms/packages/astro",
     "@malihub/sites-core": "file:../packages/core",
     "astro": "^3.6.5"
   },

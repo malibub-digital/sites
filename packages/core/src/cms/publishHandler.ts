@@ -1,2 +1,2 @@
-export { processCmsPublishRequest } from '@git-headless-cms/core';
-export type { CmsPublishOptions, CmsPublishResult } from '@git-headless-cms/core';
+export { processCmsPublishRequest } from '@malihub/git-headless-cms-core';
+export type { CmsPublishOptions, CmsPublishResult } from '@malihub/git-headless-cms-core';

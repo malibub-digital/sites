@@ -1,2 +1,2 @@
-export { processCmsUploadRequest } from '@git-headless-cms/core';
-export type { CmsUploadOptions } from '@git-headless-cms/core';
+export { processCmsUploadRequest } from '@malihub/git-headless-cms-core';
+export type { CmsUploadOptions } from '@malihub/git-headless-cms-core';
