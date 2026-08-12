@@ -7,7 +7,7 @@ COPY package.json ./
 COPY packages/core/package.json ./packages/core/
 COPY template/package.json ./template/
 
-# Replace local dsml dependency with NPM package during docker build
+# Replace local dsml and git-headless-cms dependencies with NPM packages during docker build
 RUN node -e " \
   const fs = require('fs'); \
   const pkgs = ['template/package.json', 'packages/core/package.json']; \
@@ -15,6 +15,7 @@ RUN node -e " \
     if (fs.existsSync(p)) { \
       let content = fs.readFileSync(p, 'utf8'); \
       content = content.replace(/\"file:.*?dsml\/packages\/core\"/g, '\"latest\"'); \
+      content = content.replace(/\"file:.*?git-headless-cms\/packages\/[^\"]+\"/g, '\"^0.1.1\"'); \
       fs.writeFileSync(p, content, 'utf8'); \
     } \
   }); \
