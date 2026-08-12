@@ -22,7 +22,7 @@ RUN node -e " \
 "
 
 # Install root dependencies
-RUN npm install
+RUN npm install --legacy-peer-deps
 
 # Copy all source code
 COPY . .
