@@ -1,6 +1,7 @@
 ---
 import CollectionAddButton from "./CollectionAddButton.astro";
 import CollectionItemControls from "./CollectionItemControls.astro";
+import ThemeToggle from "./ThemeToggle.astro";
 import type { FooterColumn } from "../schemas/index.js";
 
 interface Props {
@@ -13,6 +14,7 @@ interface Props {
     hours?: string;
   };
   footerLinks?: FooterColumn[];
+  showThemeToggle?: boolean;
 }
 
 const {
@@ -24,6 +26,7 @@ const {
     address: "Adresse à renseigner, Bamako, République du Mali",
   },
   footerLinks = [],
+  showThemeToggle = true,
 } = Astro.props;
 ---
 
@@ -119,6 +122,11 @@ const {
       <div class="footer-bottom-links">
         <a href="/mentions-legales">Mentions légales</a>
         <a href="/accessibilite">Accessibilité : partiellement conforme</a>
+        {showThemeToggle && (
+          <div class="footer-theme-toggle-wrap">
+            <ThemeToggle id="footer-theme-toggle" class="footer-theme-toggle" showLabel={true} />
+          </div>
+        )}
       </div>
       <div class="footer-credits">
         © {new Date().getFullYear()} République du Mali — Propulsé par Sites Faciles
@@ -136,5 +144,10 @@ const {
   }
   .footer-link-item > a {
     flex: 1;
+  }
+  .footer-theme-toggle-wrap {
+    display: inline-flex;
+    align-items: center;
+    margin-left: 0.5rem;
   }
 </style>

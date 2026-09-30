@@ -18,23 +18,23 @@ const b = (field: string) => cmsBase ? `${cmsBase}::${field}` : undefined;
 
 
 const cardStyles = {
-  standard: 'bg-white border-[var(--ml-color-neutral-200)] hover:border-[var(--ml-color-green-300)] shadow-sm hover:shadow-md',
-  featured: 'bg-gradient-to-br from-[var(--ml-color-green-50)] to-white border-2 border-[var(--ml-color-green-500)] shadow-md hover:shadow-lg',
-  accent: 'bg-gradient-to-br from-[var(--ml-color-gold-50)] to-white border border-[var(--ml-color-gold-300)] shadow-sm hover:shadow-md',
-  indigo: 'bg-gradient-to-br from-[var(--ml-color-indigo-50)] to-white border border-[var(--ml-color-indigo-200)] shadow-sm hover:shadow-md',
-  mandingue: 'bg-gradient-to-br from-[var(--ml-color-mandingue-50)] via-white to-white border border-[var(--ml-color-mandingue-500)] shadow-sm hover:shadow-md',
-  ambre: 'bg-gradient-to-br from-[var(--ml-color-ambre-50)] via-white to-white border border-[var(--ml-color-ambre-500)] shadow-sm hover:shadow-md',
-  soleil: 'bg-gradient-to-br from-[var(--ml-color-soleil-50)] via-white to-white border-2 border-[var(--ml-color-soleil-or)] shadow-md hover:shadow-lg'
+  standard: 'bg-[var(--ml-bg-surface)] border-[var(--ml-border-subtle)] hover:border-[var(--ml-color-green-400)] shadow-sm hover:shadow-md',
+  featured: 'bg-[var(--ml-bg-surface)] border-2 border-[var(--ml-color-green-500)] shadow-md hover:shadow-lg',
+  accent: 'bg-[var(--ml-bg-surface)] border border-[var(--ml-color-gold-400)] shadow-sm hover:shadow-md',
+  indigo: 'bg-[var(--ml-bg-surface)] border border-[var(--ml-color-indigo-300)] shadow-sm hover:shadow-md',
+  mandingue: 'bg-[var(--ml-bg-surface)] border border-[var(--ml-color-mandingue-500)] shadow-sm hover:shadow-md',
+  ambre: 'bg-[var(--ml-bg-surface)] border border-[var(--ml-color-ambre-500)] shadow-sm hover:shadow-md',
+  soleil: 'bg-[var(--ml-bg-surface)] border-2 border-[var(--ml-color-soleil-or)] shadow-md hover:shadow-lg'
 };
 
 const badgeStyles = {
   standard: 'bg-[var(--ml-color-green-50)] text-[var(--ml-color-green-800)] border border-[var(--ml-color-green-200)]',
   featured: 'bg-[var(--ml-color-green-600)] text-white font-bold',
-  accent: 'bg-[var(--ml-color-gold-400)] text-[var(--ml-color-bogolan-nuit)] font-bold',
+  accent: 'bg-[var(--ml-color-gold-400)] text-[#1C1917] font-bold',
   indigo: 'bg-[var(--ml-color-indigo-600)] text-white font-bold',
   mandingue: 'bg-[var(--ml-color-mandingue-orange)] text-white font-bold',
   ambre: 'bg-[var(--ml-color-ambre-sahel)] text-white font-bold',
-  soleil: 'bg-[var(--ml-color-soleil-or)] text-[var(--ml-color-bogolan-nuit)] font-bold'
+  soleil: 'bg-[var(--ml-color-soleil-or)] text-[#1C1917] font-bold'
 };
 
 const iconStyles = {
@@ -44,7 +44,7 @@ const iconStyles = {
   indigo: 'bg-[var(--ml-color-indigo-100)] text-[var(--ml-color-indigo-700)] border-[var(--ml-color-indigo-300)]',
   mandingue: 'bg-[var(--ml-color-mandingue-100)] text-[var(--ml-color-mandingue-800)] border-[var(--ml-color-mandingue-300)]',
   ambre: 'bg-[var(--ml-color-ambre-100)] text-[var(--ml-color-ambre-800)] border-[var(--ml-color-ambre-300)]',
-  soleil: 'bg-[var(--ml-color-soleil-500)] text-[var(--ml-color-bogolan-nuit)] border-[var(--ml-color-soleil-or)] shadow-md'
+  soleil: 'bg-[var(--ml-color-soleil-500)] text-[#1C1917] border-[var(--ml-color-soleil-or)] shadow-md'
 };
 ---
 
@@ -57,7 +57,7 @@ const iconStyles = {
         </span>
       )}
       <div class="flex flex-wrap items-center justify-end gap-1.5 ml-auto">
-        <span class="text-[11px] font-semibold text-[var(--ml-color-green-800)] bg-[var(--ml-color-green-100)]/70 px-2.5 py-0.5 rounded-full border border-[var(--ml-color-green-200)]/60" data-cms-bind={b('category')}>
+        <span class="text-[11px] font-semibold text-[var(--ml-text-secondary)] bg-[var(--ml-bg-surface-subtle)] px-2.5 py-0.5 rounded-full border border-[var(--ml-border-subtle)]" data-cms-bind={b('category')}>
           {category}
         </span>
         {badgeText && (
@@ -67,20 +67,20 @@ const iconStyles = {
         )}
       </div>
     </div>
-    <h3 class="text-lg font-extrabold text-[var(--ml-color-neutral-900)] group-hover:text-[var(--ml-color-green-700)] transition-colors mb-2 font-title leading-snug" data-cms-bind={b('title')}>
+    <h3 class="text-lg font-extrabold text-[var(--ml-text-primary)] group-hover:text-[var(--consulat-link,var(--ml-color-green-500))] transition-colors mb-2 font-title leading-snug" data-cms-bind={b('title')}>
       {title}
     </h3>
-    <p class="text-xs md:text-sm text-[var(--ml-color-neutral-600)] leading-relaxed mb-5" data-cms-bind={b('summary')}>
+    <p class="text-xs md:text-sm text-[var(--ml-text-secondary)] leading-relaxed mb-5" data-cms-bind={b('summary')}>
       {summary}
     </p>
   </div>
 
   <div>
-    <div class="border-t border-[var(--ml-color-neutral-200)]/70 pt-4 flex items-center justify-between text-xs text-[var(--ml-color-neutral-500)] mb-3">
-      <span>Tarif: <strong class="text-[var(--ml-color-neutral-800)] font-semibold" data-cms-bind={b('cost')}>{cost}</strong></span>
-      {processingTime && <span>Délai: <strong class="text-[var(--ml-color-neutral-800)] font-semibold" data-cms-bind={b('processingTime')}>{processingTime}</strong></span>}
+    <div class="border-t border-[var(--ml-border-subtle)] pt-4 flex items-center justify-between text-xs text-[var(--ml-text-muted)] mb-3">
+      <span>Tarif: <strong class="text-[var(--ml-text-primary)] font-semibold" data-cms-bind={b('cost')}>{cost}</strong></span>
+      {processingTime && <span>Délai: <strong class="text-[var(--ml-text-primary)] font-semibold" data-cms-bind={b('processingTime')}>{processingTime}</strong></span>}
     </div>
-    <div class="text-xs font-bold text-[var(--ml-color-green-700)] group-hover:text-[var(--ml-color-green-800)] inline-flex items-center gap-1">
+    <div class="text-xs font-bold text-[var(--consulat-link,var(--ml-color-green-500))] group-hover:underline inline-flex items-center gap-1">
       <span>Accéder au service</span>
       <span class="transition-transform group-hover:translate-x-1">&rarr;</span>
     </div>

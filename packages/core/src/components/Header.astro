@@ -1,5 +1,6 @@
 ---
 import type { NavLink } from '../schemas/index.js';
+import ThemeToggle from './ThemeToggle.astro';
 
 interface Props {
   title: string;
@@ -8,6 +9,7 @@ interface Props {
   partnerLogos?: Array<{ src: string; alt: string; label?: string }>;
   navItems?: NavLink[];
   currentPath?: string;
+  showThemeToggle?: boolean;
 }
 
 const {
@@ -23,6 +25,7 @@ const {
     { label: "Contact", href: "/contact" },
   ],
   currentPath = Astro.props.currentPath || Astro.url.pathname,
+  showThemeToggle = false,
 } = Astro.props;
 
 const normalizePath = (path: string) =>
@@ -71,6 +74,9 @@ const cleanCurrentPath = normalizePath(currentPath);
       </a>
 
       <div class="header-actions">
+        {showThemeToggle && (
+          <ThemeToggle id="header-theme-toggle" class="header-theme-toggle" />
+        )}
         <a
           href="/login"
           id="header-auth-login"
@@ -127,6 +133,12 @@ const cleanCurrentPath = normalizePath(currentPath);
       </div>
 
       <div class="ml-header-utility-nav">
+        {showThemeToggle && (
+          <div class="flex items-center justify-between px-3 py-2 bg-[var(--ml-bg-surface-subtle)] rounded-xl mb-2">
+            <span class="text-xs font-semibold text-[var(--ml-text-secondary)]">Mode d'affichage</span>
+            <ThemeToggle id="mobile-theme-toggle" class="mobile-theme-toggle" />
+          </div>
+        )}
         <a href="/login" id="mobile-auth-login" class="ml-utility-item">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
           <span>Se connecter</span>

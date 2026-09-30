@@ -11,6 +11,7 @@ export { default as CollectionItemControls } from './components/CollectionItemCo
 export { default as CmsImageField } from './components/CmsImageField.astro';
 export { default as CmsLinkField } from './components/CmsLinkField.astro';
 export { default as EmergencyBanner } from './components/EmergencyBanner.astro';
+export { default as ThemeToggle } from './components/ThemeToggle.astro';
 
 export * from './utils/auth.js';
 export * from './store/cms.js';
