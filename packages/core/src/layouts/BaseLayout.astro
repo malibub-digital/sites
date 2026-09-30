@@ -3,6 +3,7 @@ import '@malihub/dsml-core/css/dsml.css';
 import '@malihub/dsml-core/css/dsml-icons.css';
 import AdminToolbar from '../components/AdminToolbar.astro';
 import EmergencyBanner from '../components/EmergencyBanner.astro';
+import ThemeToggle from '../components/ThemeToggle.astro';
 import type { EmergencyNotice } from '../schemas/index.js';
 
 
@@ -79,7 +80,32 @@ const {
     <slot name="footer" />
   </div>
 
+  <aside class="ml-theme-floating-switch" aria-label="Bascule de thème d'affichage">
+    <ThemeToggle id="base-theme-toggle-floating" />
+  </aside>
+
   <style is:global>
+    .ml-theme-floating-switch {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 9999;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 9999px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .ml-theme-floating-switch:hover {
+      transform: scale(1.08);
+    }
+    @media (max-width: 480px) {
+      .ml-theme-floating-switch {
+        bottom: 16px;
+        right: 16px;
+      }
+    }
     body.cms-mode-editing [data-cms-bind] {
       position: relative;
       outline: 1.5px dashed rgba(2, 132, 199, 0.4);
