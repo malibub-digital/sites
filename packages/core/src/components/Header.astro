@@ -25,7 +25,7 @@ const {
     { label: "Contact", href: "/contact" },
   ],
   currentPath = Astro.props.currentPath || Astro.url.pathname,
-  showThemeToggle = false,
+  showThemeToggle = true,
 } = Astro.props;
 
 const normalizePath = (path: string) =>

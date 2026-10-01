@@ -1,6 +1,6 @@
 {
   "name": "@malihub/sites-core",
-  "version": "0.1.0",
+  "version": "0.1.3",
   "description": "Cœur partagé, composants et layouts DSML avec moteur CMS inline pour Sites Faciles Mali",
   "keywords": [
     "sites-faciles",
