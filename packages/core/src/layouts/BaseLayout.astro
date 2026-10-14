@@ -59,6 +59,7 @@ const {
       } catch (e) {}
     })();
   </script>
+  <slot name="head" />
 </head>
 <body class="ml-body">
   <AdminToolbar adminSecret={adminSecret} siteId={siteId} gitEnabled={gitEnabled} />
