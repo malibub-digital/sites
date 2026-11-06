@@ -14,6 +14,7 @@ export { default as EmergencyBanner } from './components/EmergencyBanner.astro';
 export { default as ThemeToggle } from './components/ThemeToggle.astro';
 
 export * from './utils/auth.js';
+export * from './utils/maliConnect.js';
 export * from './store/cms.js';
 export * from './cms/saveHandler.js';
 export * from './cms/lockHandler.js';
