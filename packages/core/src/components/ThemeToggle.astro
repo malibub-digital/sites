@@ -11,7 +11,7 @@ const { id = "ml-theme-toggle-btn", class: className = "", showLabel = false } =
 <button
   type="button"
   id={id}
-  class={`ml-theme-toggle-btn ${className}`}
+  class={`ml-theme-toggle-btn ${showLabel ? 'has-label ml-theme-toggle--pill' : ''} ${className}`}
   aria-label="Basculer entre thème clair et thème sombre"
   title="Basculer entre thème clair et thème sombre (Ctrl+Shift+D)"
 >
@@ -77,12 +77,14 @@ const { id = "ml-theme-toggle-btn", class: className = "", showLabel = false } =
 
   .ml-theme-toggle-btn.has-label,
   .ml-theme-toggle-btn.ml-theme-toggle--pill {
-    width: auto;
-    height: auto;
-    padding: 0.35rem 0.75rem;
-    border-radius: 9999px;
+    width: auto !important;
+    height: auto !important;
+    min-height: 32px;
+    padding: 0.35rem 0.85rem !important;
+    border-radius: 9999px !important;
     font-size: 13px;
     font-weight: 600;
+    gap: 0.45rem;
   }
 
   /* Icons visibility based on html[data-theme] */
