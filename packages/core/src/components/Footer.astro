@@ -6,6 +6,8 @@ import type { FooterColumn } from "../schemas/index.js";
 
 interface Props {
   institution?: string;
+  serviceName?: string;
+  serviceTagline?: string;
   partnerLogos?: Array<{ src: string; alt: string; label?: string }>;
   contact?: {
     email: string;
@@ -19,6 +21,8 @@ interface Props {
 
 const {
   institution = "RÉPUBLIQUE DU MALI",
+  serviceName,
+  serviceTagline,
   partnerLogos,
   contact = {
     email: "contact@malihub.digital",
@@ -58,7 +62,16 @@ const {
           </div>
         </div>
         <div class="footer-coords">
-          <strong>Sites Faciles Mali</strong><br />
+          {serviceName && (
+            <div class="mb-1">
+              <strong data-cms-bind="siteConfig.title">{serviceName}</strong>
+              {serviceTagline && (
+                <span class="text-xs text-stone-600 block sm:inline font-medium">
+                  {` — ${serviceTagline}`}
+                </span>
+              )}
+            </div>
+          )}
           <span data-cms-bind="siteConfig.contact.address"
             >{contact.address}</span
           ><br />
@@ -129,8 +142,7 @@ const {
         )}
       </div>
       <div class="footer-credits">
-        © {new Date().getFullYear()} République du Mali — Propulsé par Sites Faciles
-        Mali & DSML
+        © {new Date().getFullYear()} République du Mali — Conçu avec la plateforme <a href="https://sites.malihub.digital" class="hover:underline font-semibold text-inherit" target="_blank" rel="noopener noreferrer">Sites Faciles Mali</a> selon les standards d'accessibilité et d'ergonomie <a href="https://dsml.malihub.digital" class="hover:underline font-semibold text-inherit" target="_blank" rel="noopener noreferrer">DSML</a>.
       </div>
     </div>
   </div>

@@ -1,6 +1,6 @@
 {
   "name": "@malihub/sites-core",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Cœur partagé, composants et layouts DSML avec moteur CMS inline pour Sites Faciles Mali",
   "keywords": [
     "sites-faciles",
@@ -39,7 +39,7 @@
   },
   "dependencies": {
     "@malihub/git-headless-cms-core": "^0.1.1",
-    "@malihub/dsml-core": "^0.1.3",
+    "@malihub/dsml-core": "^0.1.6",
     "@nanostores/persistent": "^1.3.5",
     "@tiptap/core": "^3.29.2",
     "@tiptap/starter-kit": "^3.29.2",
